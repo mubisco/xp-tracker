@@ -8,3 +8,11 @@ With a party defined you will be able to add your planned encounters. Each encou
 When your party defeats or overcomes the encounter you can easily add the XP to the party members, to track their progress.
 
 As there is no backend to store data, an import/export option is added to be able to save your encounter and party data so you can use it on multiple devices.
+
+## Folder Structure
+
+WIP
+
+## Testing
+
+WIP
