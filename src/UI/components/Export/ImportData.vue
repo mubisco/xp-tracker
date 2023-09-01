@@ -4,7 +4,7 @@
 <template>
   <v-card>
     <template #title>
-      Upload file
+      Upload data file
     </template>
     <template #text>
       <v-file-input
