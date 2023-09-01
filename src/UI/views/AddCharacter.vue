@@ -1,8 +1,9 @@
 <template>
   <v-container>
-    TO-DO: Add Character
+    <AddCharacterForm />
   </v-container>
 </template>
 
 <script lang="ts" setup>
+import AddCharacterForm from '@/UI/components/Players/AddCharacterForm.vue'
 </script>

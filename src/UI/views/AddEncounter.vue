@@ -1,8 +1,9 @@
+<script lang="ts" setup>
+import AddEncounterForm from '../components/Encounters/AddEncounterForm.vue'
+</script>
+
 <template>
   <v-container>
-    TO-DO: Add Encounter
+    <AddEncounterForm />
   </v-container>
 </template>
-
-<script lang="ts" setup>
-</script>
