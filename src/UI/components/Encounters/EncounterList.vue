@@ -166,6 +166,14 @@ const encounters = ref([
             </tr>
           </tfoot>
         </v-table>
+        <v-btn
+          block
+          variant="elevated"
+          color="primary"
+          prepend-icon="mdi-content-save"
+        >
+          Add XP points to characters
+        </v-btn>
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
