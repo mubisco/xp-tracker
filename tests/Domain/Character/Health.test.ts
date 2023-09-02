@@ -5,7 +5,6 @@ import { describe, test, expect } from 'vitest'
 describe('Testing Health', () => {
   test('It should throw error when max below 0', () => {
     expect(() => {
-      // eslint-disable-next-line
       Health.fromMaxHp(-1)
     }).toThrow(RangeError)
   })

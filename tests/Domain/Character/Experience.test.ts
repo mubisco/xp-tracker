@@ -5,7 +5,6 @@ import { describe, test, expect } from 'vitest'
 describe('Testing Experience', () => {
   test('It should throw error when experiencie less than zero', () => {
     expect(() => {
-      // eslint-disable-next-line
       Experience.fromXp(-1)
     }).toThrow(RangeError)
   })
