@@ -11,7 +11,7 @@ export abstract class AbstractUlid {
     return new this(ulid())
   }
 
-  constructor (ulid: string) {
+  public constructor (ulid: string) {
     if (!isValid(ulid)) {
       throw new RangeError(`Ulid value ${ulid} not valid!!!`)
     }
@@ -21,5 +21,8 @@ export abstract class AbstractUlid {
   value (): string {
     return this._ulid
   }
-}
 
+  equals (another: AbstractUlid): boolean {
+    return another.constructor === this.constructor && another.value() === this._ulid
+  }
+}
