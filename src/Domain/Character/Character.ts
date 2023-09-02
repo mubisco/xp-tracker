@@ -1,2 +1,2 @@
-export class Character {
+export interface Character {
 }
