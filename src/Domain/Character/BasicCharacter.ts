@@ -1,6 +1,7 @@
 import { Character } from './Character'
 import { CharacterId } from './CharacterId'
 import { CharacterName } from './CharacterName'
+import { CharacterVisitor } from './CharacterVisitor'
 import { Experience } from './Experience'
 import { ExperienceDto } from './ExperienceDto'
 import { Health } from './Health'
@@ -47,5 +48,9 @@ export class BasicCharacter implements Character {
 
   hitPoints (): HitPointsDto {
     return Health.fromValues(this._maxHp, this._actualHp).hitpoints()
+  }
+
+  visit (visitor: CharacterVisitor<any>): any {
+    return visitor.visitBasicCharacter(this)
   }
 }

@@ -1,6 +1,7 @@
 import { BasicCharacter } from '@/Domain/Character/BasicCharacter'
 import { CharacterId } from '@/Domain/Character/CharacterId'
 import { CharacterName } from '@/Domain/Character/CharacterName'
+import { DummyCharacterVisitor } from './DummyCharacterVisitor'
 import { Experience } from '@/Domain/Character/Experience'
 import { ExperienceDto } from '@/Domain/Character/ExperienceDto'
 import { Health } from '@/Domain/Character/Health'
@@ -35,5 +36,9 @@ describe('Testing BasicCharacter', () => {
     expect(hitpoints).toBeInstanceOf(HitPointsDto)
     expect(hitpoints.max).equals(25)
     expect(hitpoints.current).equals(25)
+  })
+  test('It should return proper visitor result', () => {
+    const result = sut.visit(new DummyCharacterVisitor())
+    expect(result).equals(sut.id().value())
   })
 })
