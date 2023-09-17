@@ -1,7 +1,7 @@
 import { CharacterRepositoryError } from '@/Infrastructure/Character/Persistence/Storage/CharacterRepositoryError'
 import { LocalStorageCharacterRepository } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterRepository'
 import { LocalStorageCharacterSerializerVisitor } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterSerializerVisitor'
-import { BasicCharacterOM } from '../../../../../tests/Domain/Character/BasicCharacterOM'
+import { BasicCharacterOM } from '@tests/Domain/Character/BasicCharacterOM'
 import { beforeEach, describe, test, expect } from 'vitest'
 
 describe('Testing BasicCharacter', () => {
