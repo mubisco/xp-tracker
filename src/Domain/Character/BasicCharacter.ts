@@ -8,11 +8,10 @@ import { Health } from './Health'
 import { HitPointsDto } from './HitPointsDto'
 
 export class BasicCharacter implements Character {
-  private _characterId: string
-  private _characterName: string
-  private _actualXp: number
-  private _maxHp: number
-  private _actualHp: number
+  private _characterId: CharacterId
+  private _characterName: CharacterName
+  private _experience: Experience
+  private _health: Health
 
   static fromValues (name: CharacterName, experience: Experience, health: Health) {
     const xpValues = experience.values()
@@ -26,28 +25,26 @@ export class BasicCharacter implements Character {
   }
 
   private constructor (name: string, actualXp: number, maxHp: number, actualHp: number) {
-    const id = CharacterId.fromEmpty()
-    this._characterId = id.value()
-    this._characterName = name
-    this._actualXp = actualXp
-    this._maxHp = maxHp
-    this._actualHp = actualHp
+    this._characterId = CharacterId.fromEmpty()
+    this._characterName = CharacterName.fromString(name)
+    this._experience = Experience.fromXp(actualXp)
+    this._health = Health.fromValues(maxHp, actualHp)
   }
 
   id (): CharacterId {
-    return CharacterId.fromString(this._characterId)
+    return this._characterId
   }
 
   name (): CharacterName {
-    return CharacterName.fromString(this._characterName)
+    return this._characterName
   }
 
   experience (): ExperienceDto {
-    return Experience.fromXp(this._actualXp).values()
+    return this._experience.values()
   }
 
   hitPoints (): HitPointsDto {
-    return Health.fromValues(this._maxHp, this._actualHp).hitpoints()
+    return this._health.hitpoints()
   }
 
   visit (visitor: CharacterVisitor<any>): any {
