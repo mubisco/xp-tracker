@@ -23,26 +23,23 @@ const TRESHOLDS = [
   355000
 ]
 export class Experience {
-  private _actualXp: number
-
   static fromXp (xp: number): Experience {
     return new this(xp)
   }
 
-  private constructor (actualXp: number) {
-    if (actualXp < 0) {
-      throw new RangeError(`Actual XP should be 0 or more, ${actualXp} given!!!`)
+  private constructor (private readonly actualXp: number) {
+    if (this.actualXp < 0) {
+      throw new RangeError(`Actual XP should be 0 or more, ${this.actualXp} given!!!`)
     }
-    this._actualXp = actualXp
   }
 
   values (): ExperienceDto {
-    return new ExperienceDto(this._actualXp, this.level(), this.nextLevelXp())
+    return new ExperienceDto(this.actualXp, this.level(), this.nextLevelXp())
   }
 
   private nextLevelXp (): number {
     for (let i = 0; i < TRESHOLDS.length; i++) {
-      if (this._actualXp < TRESHOLDS[i]) {
+      if (this.actualXp < TRESHOLDS[i]) {
         return TRESHOLDS[i]
       }
     }
@@ -52,7 +49,7 @@ export class Experience {
 
   private level (): number {
     for (let i = 0; i < TRESHOLDS.length; i++) {
-      if (this._actualXp < TRESHOLDS[i]) {
+      if (this.actualXp < TRESHOLDS[i]) {
         return i
       }
     }
@@ -61,6 +58,6 @@ export class Experience {
 
   add (another: Experience): Experience {
     const anotherValues = another.values()
-    return new Experience(this._actualXp + anotherValues.actual)
+    return new Experience(this.actualXp + anotherValues.actual)
   }
 }
