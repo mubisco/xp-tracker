@@ -1,5 +1,4 @@
 import { BasicCharacter } from '@/Domain/Character/BasicCharacter'
-import { CharacterId } from '@/Domain/Character/CharacterId'
 import { CharacterName } from '@/Domain/Character/CharacterName'
 import { DummyCharacterVisitor } from './DummyCharacterVisitor'
 import { Experience } from '@/Domain/Character/Experience'
@@ -7,6 +6,7 @@ import { ExperienceDto } from '@/Domain/Character/ExperienceDto'
 import { Health } from '@/Domain/Character/Health'
 import { HitPointsDto } from '@/Domain/Character/HitPointsDto'
 import { beforeEach, describe, test, expect } from 'vitest'
+import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 
 describe('Testing BasicCharacter', () => {
   let sut: BasicCharacter
@@ -16,7 +16,7 @@ describe('Testing BasicCharacter', () => {
   })
   test('It should return proper CharacterId', () => {
     const characterId = sut.id()
-    expect(characterId).toBeInstanceOf(CharacterId)
+    expect(characterId).toBeInstanceOf(Ulid)
     const againCharacterId = sut.id()
     expect(characterId.equals(againCharacterId))
   })

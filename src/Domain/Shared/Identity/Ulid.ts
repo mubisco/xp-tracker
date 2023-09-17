@@ -1,13 +1,13 @@
 import { isValid, ulid } from 'ulidx'
 
-export abstract class AbstractUlid {
+export class Ulid {
   private _ulid: string
 
-  static fromString<T extends AbstractUlid> (this: { new(ulid: string): T }, ulid: string): T {
+  static fromString (ulid: string): Ulid {
     return new this(ulid)
   }
 
-  static fromEmpty<T extends AbstractUlid> (this: { new(ulid: string): T }): T {
+  static fromEmpty (): Ulid {
     return new this(ulid())
   }
 
@@ -22,7 +22,7 @@ export abstract class AbstractUlid {
     return this._ulid
   }
 
-  equals (another: AbstractUlid): boolean {
+  equals (another: Ulid): boolean {
     return another.constructor === this.constructor && another.value() === this._ulid
   }
 }
