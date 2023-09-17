@@ -1,3 +1,4 @@
+import { CharacterWriteModelError } from '@/Domain/Character/CharacterWriteModelError'
 import { CharacterRepositoryError } from '@/Infrastructure/Character/Persistence/Storage/CharacterRepositoryError'
 import { LocalStorageCharacterRepository } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterRepository'
 import { LocalStorageCharacterSerializerVisitor } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterSerializerVisitor'
@@ -12,13 +13,9 @@ describe('Testing BasicCharacter', () => {
     visitor = new LocalStorageCharacterSerializerVisitor()
     sut = new LocalStorageCharacterRepository(visitor)
   })
-
-  test('It should be of proper class', () => {
-    expect(sut).toBeInstanceOf(LocalStorageCharacterRepository)
-  })
   test('It should store character properly', async () => {
     const character = BasicCharacterOM.random()
-    await sut.store(character)
+    await sut.invoke(character)
     const result = localStorage.getItem('characters') ?? '{}'
     const parsedResult = JSON.parse(result)
     expect(parsedResult[character.id().value()]).equals(character.visit(visitor))
@@ -26,7 +23,7 @@ describe('Testing BasicCharacter', () => {
 
   test('It should throw error if character already exists', () => {
     const character = BasicCharacterOM.random()
-    sut.store(character)
-    expect(sut.store(character)).rejects.toThrowError(CharacterRepositoryError)
+    sut.invoke(character)
+    expect(sut.invoke(character)).rejects.toThrowError(CharacterWriteModelError)
   })
 })
