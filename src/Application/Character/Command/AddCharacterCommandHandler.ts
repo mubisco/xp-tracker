@@ -1,18 +1,28 @@
-import { CharacterFactory } from '@/Domain/Character/CharacterFactory'
 import { AddCharacterCommand } from './AddCharacterCommand'
-import { CharacterRepository } from '@/Domain/Character/CharacterRepository'
+import { BasicCharacter } from '@/Domain/Character/BasicCharacter'
+import { CharacterName } from '@/Domain/Character/CharacterName'
+import { Experience } from '@/Domain/Character/Experience'
+import { Health } from '@/Domain/Character/Health'
+import { AddCharacterWriteModel } from '@/Domain/Character/AddCharacterWriteModel'
 
 export class AddCharacterCommandHandler {
-  private _factory: CharacterFactory
-  private _repository: CharacterRepository
+  private _writeModel: AddCharacterWriteModel
 
-  constructor (factory: CharacterFactory, repository: CharacterRepository) {
-    this._factory = factory
-    this._repository = repository
+  constructor (writeModel: AddCharacterWriteModel) {
+    this._writeModel = writeModel
   }
 
   async handle (command: AddCharacterCommand): Promise<void> {
-    const character = this._factory.make(command.data)
-    await this._repository.store(character)
+    try {
+      const character = BasicCharacter.fromValues(
+        CharacterName.fromString(command.name),
+        Experience.fromXp(command.actualXp),
+        Health.fromMaxHp(command.maxHp)
+      )
+      await this._writeModel.invoke(character)
+      return Promise.resolve()
+    } catch (e) {
+      return Promise.reject(e)
+    }
   }
 }

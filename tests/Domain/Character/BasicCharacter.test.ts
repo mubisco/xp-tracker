@@ -1,18 +1,17 @@
 import { BasicCharacter } from '@/Domain/Character/BasicCharacter'
 import { CharacterName } from '@/Domain/Character/CharacterName'
 import { DummyCharacterVisitor } from './DummyCharacterVisitor'
-import { Experience } from '@/Domain/Character/Experience'
 import { ExperienceDto } from '@/Domain/Character/ExperienceDto'
-import { Health } from '@/Domain/Character/Health'
 import { HitPointsDto } from '@/Domain/Character/HitPointsDto'
 import { beforeEach, describe, test, expect } from 'vitest'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
+import { BasicCharacterOM } from './BasicCharacterOM'
 
 describe('Testing BasicCharacter', () => {
   let sut: BasicCharacter
 
   beforeEach(() => {
-    sut = BasicCharacter.fromValues(CharacterName.fromString('Darling'), Experience.fromXp(345), Health.fromMaxHp(25))
+    sut = BasicCharacterOM.random()
   })
   test('It should return proper CharacterId', () => {
     const characterId = sut.id()

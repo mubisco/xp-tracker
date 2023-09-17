@@ -1,10 +1,7 @@
-import { BasicCharacter } from '@/Domain/Character/BasicCharacter'
-import { CharacterName } from '@/Domain/Character/CharacterName'
-import { CharacterRepositoryError } from '@/Domain/Character/CharacterRepositoryError'
-import { Experience } from '@/Domain/Character/Experience'
-import { Health } from '@/Domain/Character/Health'
+import { CharacterRepositoryError } from '@/Infrastructure/Character/Persistence/Storage/CharacterRepositoryError'
 import { LocalStorageCharacterRepository } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterRepository'
 import { LocalStorageCharacterSerializerVisitor } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterSerializerVisitor'
+import { BasicCharacterOM } from '../../../../../tests/Domain/Character/BasicCharacterOM'
 import { beforeEach, describe, test, expect } from 'vitest'
 
 describe('Testing BasicCharacter', () => {
@@ -20,11 +17,7 @@ describe('Testing BasicCharacter', () => {
     expect(sut).toBeInstanceOf(LocalStorageCharacterRepository)
   })
   test('It should store character properly', async () => {
-    const character = BasicCharacter.fromValues(
-      CharacterName.fromString('Darling'),
-      Experience.fromXp(345),
-      Health.fromMaxHp(25)
-    )
+    const character = BasicCharacterOM.random()
     await sut.store(character)
     const result = localStorage.getItem('characters') ?? '{}'
     const parsedResult = JSON.parse(result)
@@ -32,7 +25,7 @@ describe('Testing BasicCharacter', () => {
   })
 
   test('It should throw error if character already exists', () => {
-    const character = BasicCharacter.fromValues(CharacterName.fromString('Darling'), Experience.fromXp(345), Health.fromMaxHp(25))
+    const character = BasicCharacterOM.random()
     sut.store(character)
     expect(sut.store(character)).rejects.toThrowError(CharacterRepositoryError)
   })

@@ -1,11 +1,10 @@
 import { Character } from '@/Domain/Character/Character'
-import { CharacterRepository } from '@/Domain/Character/CharacterRepository'
-import { CharacterRepositoryError } from '@/Domain/Character/CharacterRepositoryError'
 import { CharacterVisitor } from '@/Domain/Character/CharacterVisitor'
+import { CharacterRepositoryError } from './CharacterRepositoryError'
 
 const LOCALSTORAGE_TAG = 'characters'
 
-export class LocalStorageCharacterRepository implements CharacterRepository {
+export class LocalStorageCharacterRepository {
   private _visitor: CharacterVisitor<string>
 
   constructor (visitor: CharacterVisitor<string>) {

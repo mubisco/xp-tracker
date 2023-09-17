@@ -1,30 +1,29 @@
-import { describe, test, expect } from 'vitest'
+import { beforeEach, describe, test, expect } from 'vitest'
 import { AddCharacterCommandHandler } from '@/Application/Character/Command/AddCharacterCommandHandler'
-import { CharacterFactoryError } from '@/Domain/Character/CharacterFactoryError'
-import { CharacterRepositoryError } from '@/Domain/Character/CharacterRepositoryError'
-import { FailingCharacterFactory } from './FailingCharacterFactory'
-import { MockedCharacterFactory } from './MockedCharacterFactory'
-import { FailingCharacterRepository } from './FailingCharacterRepository'
-import { MockedCharacterRepository } from './MockedCharacterRepository'
 import { AddCharacterCommand } from '@/Application/Character/Command/AddCharacterCommand'
+import { CharacterWriteModelError } from '@/Domain/Character/CharacterWriteModelError'
+import { AddCharacterWriteModelSpy } from './AddCharacterWriteModelSpy'
 
-const command = new AddCharacterCommand({ name: 'asd' })
+let sut: AddCharacterCommandHandler
+let writeModel: AddCharacterWriteModelSpy
 
 describe('Testing AddCharacterCommandHandler', () => {
-  test('It should throw error when wrong data', () => {
-    const repository = new MockedCharacterRepository()
-    const sut = new AddCharacterCommandHandler(new FailingCharacterFactory(), repository)
-    expect(sut.handle(command)).rejects.toThrow(CharacterFactoryError)
+  beforeEach(() => {
+    writeModel = new AddCharacterWriteModelSpy()
+    sut = new AddCharacterCommandHandler(writeModel)
+  })
+  test('It should throw error when wrong name', () => {
+    const command = new AddCharacterCommand('', 325, 25)
+    expect(sut.handle(command)).rejects.toThrow(RangeError)
   })
   test('It should throw error when character cannot be created', () => {
-    const repository = new FailingCharacterRepository()
-    const sut = new AddCharacterCommandHandler(new MockedCharacterFactory(), repository)
-    expect(sut.handle(command)).rejects.toThrow(CharacterRepositoryError)
+    writeModel.shouldFail = true
+    const command = new AddCharacterCommand('Darling', 325, 25)
+    expect(sut.handle(command)).rejects.toThrow(CharacterWriteModelError)
   })
   test('It should store character', async () => {
-    const repository = new MockedCharacterRepository()
-    const sut = new AddCharacterCommandHandler(new MockedCharacterFactory(), repository)
-    await sut.handle(new AddCharacterCommand({ name: 'asd' }))
-    expect(repository.character).not.toBeNull()
+    const command = new AddCharacterCommand('Darling', 325, 25)
+    await sut.handle(command)
+    expect(writeModel.wasAdded()).toBe(true)
   })
 })

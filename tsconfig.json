@@ -16,6 +16,9 @@
     "paths": {
       "@/*": [
        "src/*"
+      ],
+      "@tests/*": [
+       "tests/*"
       ]
      }
   },
@@ -24,7 +27,8 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "tests/**/*.test.ts"
+    "tests/**/*.test.ts",
+    "tests/**/*.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }],
   "exclude": ["node_modules"]
