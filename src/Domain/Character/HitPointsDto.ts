@@ -1,9 +1,5 @@
 export class HitPointsDto {
-  public readonly max: number
-  public readonly current: number
-
-  constructor (max: number, current: number) {
-    this.max = max
-    this.current = current
+  /* eslint-disable no-useless-constructor */
+  constructor (readonly max: number, readonly current: number) {
   }
 }

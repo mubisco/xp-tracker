@@ -1,11 +1,5 @@
 export class ExperienceDto {
-  public actual: number
-  public level: number
-  public nextLevel: number
-
-  constructor (actual: number, level: number, nextLevel: number) {
-    this.actual = actual
-    this.level = level
-    this.nextLevel = nextLevel
+  /* eslint-disable no-useless-constructor */
+  constructor (readonly actual: number, readonly level: number, readonly nextLevel: number) {
   }
 }
