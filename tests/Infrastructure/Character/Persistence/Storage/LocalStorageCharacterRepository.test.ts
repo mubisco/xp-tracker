@@ -1,5 +1,4 @@
 import { CharacterWriteModelError } from '@/Domain/Character/CharacterWriteModelError'
-import { CharacterRepositoryError } from '@/Infrastructure/Character/Persistence/Storage/CharacterRepositoryError'
 import { LocalStorageCharacterRepository } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterRepository'
 import { LocalStorageCharacterSerializerVisitor } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterSerializerVisitor'
 import { BasicCharacterOM } from '@tests/Domain/Character/BasicCharacterOM'
