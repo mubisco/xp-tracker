@@ -11,4 +11,12 @@ export class BasicCharacterOM {
       Health.fromMaxHp(25)
     )
   }
+
+  static withActualHp (actualHp: number): BasicCharacter {
+    return BasicCharacter.fromValues(
+      CharacterName.fromString('Darling'),
+      Experience.fromXp(345),
+      Health.fromValues(25, actualHp)
+    )
+  }
 }
