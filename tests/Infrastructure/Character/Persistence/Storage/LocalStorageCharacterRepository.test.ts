@@ -20,7 +20,11 @@ describe('Testing BasicCharacter', () => {
     expect(sut).toBeInstanceOf(LocalStorageCharacterRepository)
   })
   test('It should store character properly', async () => {
-    const character = BasicCharacter.fromValues(CharacterName.fromString('Darling'), Experience.fromXp(345), Health.fromMaxHp(25))
+    const character = BasicCharacter.fromValues(
+      CharacterName.fromString('Darling'),
+      Experience.fromXp(345),
+      Health.fromMaxHp(25)
+    )
     await sut.store(character)
     const result = localStorage.getItem('characters') ?? '{}'
     const parsedResult = JSON.parse(result)
