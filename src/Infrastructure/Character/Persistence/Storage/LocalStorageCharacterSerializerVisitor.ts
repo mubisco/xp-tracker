@@ -10,11 +10,11 @@ export class LocalStorageCharacterSerializerVisitor implements CharacterVisitor<
     const data = {
       id,
       name,
-      hitpoints: {
-        max: hitpoints.max,
-        current: hitpoints.current
-      },
-      experiencePoints: experience.actual
+      maxHitpoints: hitpoints.max,
+      currentHitpoints: hitpoints.current,
+      experiencePoints: experience.actual,
+      level: experience.level,
+      nextLevel: experience.nextLevel
     }
     return JSON.stringify(data)
   }
