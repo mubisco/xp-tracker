@@ -5,7 +5,7 @@ import { CharacterReadModelError } from '@/Domain/Character/CharacterReadModelEr
 export class CharacterListReadModelDummy implements CharacterListReadModel {
   public shouldFail = false
 
-  async invoke (): Promise<CharacterDto[]> {
+  async read (): Promise<CharacterDto[]> {
     if (this.shouldFail) {
       return Promise.reject(new CharacterReadModelError(''))
     }

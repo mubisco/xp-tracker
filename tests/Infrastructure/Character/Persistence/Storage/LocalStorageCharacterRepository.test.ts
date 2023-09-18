@@ -11,6 +11,7 @@ describe('Testing BasicCharacter', () => {
   beforeEach(() => {
     visitor = new LocalStorageCharacterSerializerVisitor()
     sut = new LocalStorageCharacterRepository(visitor)
+    localStorage.removeItem('characters')
   })
   test('It should store character properly', async () => {
     const character = BasicCharacterOM.random()
@@ -24,5 +25,16 @@ describe('Testing BasicCharacter', () => {
     const character = BasicCharacterOM.random()
     sut.invoke(character)
     expect(sut.invoke(character)).rejects.toThrowError(CharacterWriteModelError)
+  })
+
+  test('It should return all characters stored', async () => {
+    const character = BasicCharacterOM.random()
+    const anotherCharacter = BasicCharacterOM.random()
+    sut.invoke(character)
+    sut.invoke(anotherCharacter)
+    const characterList = await sut.read()
+    expect(characterList).toHaveLength(2)
+    expect(characterList[0].ulid).toBe(character.id().value())
+    expect(characterList[1].ulid).toBe(anotherCharacter.id().value())
   })
 })

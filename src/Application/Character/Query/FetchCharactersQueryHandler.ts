@@ -8,6 +8,6 @@ export class FetchCharactersQueryHandler {
 
   // eslint-disable-next-line
   invoke (query: FetchCharactersQuery): Promise<CharacterDto[]> {
-    return this.readModel.invoke()
+    return this.readModel.read()
   }
 }
