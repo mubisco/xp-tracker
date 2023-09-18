@@ -12,7 +12,7 @@ describe('Testing BasicCharacter', () => {
     const character = BasicCharacterOM.withActualHp(12)
     const result = sut.visitBasicCharacter(character)
     const characterId = character.id().value()
-    const expectedResult = `{"id":"${characterId}","name":"Darling","hitpoints":{"max":25,"current":12},"experiencePoints":345}`
+    const expectedResult = `{"id":"${characterId}","name":"Darling","maxHitpoints":25,"currentHitpoints":12,"experiencePoints":345,"level":2,"nextLevel":900}`
     expect(result).equals(expectedResult)
   })
 })
