@@ -1,4 +1,18 @@
 <script lang="ts" setup>
+import { AddCharacterCommand } from '@/Application/Character/Command/AddCharacterCommand'
+import { AddCharacterCommandHandlerProvider } from '@/Infrastructure/Character/Provider/AddCharacterCommandHandlerProvider'
+import { ref } from 'vue'
+const name = ref('')
+const actualXp = ref(0)
+const maxHp = ref(0)
+
+const useCaseProvider = new AddCharacterCommandHandlerProvider()
+const useCase = useCaseProvider.provide()
+
+const addNewCharacter = async () => {
+  const command = new AddCharacterCommand(name.value, actualXp.value, maxHp.value)
+  await useCase.handle(command)
+}
 </script>
 
 <template>
@@ -11,6 +25,7 @@
         <v-row>
           <v-col cols="12">
             <v-text-field
+              v-model="name"
               label="Name"
               type="text"
             />
@@ -19,18 +34,14 @@
         <v-row>
           <v-col cols="6">
             <v-text-field
+              v-model="actualXp"
               label="Experience Points"
               type="number"
             />
           </v-col>
-          <v-col cols="3">
+          <v-col cols="6">
             <v-text-field
-              label="Level"
-              type="number"
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
+              v-model="maxHp"
               label="Hit Points"
               type="number"
             />
@@ -51,6 +62,7 @@
         variant="elevated"
         color="primary"
         prepend-icon="mdi-plus"
+        @click="addNewCharacter"
       >
         Add
       </v-btn>
