@@ -4,28 +4,74 @@ import { AddCharacterWriteModel } from '@/Domain/Character/AddCharacterWriteMode
 import { CharacterWriteModelError } from '@/Domain/Character/CharacterWriteModelError'
 import { CharacterListReadModel } from '@/Domain/Character/CharacterListReadModel'
 import { CharacterDto } from '@/Domain/Character/CharacterDto'
+import { DeleteCharacterWriteModel } from '@/Domain/Character/DeleteCharacterWriteModel'
+import { Ulid } from '@/Domain/Shared/Identity/Ulid'
+import { CharacterNotFoundError } from '@/Domain/Character/CharacterNotFoundError'
 
 const LOCALSTORAGE_TAG = 'characters'
 
-export class LocalStorageCharacterRepository implements AddCharacterWriteModel, CharacterListReadModel {
-  private _visitor: CharacterVisitor<string>
+interface CharacterRawData { [ key: string ]: string }
 
-  constructor (visitor: CharacterVisitor<string>) {
-    this._visitor = visitor
+export class LocalStorageCharacterRepository implements AddCharacterWriteModel, CharacterListReadModel, DeleteCharacterWriteModel {
+  private _localStorageRawCharacters: CharacterRawData = {}
+
+  constructor (private readonly visitor: CharacterVisitor<string>) {
+    this.readLocalStorageContent()
   }
 
   async invoke (character: Character): Promise<void> {
-    return this.store(character)
+    const characterId = character.id().value()
+    if (this.characterIdExists(character.id())) {
+      return Promise.reject(
+        new CharacterWriteModelError(`Character with id ${characterId} already present on Storage`)
+      )
+    }
+    const visitedCharacter = character.visit(this.visitor)
+    this._localStorageRawCharacters[characterId] = visitedCharacter
+    this.updateLocalStorage()
+    return Promise.resolve()
+  }
+
+  async remove (characterUlid: Ulid): Promise<void> {
+    if (!this.characterIdExists(characterUlid)) {
+      return Promise.reject(new CharacterNotFoundError())
+    }
+    this.removeCharacter(characterUlid)
+    this.updateLocalStorage()
+    return Promise.resolve()
   }
 
   async read (): Promise<CharacterDto[]> {
-    const data = localStorage.getItem(LOCALSTORAGE_TAG) ?? '{}'
-    const parsedData = JSON.parse(data)
     const result = []
-    for (const characterId in parsedData) {
-      result.push(this.fromRawData(parsedData[characterId]))
+    for (const characterId in this._localStorageRawCharacters) {
+      const parsedDto = this.fromRawData(this._localStorageRawCharacters[characterId])
+      result.push(parsedDto)
     }
     return result
+  }
+
+  private removeCharacter (characterUlid: Ulid): void {
+    const filteredItems: CharacterRawData = {}
+    for (const characterId in this._localStorageRawCharacters) {
+      if (characterId !== characterUlid.value()) {
+        filteredItems[characterId] = this._localStorageRawCharacters[characterId]
+      }
+    }
+    this._localStorageRawCharacters = filteredItems
+  }
+
+  private updateLocalStorage (): void {
+    window.localStorage.setItem(LOCALSTORAGE_TAG, JSON.stringify(this._localStorageRawCharacters))
+  }
+
+  private readLocalStorageContent (): void {
+    const result = localStorage.getItem(LOCALSTORAGE_TAG) ?? '{}'
+    this._localStorageRawCharacters = JSON.parse(result)
+  }
+
+  private characterIdExists (characterUlid: Ulid): boolean {
+    const characterKeys = Object.keys(this._localStorageRawCharacters)
+    return characterKeys.indexOf(characterUlid.value()) > -1
   }
 
   private fromRawData (rawData: string): CharacterDto {
@@ -39,20 +85,5 @@ export class LocalStorageCharacterRepository implements AddCharacterWriteModel, 
       level: item.level,
       nextLevel: item.nextLevel
     }
-  }
-
-  private async store (character: Character): Promise<void> {
-    const result = localStorage.getItem(LOCALSTORAGE_TAG) ?? '{}'
-    const parsedResult = JSON.parse(result)
-    const characterId = character.id().value()
-    if (parsedResult[characterId]) {
-      return Promise.reject(
-        new CharacterWriteModelError(`Character with id ${characterId} already present on Storage`)
-      )
-    }
-    const visitedCharacter = character.visit(this._visitor)
-    parsedResult[characterId] = visitedCharacter
-    window.localStorage.setItem(LOCALSTORAGE_TAG, JSON.stringify(parsedResult))
-    return Promise.resolve()
   }
 }
