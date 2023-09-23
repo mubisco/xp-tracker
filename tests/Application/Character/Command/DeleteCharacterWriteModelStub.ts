@@ -9,7 +9,7 @@ export class DeleteCharacterWriteModelStub implements DeleteCharacterWriteModel 
   public deleted = false
 
   // eslint-disable-next-line
-  async byUlid (characterUlid: Ulid): Promise<void> {
+  async remove (characterUlid: Ulid): Promise<void> {
     if (this.shouldFail) {
       return Promise.reject(new CharacterWriteModelError())
     }

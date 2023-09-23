@@ -9,6 +9,6 @@ export class DeleteCharacterCommandHandler {
 
   async handle (command: DeleteCharacterCommand): Promise<void> {
     const characterUlid = Ulid.fromString(command.characterId)
-    return this.writeModel.byUlid(characterUlid)
+    return this.writeModel.remove(characterUlid)
   }
 }

@@ -40,12 +40,12 @@ describe('Testing BasicCharacter', () => {
     expect(characterList[1].ulid).toBe(anotherCharacter.id().value())
   })
   test('It should throw error when deleting character that does not exists', () => {
-    expect(sut.byUlid(Ulid.fromEmpty())).rejects.toThrowError(CharacterNotFoundError)
+    expect(sut.remove(Ulid.fromEmpty())).rejects.toThrowError(CharacterNotFoundError)
   })
   test('It should delete existing character', async () => {
     const character = BasicCharacterOM.random()
     sut.invoke(character)
-    await sut.byUlid(character.id())
+    await sut.remove(character.id())
     const characters = await sut.read()
     expect(characters.length).toBe(0)
   })

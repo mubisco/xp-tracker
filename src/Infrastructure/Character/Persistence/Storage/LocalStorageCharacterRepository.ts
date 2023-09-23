@@ -32,7 +32,7 @@ export class LocalStorageCharacterRepository implements AddCharacterWriteModel, 
     return Promise.resolve()
   }
 
-  async byUlid (characterUlid: Ulid): Promise<void> {
+  async remove (characterUlid: Ulid): Promise<void> {
     this.readLocalStorageContent()
     if (!this.characterIdExists(characterUlid)) {
       return Promise.reject(new CharacterNotFoundError())
