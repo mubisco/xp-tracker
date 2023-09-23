@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { DeleteCharacterCommand } from '@/Application/Character/Command/DeleteCharacterCommand'
 import { DeleteCharacterCommandHandlerProvider } from '@/Infrastructure/Character/Provider/DeleteCharacterCommandHandlerProvider'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
+import { useSnackbarStore } from '@/UI/store/snackbar'
 
 const props = defineProps({
   characterName: { type: String, required: true },
@@ -11,15 +12,14 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 const useCaseProvider = new DeleteCharacterCommandHandlerProvider()
-
-const showDeleteConfirmationAlert = ref(false)
+const snackbarStore = useSnackbarStore()
 
 const onDeleteConfirmationClicked = async () => {
   const handler = useCaseProvider.provide()
   const command = new DeleteCharacterCommand(props.characterUlid)
   await handler.handle(command)
   showDialog.value = false
-  showDeleteConfirmationAlert.value = true
+  snackbarStore.addMessage(`${props.characterName} deleted successfully!!`, 'success')
 }
 
 const showDialog = computed({
@@ -49,10 +49,4 @@ const showDialog = computed({
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <v-alert
-    v-model="showDeleteConfirmationAlert"
-    type="success"
-    title="Character deleted!!!"
-    :text="`${characterName} character deleted succesfully!!`"
-  />
 </template>
