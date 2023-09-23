@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { AddCharacterCommand } from '@/Application/Character/Command/AddCharacterCommand'
 import { AddCharacterCommandHandlerProvider } from '@/Infrastructure/Character/Provider/AddCharacterCommandHandlerProvider'
+import { useSnackbarStore } from '@/UI/store/snackbar'
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router';
+
 const name = ref('')
 const actualXp = ref(0)
 const maxHp = ref(0)
-const isValid = computed((): boolean => {
-  return name.value !== '' && maxHp.value > 0
-})
+const isValid = computed((): boolean => name.value !== '' && maxHp.value > 0)
+
 const rules = ref({
   nameNotEmpty: (value: string) => !!value || 'Name must not be empty',
   hpNotZero: (value: number) => value > 0 || 'Hitpoints must be above 0'
@@ -15,10 +17,15 @@ const rules = ref({
 
 const useCaseProvider = new AddCharacterCommandHandlerProvider()
 const useCase = useCaseProvider.provide()
+const router = useRouter()
+
+const snackbarStore = useSnackbarStore()
 
 const addNewCharacter = async () => {
   const command = new AddCharacterCommand(name.value, actualXp.value, maxHp.value)
   await useCase.handle(command)
+  snackbarStore.addMessage('Character added successfully!!', 'success')
+  router.replace({ name: 'Home' })
 }
 </script>
 
