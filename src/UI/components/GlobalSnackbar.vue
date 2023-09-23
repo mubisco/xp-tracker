@@ -24,7 +24,7 @@ watch(messageCount, () => {
     v-model="showSnackbar"
     timeout="3000"
     :color="snackbarType"
-    location="top"
+    location="top right"
   >
     <span>
       {{ snackbarMessage }}
