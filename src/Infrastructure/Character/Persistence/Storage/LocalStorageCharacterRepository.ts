@@ -42,6 +42,7 @@ export class LocalStorageCharacterRepository implements AddCharacterWriteModel, 
   }
 
   async read (): Promise<CharacterDto[]> {
+    this.readLocalStorageContent()
     const result = []
     for (const characterId in this._localStorageRawCharacters) {
       const parsedDto = this.fromRawData(this._localStorageRawCharacters[characterId])
