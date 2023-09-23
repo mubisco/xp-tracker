@@ -1,33 +1,17 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { FetchCharactersQuery } from '@/Application/Character/Query/FetchCharactersQuery'
+import { CharacterDto } from '@/Domain/Character/CharacterDto'
+import { FetchCharactersQueryHandlerProvider } from '@/Infrastructure/Character/Provider/FetchCharactersQueryHandlerProvider'
+import { onMounted, ref } from 'vue'
 
-const players = ref([
-  {
-    name: 'Carlitos',
-    xp: 24350,
-    professions: [
-      { name: 'Warlock', level: 7 }
-    ],
-    currentHp: 25,
-    maxHp: 25,
-    nextLevel: 35000,
-    level: 7,
-    effectiveLevel: 9
-  },
-  {
-    name: 'Alvarete',
-    xp: 24350,
-    professions: [
-      { name: 'Paladin', level: 3 },
-      { name: 'Warlock', level: 4 }
-    ],
-    currentHp: 25,
-    maxHp: 32,
-    nextLevel: 35000,
-    level: 7,
-    effectiveLevel: 9
-  }
-])
+const players = ref<CharacterDto[]>([])
+const useCaseProvider = new FetchCharactersQueryHandlerProvider()
+const useCase = useCaseProvider.provide()
+
+onMounted(async () => {
+  players.value = await useCase.invoke(new FetchCharactersQuery())
+})
+
 </script>
 <template>
   <v-card>
@@ -65,7 +49,7 @@ const players = ref([
               {{ player.xp }} / {{ player.nextLevel }}
             </td>
             <td class="text-right">
-              {{ player.level }} ({{ player.effectiveLevel }})
+              {{ player.level }} ({{ player.level + 1 }})
             </td>
           </tr>
         </tbody>
