@@ -23,12 +23,8 @@ const onDeleteConfirmationClicked = async () => {
 }
 
 const showDialog = computed({
-  get () {
-    return props.modelValue
-  },
-  set (value) {
-    emit('update:modelValue', value)
-  }
+  get () { return props.modelValue },
+  set (value) { emit('update:modelValue', value) }
 })
 
 </script>
