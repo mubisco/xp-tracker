@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { DeleteCharacterCommand } from '@/Application/Character/Command/DeleteCharacterCommand'
-import { DeleteCharacterCommandHandler } from '@/Application/Character/Command/DeleteCharacterCommandHandler'
-import { LocalStorageCharacterRepository } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterRepository'
-import { LocalStorageCharacterSerializerVisitor } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterSerializerVisitor'
+import { DeleteCharacterCommandHandlerProvider } from '@/Infrastructure/Character/Provider/DeleteCharacterCommandHandlerProvider'
 import { computed, ref } from 'vue'
 
 const props = defineProps({
@@ -12,13 +10,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+const useCaseProvider = new DeleteCharacterCommandHandlerProvider()
 
 const showDeleteConfirmationAlert = ref(false)
 
 const onDeleteConfirmationClicked = async () => {
-  const handler = new DeleteCharacterCommandHandler(
-    new LocalStorageCharacterRepository(new LocalStorageCharacterSerializerVisitor())
-  )
+  const handler = useCaseProvider.provide()
   const command = new DeleteCharacterCommand(props.characterUlid)
   await handler.handle(command)
   showDialog.value = false
