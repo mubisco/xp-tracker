@@ -1,4 +1,6 @@
+import { CharacterNotFoundError } from '@/Domain/Character/CharacterNotFoundError'
 import { CharacterWriteModelError } from '@/Domain/Character/CharacterWriteModelError'
+import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 import { LocalStorageCharacterRepository } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterRepository'
 import { LocalStorageCharacterSerializerVisitor } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterSerializerVisitor'
 import { BasicCharacterOM } from '@tests/Domain/Character/BasicCharacterOM'
@@ -9,9 +11,9 @@ describe('Testing BasicCharacter', () => {
   let sut: LocalStorageCharacterRepository
 
   beforeEach(() => {
+    localStorage.removeItem('characters')
     visitor = new LocalStorageCharacterSerializerVisitor()
     sut = new LocalStorageCharacterRepository(visitor)
-    localStorage.removeItem('characters')
   })
   test('It should store character properly', async () => {
     const character = BasicCharacterOM.random()
@@ -36,5 +38,15 @@ describe('Testing BasicCharacter', () => {
     expect(characterList).toHaveLength(2)
     expect(characterList[0].ulid).toBe(character.id().value())
     expect(characterList[1].ulid).toBe(anotherCharacter.id().value())
+  })
+  test('It should throw error when deleting character that does not exists', () => {
+    expect(sut.byUlid(Ulid.fromEmpty())).rejects.toThrowError(CharacterNotFoundError)
+  })
+  test('It should delete existing character', async () => {
+    const character = BasicCharacterOM.random()
+    sut.invoke(character)
+    await sut.byUlid(character.id())
+    const characters = await sut.read()
+    expect(characters.length).toBe(0)
   })
 })
