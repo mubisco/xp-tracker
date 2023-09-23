@@ -3,7 +3,7 @@ import { AddCharacterCommand } from '@/Application/Character/Command/AddCharacte
 import { AddCharacterCommandHandlerProvider } from '@/Infrastructure/Character/Provider/AddCharacterCommandHandlerProvider'
 import { useSnackbarStore } from '@/UI/store/snackbar'
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 const name = ref('')
 const actualXp = ref(0)
