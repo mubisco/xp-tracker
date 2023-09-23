@@ -38,6 +38,7 @@ export class LocalStorageCharacterRepository implements AddCharacterWriteModel, 
     }
     this.removeCharacter(characterUlid)
     this.updateLocalStorage()
+    return Promise.resolve()
   }
 
   async read (): Promise<CharacterDto[]> {
