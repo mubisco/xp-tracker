@@ -1,10 +1,17 @@
 <script lang="ts" setup>
 import { AddCharacterCommand } from '@/Application/Character/Command/AddCharacterCommand'
 import { AddCharacterCommandHandlerProvider } from '@/Infrastructure/Character/Provider/AddCharacterCommandHandlerProvider'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 const name = ref('')
 const actualXp = ref(0)
 const maxHp = ref(0)
+const isValid = computed((): boolean => {
+  return name.value !== '' && maxHp.value > 0
+})
+const rules = ref({
+  nameNotEmpty: (value: string) => !!value || 'Name must not be empty',
+  hpNotZero: (value: number) => value > 0 || 'Hitpoints must be above 0'
+})
 
 const useCaseProvider = new AddCharacterCommandHandlerProvider()
 const useCase = useCaseProvider.provide()
@@ -26,8 +33,9 @@ const addNewCharacter = async () => {
           <v-col cols="12">
             <v-text-field
               v-model="name"
-              label="Name"
+              label="Character name"
               type="text"
+              :rules="[rules.nameNotEmpty]"
             />
           </v-col>
         </v-row>
@@ -44,6 +52,7 @@ const addNewCharacter = async () => {
               v-model="maxHp"
               label="Hit Points"
               type="number"
+              :rules="[rules.hpNotZero]"
             />
           </v-col>
         </v-row>
@@ -62,6 +71,7 @@ const addNewCharacter = async () => {
         variant="elevated"
         color="primary"
         prepend-icon="mdi-plus"
+        :disabled="!isValid"
         @click="addNewCharacter"
       >
         Add
