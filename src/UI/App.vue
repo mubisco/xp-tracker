@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import AppBar from '@/UI/layouts/appbar/AppBar.vue'
+import GlobalSnackbar from '@/UI/components/GlobalSnackbar.vue'
+
 </script>
 <template>
   <v-app>
     <AppBar />
     <v-main>
+      <GlobalSnackbar />
       <router-view />
     </v-main>
     <v-bottom-navigation>
