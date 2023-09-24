@@ -1,6 +1,7 @@
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 import { Encounter } from './Encounter'
 import { EncounterName } from './EncounterName'
+import { EncounterVisitor } from './EncounterVisitor'
 
 export class DomainEncounter implements Encounter {
   private ulid: Ulid
@@ -21,5 +22,9 @@ export class DomainEncounter implements Encounter {
 
   name (): EncounterName {
     return this._name
+  }
+
+  visit (visitor: EncounterVisitor<any>) {
+    return visitor.visitDomainEncounter(this)
   }
 }
