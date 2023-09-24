@@ -1,6 +1,7 @@
 import { AddEncounterWritelModelError } from '@/Domain/Encounter/AddEncounterWriteModelError'
 import { LocalStorageEncounterRepository } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterRepository'
 import { DomainEncounterOM } from '@tests/Domain/Encounter/DomainEncounterOM'
+import { SimpleStringEncounterVisitor } from '@tests/Domain/Encounter/SimpleStringEncounterVisitor'
 import { beforeEach, describe, expect, test } from 'vitest'
 
 describe('Testing LocalStorageEncounterRepository', () => {
@@ -8,7 +9,8 @@ describe('Testing LocalStorageEncounterRepository', () => {
 
   beforeEach(() => {
     localStorage.removeItem('encounters')
-    sut = new LocalStorageEncounterRepository()
+    const visitor = new SimpleStringEncounterVisitor()
+    sut = new LocalStorageEncounterRepository(visitor)
   })
   test('It should be of proper class', () => {
     expect(sut).toBeInstanceOf(LocalStorageEncounterRepository)
@@ -24,6 +26,6 @@ describe('Testing LocalStorageEncounterRepository', () => {
     const encounters = localStorage.getItem('encounters') ?? '{}'
     const parsedEncounters = JSON.parse(encounters)
     expect(parsedEncounters[encounter.id().value()]).not.toBeUndefined()
-    // expect(parsedEncounters[encounter.id().value()]).toBe('stringifiedResult')
+    expect(parsedEncounters[encounter.id().value()]).toBe(encounter.id().value())
   })
 })
