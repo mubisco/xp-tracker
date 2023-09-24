@@ -18,12 +18,12 @@ const routes = [
     component: () => import('@/UI/layouts/default/Default.vue'),
     children: [
       {
-        path: '/edit/:encounterId',
+        path: 'edit/:encounterId',
         name: 'EditEncounter',
         component: () => import(/* webpackChunkName: "home" */ '@/UI/views/EditEncounter.vue')
       },
       {
-        path: '/add',
+        path: 'add',
         name: 'AddEncounter',
         component: () => import(/* webpackChunkName: "home" */ '@/UI/views/AddEncounter.vue')
       },
@@ -39,7 +39,7 @@ const routes = [
     component: () => import('@/UI/layouts/default/Default.vue'),
     children: [
       {
-        path: '/new-character',
+        path: 'new-character',
         name: 'AddCharacter',
         component: () => import(/* webpackChunkName: "home" */ '@/UI/views/AddCharacter.vue')
       },
