@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AddEncounterForm from '../components/Encounters/AddEncounterForm.vue'
+import AddEncounterForm from '@/UI/components/Encounters/AddEncounterForm.vue'
 </script>
 
 <template>
