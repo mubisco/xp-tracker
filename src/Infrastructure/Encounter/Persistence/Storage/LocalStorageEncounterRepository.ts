@@ -34,7 +34,7 @@ export class LocalStorageEncounterRepository implements AddEncounterWriteModel {
     return encounterKeys.indexOf(ulid.value()) > -1
   }
 
-  private updateStorage(): void {
+  private updateStorage (): void {
     const stringifiedResult = JSON.stringify(this.rawEncounterData)
     localStorage.setItem(LOCALSTORAGE_TAG, stringifiedResult)
   }
