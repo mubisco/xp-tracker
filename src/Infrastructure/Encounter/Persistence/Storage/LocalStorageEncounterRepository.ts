@@ -12,7 +12,7 @@ export class LocalStorageEncounterRepository implements AddEncounterWriteModel {
   private rawEncounterData: RawEncounterData = {}
 
   // eslint-disable-next-line
-  constructor (private readonly visitor: EncounterVisitor<any>) {
+  constructor (private readonly visitor: EncounterVisitor<string>) {
     this.readEncounterData()
   }
 
