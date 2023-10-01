@@ -1,9 +1,16 @@
+import { ChallengeRating } from './ChallengeRating'
+
 export class EncounterMonster {
+  private readonly _challengeRating: ChallengeRating
+
+  static fromValues (name: string, xp: number, challengeRating: string): EncounterMonster {
+    return new EncounterMonster(name, xp, challengeRating)
+  }
   // eslint-disable-next-line
-  constructor (
+  private constructor (
     private readonly _name: string,
     private readonly _xp: number,
-    private readonly _challengeRating: string
+    cr: string
   ) {
     if (this._name === '') {
       throw new RangeError()
@@ -11,6 +18,7 @@ export class EncounterMonster {
     if (this._xp < 1) {
       throw new RangeError()
     }
+    this._challengeRating = ChallengeRating.fromString(cr)
   }
 
   name (): string {
@@ -22,6 +30,6 @@ export class EncounterMonster {
   }
 
   challengeRating (): string {
-    return this._challengeRating
+    return this._challengeRating.value()
   }
 }
