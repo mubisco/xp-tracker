@@ -1,5 +1,29 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { FindEncounterByIdQuery } from '@/Application/Encounter/Query/FindEncounterByIdQuery'
+import { FindEncounterByIdQueryHandler } from '@/Application/Encounter/Query/FindEncounterByIdQueryHandler'
+import { EncounterDto } from '@/Domain/Encounter/EncounterDto';
+import { LocalStorageEncounterRepository } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterRepository'
+import { LocalStorageEncounterSerializerVisitor } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterSerializerVisitor'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const useCase = new FindEncounterByIdQueryHandler(
+  new LocalStorageEncounterRepository(
+    new LocalStorageEncounterSerializerVisitor()
+  )
+)
+
+const encounter = ref<EncounterDto | null>(null)
+const route = useRoute()
+const encounterName = computed((): string => {
+  return encounter.value ? encounter.value.name : ''
+})
+
+onMounted(async () => {
+  const encounterId = route.params.encounterId ?? ''
+  const query = new FindEncounterByIdQuery(encounterId as string)
+  encounter.value = await useCase.handle(query)
+})
 
 const currentMonsters = ref([
   {
@@ -22,7 +46,7 @@ const addRow = () => {
 <template>
   <v-card>
     <template #title>
-      Add Encounter
+      Edit {{ encounterName }} Ecounter
     </template>
     <template #text>
       <v-table density="compact">
