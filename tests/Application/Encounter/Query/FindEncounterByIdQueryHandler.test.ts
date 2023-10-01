@@ -4,7 +4,6 @@ import { EncounterNotFoundError } from '@/Domain/Encounter/EncounterNotFoundErro
 import { EncounterReadModelError } from '@/Domain/Encounter/EncounterReadModelError'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { FindEncounterReadModelDummy } from './FindEncounterReadModelDummy'
-import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
 
 describe('Testing FindEncounterByIdQueryHandler', () => {
   let sut: FindEncounterByIdQueryHandler
@@ -32,6 +31,6 @@ describe('Testing FindEncounterByIdQueryHandler', () => {
   })
   test('It should return proper Dto', async () => {
     const result = await sut.handle(query)
-    expect(result).toBeInstanceOf(EncounterDto)
+    expect(result.ulid).toBe(query.encounterId)
   })
 })

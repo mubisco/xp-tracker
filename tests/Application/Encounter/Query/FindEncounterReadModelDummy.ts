@@ -15,6 +15,9 @@ export class FindEncounterReadModelDummy implements FindEncounterReadModel {
     if (this.shouldFail) {
       return Promise.reject(new EncounterReadModelError())
     }
-    return Promise.resolve(new EncounterDto())
+    const response = {
+      ulid: ulid.value()
+    }
+    return Promise.resolve(response)
   }
 }

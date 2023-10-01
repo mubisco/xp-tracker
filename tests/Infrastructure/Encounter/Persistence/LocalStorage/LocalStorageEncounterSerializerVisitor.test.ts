@@ -11,7 +11,7 @@ describe('Testing LocalStorageEncounterSerializerVisitor', () => {
     const sut = new LocalStorageEncounterSerializerVisitor()
     const encounter = DomainEncounterOM.withName('Pollos')
     const result = encounter.visit(sut)
-    const expectedResult = `{"id":"${encounter.id().value()}","name":"Pollos"}`
+    const expectedResult = `{"ulid":"${encounter.id().value()}","name":"Pollos"}`
     expect(result).toBe(expectedResult)
   })
 })
