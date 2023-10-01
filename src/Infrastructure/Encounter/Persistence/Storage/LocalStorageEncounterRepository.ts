@@ -1,19 +1,30 @@
 import { AddEncounterWriteModel } from '@/Domain/Encounter/AddEncounterWriteModel'
 import { AddEncounterWritelModelError } from '@/Domain/Encounter/AddEncounterWriteModelError'
 import { Encounter } from '@/Domain/Encounter/Encounter'
+import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
+import { EncounterNotFoundError } from '@/Domain/Encounter/EncounterNotFoundError'
 import { EncounterVisitor } from '@/Domain/Encounter/EncounterVisitor'
+import { FindEncounterReadModel } from '@/Domain/Encounter/FindEncounterReadModel'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 
 const LOCALSTORAGE_TAG = 'encounters'
 
 interface RawEncounterData { [key: string]: string }
 
-export class LocalStorageEncounterRepository implements AddEncounterWriteModel {
+export class LocalStorageEncounterRepository implements AddEncounterWriteModel, FindEncounterReadModel {
   private rawEncounterData: RawEncounterData = {}
 
   // eslint-disable-next-line
   constructor (private readonly visitor: EncounterVisitor<string>) {
     this.readEncounterData()
+  }
+
+  async byId (ulid: Ulid): Promise<EncounterDto> {
+    if (!this.encounterKeyExists(ulid)) {
+      throw new EncounterNotFoundError(`Encounter ${ulid.value()} not found !!!`)
+    }
+    const rawEncounter = this.rawEncounterData[ulid.value()]
+    return JSON.parse(rawEncounter)
   }
 
   async write (encounter: Encounter): Promise<void> {
