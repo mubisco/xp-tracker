@@ -1,18 +1,11 @@
 <script lang="ts" setup>
 import { FindEncounterByIdQuery } from '@/Application/Encounter/Query/FindEncounterByIdQuery'
-import { FindEncounterByIdQueryHandler } from '@/Application/Encounter/Query/FindEncounterByIdQueryHandler'
-import { EncounterDto } from '@/Domain/Encounter/EncounterDto';
-import { LocalStorageEncounterRepository } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterRepository'
-import { LocalStorageEncounterSerializerVisitor } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterSerializerVisitor'
+import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
+import { FindEncounterByIdQueryHandlerProvider } from '@/Infrastructure/Encounter/Provider/FindEncounterByIdQueryHandlerProvider'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-const useCase = new FindEncounterByIdQueryHandler(
-  new LocalStorageEncounterRepository(
-    new LocalStorageEncounterSerializerVisitor()
-  )
-)
-
+const provider = new FindEncounterByIdQueryHandlerProvider()
 const encounter = ref<EncounterDto | null>(null)
 const route = useRoute()
 const encounterName = computed((): string => {
@@ -20,6 +13,7 @@ const encounterName = computed((): string => {
 })
 
 onMounted(async () => {
+  const useCase = provider.provide()
   const encounterId = route.params.encounterId ?? ''
   const query = new FindEncounterByIdQuery(encounterId as string)
   encounter.value = await useCase.handle(query)
