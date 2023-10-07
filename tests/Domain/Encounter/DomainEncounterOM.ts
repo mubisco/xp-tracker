@@ -2,7 +2,7 @@ import { DomainEncounter } from '@/Domain/Encounter/DomainEncounter'
 import { EncounterName } from '@/Domain/Encounter/EncounterName'
 
 export class DomainEncounterOM {
-  static random (): DomainEncounterOM {
+  static random (): DomainEncounter {
     return DomainEncounter.withName(EncounterName.fromString('random'))
   }
 
