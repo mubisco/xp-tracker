@@ -5,7 +5,7 @@ import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 
 export class NotFoundEncounterRepositoryDummy implements EncounterRepository {
   // eslint-disable-next-line
-  byId (ulid: Ulid): Promise<Encounter> {
+  byUlid (ulid: Ulid): Promise<Encounter> {
     throw new EncounterNotFoundError()
   }
 }
