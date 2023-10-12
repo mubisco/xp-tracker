@@ -2,6 +2,7 @@ import { AddEncounterWritelModelError } from '@/Domain/Encounter/AddEncounterWri
 import { DomainEncounter } from '@/Domain/Encounter/DomainEncounter'
 import { EncounterNotFoundError } from '@/Domain/Encounter/EncounterNotFoundError'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
+import { LocalStorageEncounterFactory } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterFactory'
 import { LocalStorageEncounterRepository } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterRepository'
 import { LocalStorageEncounterSerializerVisitor } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterSerializerVisitor'
 import { DomainEncounterOM } from '@tests/Domain/Encounter/DomainEncounterOM'
@@ -13,7 +14,8 @@ describe('Testing LocalStorageEncounterRepository', () => {
   beforeEach(() => {
     localStorage.removeItem('encounters')
     const visitor = new LocalStorageEncounterSerializerVisitor()
-    sut = new LocalStorageEncounterRepository(visitor)
+    const factory = new LocalStorageEncounterFactory()
+    sut = new LocalStorageEncounterRepository(visitor, factory)
   })
   test('It should be of proper class', () => {
     expect(sut).toBeInstanceOf(LocalStorageEncounterRepository)

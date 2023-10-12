@@ -9,6 +9,7 @@ import { EncounterRepository } from '@/Domain/Encounter/EncounterRepository'
 import { EncounterVisitor } from '@/Domain/Encounter/EncounterVisitor'
 import { FindEncounterReadModel } from '@/Domain/Encounter/FindEncounterReadModel'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
+import { LocalStorageEncounterFactory } from './LocalStorageEncounterFactory'
 
 const LOCALSTORAGE_TAG = 'encounters'
 
@@ -18,18 +19,16 @@ export class LocalStorageEncounterRepository implements AddEncounterWriteModel, 
   private rawEncounterData: RawEncounterData = {}
 
   // eslint-disable-next-line
-  constructor (private readonly visitor: EncounterVisitor<string>) {
+  constructor (
+    private readonly visitor: EncounterVisitor<string>,
+    private readonly factory: LocalStorageEncounterFactory
+  ) {
     this.readEncounterData()
   }
 
   async byUlid (ulid: Ulid): Promise<Encounter> {
-    if (!this.encounterKeyExists(ulid)) {
-      throw new EncounterNotFoundError(`Encounter ${ulid.value()} not found !!!`)
-    }
     const encounterData = await this.byId(ulid)
-    const encounter = DomainEncounter.withName(EncounterName.fromString(encounterData.name))
-    encounter.ulid = Ulid.fromString(encounterData.ulid)
-    return encounter
+    return this.factory.make(encounterData)
   }
 
   async byId (ulid: Ulid): Promise<EncounterDto> {
