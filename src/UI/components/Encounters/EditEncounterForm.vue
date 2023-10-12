@@ -32,7 +32,9 @@ onMounted(async () => {
       Edit {{ encounterName }} Encounter
     </template>
     <template #text>
-      <EncounterDetails />
+      <EncounterDetails
+        :monsters="encounter !== null ? encounter.monsters : []"
+      />
       <AddEncounterDetailForm
         :encounter-ulid="encounterUlid"
       />
