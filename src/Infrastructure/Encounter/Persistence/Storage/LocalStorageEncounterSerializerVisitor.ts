@@ -2,12 +2,6 @@ import { DomainEncounter } from '@/Domain/Encounter/DomainEncounter'
 import { EncounterVisitor } from '@/Domain/Encounter/EncounterVisitor'
 import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
 
-interface MonsterDto {
-  readonly name: string
-  readonly xp: number
-  readonly cr: string
-}
-
 export class LocalStorageEncounterSerializerVisitor implements EncounterVisitor<string> {
   // TODO To simplify maintanibility, this visitor shouls generate a EncounterDto structure
   // so the read model was just to parse the stored item

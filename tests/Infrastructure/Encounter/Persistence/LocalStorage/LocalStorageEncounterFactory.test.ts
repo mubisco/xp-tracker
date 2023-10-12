@@ -5,7 +5,7 @@ import { describe, expect, test } from 'vitest'
 describe('Testing LocalStorageEncounterFactory', () => {
   test('It should return proper DomainEncounter', () => {
     const sut = new LocalStorageEncounterFactory()
-    const dto = { ulid: '01HCJBW16FTABFGZRC5V3835AP', name: 'Encounter name' }
+    const dto = { ulid: '01HCJBW16FTABFGZRC5V3835AP', name: 'Encounter name', monsters: [] }
     const result = sut.make(dto)
     expect(result).toBeInstanceOf(DomainEncounter)
     expect(result.id().value()).toBe(dto.ulid)
