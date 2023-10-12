@@ -1,4 +1,5 @@
 import { AddEncounterWritelModelError } from '@/Domain/Encounter/AddEncounterWriteModelError'
+import { DomainEncounter } from '@/Domain/Encounter/DomainEncounter'
 import { EncounterNotFoundError } from '@/Domain/Encounter/EncounterNotFoundError'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 import { LocalStorageEncounterRepository } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterRepository'
@@ -31,5 +32,16 @@ describe('Testing LocalStorageEncounterRepository', () => {
     await sut.write(encounter)
     const result = await sut.byId(encounter.id())
     expect(result.ulid).toBe(encounter.id().value())
+  })
+  test('It should throw error when encounter not found by ulid', () => {
+    const ulid = Ulid.fromEmpty()
+    expect(sut.byUlid(ulid)).rejects.toThrow(EncounterNotFoundError)
+  })
+  test('It should find encounter by Ulid', async () => {
+    const encounter = DomainEncounterOM.withName('asd')
+    await sut.write(encounter)
+    const result = await sut.byUlid(encounter.id())
+    expect(result).toBeInstanceOf(DomainEncounter)
+    expect(result.id().value()).toBe(encounter.id().value())
   })
 })

@@ -1,8 +1,11 @@
 import { AddEncounterWriteModel } from '@/Domain/Encounter/AddEncounterWriteModel'
 import { AddEncounterWritelModelError } from '@/Domain/Encounter/AddEncounterWriteModelError'
+import { DomainEncounter } from '@/Domain/Encounter/DomainEncounter'
 import { Encounter } from '@/Domain/Encounter/Encounter'
 import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
+import { EncounterName } from '@/Domain/Encounter/EncounterName'
 import { EncounterNotFoundError } from '@/Domain/Encounter/EncounterNotFoundError'
+import { EncounterRepository } from '@/Domain/Encounter/EncounterRepository'
 import { EncounterVisitor } from '@/Domain/Encounter/EncounterVisitor'
 import { FindEncounterReadModel } from '@/Domain/Encounter/FindEncounterReadModel'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
@@ -11,12 +14,22 @@ const LOCALSTORAGE_TAG = 'encounters'
 
 interface RawEncounterData { [key: string]: string }
 
-export class LocalStorageEncounterRepository implements AddEncounterWriteModel, FindEncounterReadModel {
+export class LocalStorageEncounterRepository implements AddEncounterWriteModel, FindEncounterReadModel, EncounterRepository {
   private rawEncounterData: RawEncounterData = {}
 
   // eslint-disable-next-line
   constructor (private readonly visitor: EncounterVisitor<string>) {
     this.readEncounterData()
+  }
+
+  async byUlid (ulid: Ulid): Promise<Encounter> {
+    if (!this.encounterKeyExists(ulid)) {
+      throw new EncounterNotFoundError(`Encounter ${ulid.value()} not found !!!`)
+    }
+    const encounterData = await this.byId(ulid)
+    const encounter = DomainEncounter.withName(EncounterName.fromString(encounterData.name))
+    encounter.ulid = Ulid.fromString(encounterData.ulid)
+    return encounter
   }
 
   async byId (ulid: Ulid): Promise<EncounterDto> {
