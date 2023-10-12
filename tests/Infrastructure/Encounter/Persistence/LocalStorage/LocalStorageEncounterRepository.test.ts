@@ -6,6 +6,7 @@ import { LocalStorageEncounterFactory } from '@/Infrastructure/Encounter/Persist
 import { LocalStorageEncounterRepository } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterRepository'
 import { LocalStorageEncounterSerializerVisitor } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterSerializerVisitor'
 import { DomainEncounterOM } from '@tests/Domain/Encounter/DomainEncounterOM'
+import { EncounterMonsterOM } from '@tests/Domain/Encounter/EncounterMonsterOM'
 import { beforeEach, describe, expect, test } from 'vitest'
 
 describe('Testing LocalStorageEncounterRepository', () => {
@@ -45,5 +46,19 @@ describe('Testing LocalStorageEncounterRepository', () => {
     const result = await sut.byUlid(encounter.id())
     expect(result).toBeInstanceOf(DomainEncounter)
     expect(result.id().value()).toBe(encounter.id().value())
+  })
+  test('It should throw error when updating non existing encounter', () => {
+    const encounter = DomainEncounterOM.withName('asd')
+    expect(sut.update(encounter)).rejects.toThrow(EncounterNotFoundError)
+  })
+  test('It should update encounter properly', async () => {
+    const encounter = DomainEncounterOM.withName('asd')
+    await sut.write(encounter)
+    const monster = EncounterMonsterOM.random()
+    encounter.addMonster(monster)
+    await sut.update(encounter)
+    const updatedEncounter = await sut.byUlid(encounter.id())
+    // @ts-ignore
+    expect(updatedEncounter.monsters()).toHaveLength(1)
   })
 })
