@@ -1,12 +1,8 @@
 import { DomainEncounter } from '@/Domain/Encounter/DomainEncounter'
 import { LocalStorageEncounterFactory } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterFactory'
-import { beforeEach, describe, expect, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 
 describe('Testing LocalStorageEncounterFactory', () => {
-  test('It should be of proper class', () => {
-    const sut = new LocalStorageEncounterFactory()
-    expect(sut).toBeInstanceOf(LocalStorageEncounterFactory)
-  })
   test('It should return proper DomainEncounter', () => {
     const sut = new LocalStorageEncounterFactory()
     const dto = { ulid: '01HCJBW16FTABFGZRC5V3835AP', name: 'Encounter name' }

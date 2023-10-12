@@ -3,11 +3,7 @@ import { DomainEncounterOM } from '@tests/Domain/Encounter/DomainEncounterOM'
 import { describe, expect, test } from 'vitest'
 
 describe('Testing LocalStorageEncounterSerializerVisitor', () => {
-  test('It should be of proper class', () => {
-    const sut = new LocalStorageEncounterSerializerVisitor()
-    expect(sut).toBeInstanceOf(LocalStorageEncounterSerializerVisitor)
-  })
-  test('It should visit character properly', () => {
+  test('It should visit encounter properly', () => {
     const sut = new LocalStorageEncounterSerializerVisitor()
     const encounter = DomainEncounterOM.withName('Pollos')
     const result = encounter.visit(sut)
