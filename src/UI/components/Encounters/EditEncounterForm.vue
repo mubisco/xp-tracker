@@ -13,11 +13,14 @@ const route = useRoute()
 const encounterName = computed((): string => {
   return encounter.value ? encounter.value.name : ''
 })
+const encounterUlid = computed((): string => {
+  const routeId = route.params.encounterId ?? ''
+  return routeId as string
+})
 
 onMounted(async () => {
   const useCase = provider.provide()
-  const encounterId = route.params.encounterId ?? ''
-  const query = new FindEncounterByIdQuery(encounterId as string)
+  const query = new FindEncounterByIdQuery(encounterUlid.value)
   encounter.value = await useCase.handle(query)
 })
 
@@ -30,7 +33,9 @@ onMounted(async () => {
     </template>
     <template #text>
       <EncounterDetails />
-      <AddEncounterDetailForm />
+      <AddEncounterDetailForm
+        :encounter-ulid="encounterUlid"
+      />
     </template>
     <v-card-actions class="justify-space-between">
       <v-btn
