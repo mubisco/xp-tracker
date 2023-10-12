@@ -1,6 +1,7 @@
 import { DomainEncounter } from '@/Domain/Encounter/DomainEncounter'
 import { EncounterVisitor } from '@/Domain/Encounter/EncounterVisitor'
 import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
+import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
 
 export class LocalStorageEncounterSerializerVisitor implements EncounterVisitor<string> {
   // TODO To simplify maintanibility, this visitor shouls generate a EncounterDto structure
