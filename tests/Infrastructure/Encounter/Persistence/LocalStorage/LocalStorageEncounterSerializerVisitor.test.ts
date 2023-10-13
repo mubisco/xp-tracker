@@ -17,17 +17,7 @@ describe('Testing LocalStorageEncounterSerializerVisitor', () => {
     const monster = EncounterMonsterOM.random()
     encounter.addMonster(monster)
     const result = encounter.visit(sut)
-    const expectedResult = {
-      ulid: encounter.id().value(),
-      name: 'Pollos',
-      monsters: [
-        {
-          name: 'Some name',
-          xp: 2500,
-          cr: '1/2'
-        }
-      ]
-    }
-    expect(result).toBe(JSON.stringify(expectedResult))
+    const expectedResult = `{"ulid":"${encounter.id().value()}","name":"Pollos","monsters":[{"name":"Some name","xp":2500,"cr":"1/2"}]}`
+    expect(result).toBe(expectedResult)
   })
 })
