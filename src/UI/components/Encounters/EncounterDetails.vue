@@ -3,6 +3,7 @@ import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
 import { computed } from 'vue'
 
 const props = defineProps<{ monsters: MonsterDto[] }>()
+defineEmits<{(e: 'monster:deleted', payload: MonsterDto): void}>()
 
 const totalMonsters = computed((): number => {
   return props.monsters.length
@@ -76,6 +77,7 @@ const getMultiplier = (totalMonsters: number): number => {
             size="xs"
             color="error"
             icon="mdi-delete"
+            @click="$emit('monster:deleted', monster)"
           />
         </td>
       </tr>
