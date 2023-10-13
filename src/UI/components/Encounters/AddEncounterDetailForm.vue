@@ -6,6 +6,7 @@ import { ref } from 'vue'
 const props = defineProps({
   encounterUlid: { type: String, required: true }
 })
+const emit = defineEmits(['monster:added'])
 
 const name = ref('')
 const xp = ref(0)
@@ -26,6 +27,7 @@ const addRow = async () => {
   name.value = ''
   xp.value = 0
   cr.value = ''
+  emit('monster:added')
 }
 </script>
 

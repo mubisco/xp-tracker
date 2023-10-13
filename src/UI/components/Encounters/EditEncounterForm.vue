@@ -18,11 +18,13 @@ const encounterUlid = computed((): string => {
   return routeId as string
 })
 
-onMounted(async () => {
+const loadEncounter = async () => {
   const useCase = provider.provide()
   const query = new FindEncounterByIdQuery(encounterUlid.value)
   encounter.value = await useCase.handle(query)
-})
+}
+
+onMounted(loadEncounter)
 
 </script>
 
@@ -37,6 +39,7 @@ onMounted(async () => {
       />
       <AddEncounterDetailForm
         :encounter-ulid="encounterUlid"
+        @monster:added="loadEncounter"
       />
     </template>
     <v-card-actions class="justify-space-between">
