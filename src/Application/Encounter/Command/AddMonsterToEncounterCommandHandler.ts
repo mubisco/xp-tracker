@@ -14,7 +14,7 @@ export class AddMonsterToEncounterCommandHandler {
   async handle (command: AddMonsterToEncounterCommand): Promise<void> {
     const ulid = Ulid.fromString(command.encounterUlid)
     const monster = EncounterMonster.fromValues(command.monsterName, command.experiencePoints, command.challengeRating)
-    const encounter = await this.encounterRepository.byId(ulid)
+    const encounter = await this.encounterRepository.byUlid(ulid)
     encounter.addMonster(monster)
     await this.updateEncounterWriteModel.update(encounter)
   }

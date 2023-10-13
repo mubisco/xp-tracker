@@ -8,7 +8,6 @@ export class LocalStorageEncounterSerializerVisitor implements EncounterVisitor<
   // so the read model was just to parse the stored item
   visitDomainEncounter (encounter: DomainEncounter): string {
     const monsters = this.visitMonsters(encounter.monsters())
-
     const result = {
       ulid: encounter.id().value(),
       name: encounter.name().value(),

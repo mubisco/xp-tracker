@@ -13,13 +13,18 @@ const route = useRoute()
 const encounterName = computed((): string => {
   return encounter.value ? encounter.value.name : ''
 })
-
-onMounted(async () => {
-  const useCase = provider.provide()
-  const encounterId = route.params.encounterId ?? ''
-  const query = new FindEncounterByIdQuery(encounterId as string)
-  encounter.value = await useCase.handle(query)
+const encounterUlid = computed((): string => {
+  const routeId = route.params.encounterId ?? ''
+  return routeId as string
 })
+
+const loadEncounter = async () => {
+  const useCase = provider.provide()
+  const query = new FindEncounterByIdQuery(encounterUlid.value)
+  encounter.value = await useCase.handle(query)
+}
+
+onMounted(loadEncounter)
 
 </script>
 
@@ -29,24 +34,22 @@ onMounted(async () => {
       Edit {{ encounterName }} Encounter
     </template>
     <template #text>
-      <EncounterDetails />
-      <AddEncounterDetailForm />
+      <EncounterDetails
+        :monsters="encounter !== null ? encounter.monsters : []"
+      />
+      <AddEncounterDetailForm
+        :encounter-ulid="encounterUlid"
+        @monster:added="loadEncounter"
+      />
     </template>
-    <v-card-actions class="justify-space-between">
+    <v-card-actions class="justify-start">
       <v-btn
         color="primary"
         prepend-icon="mdi-arrow-left"
         :active="false"
         :to="{ name: 'Encounter' }"
       >
-        Cancel
-      </v-btn>
-      <v-btn
-        variant="elevated"
-        color="primary"
-        prepend-icon="mdi-plus"
-      >
-        Add
+        Back
       </v-btn>
     </v-card-actions>
   </v-card>

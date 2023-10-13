@@ -1,18 +1,44 @@
 <script lang="ts" setup>
+import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
+import { computed } from 'vue'
 
-import { ref } from 'vue'
-const currentMonsters = ref([
-  {
-    name: 'Shadow Dancer',
-    cr: 7,
-    xp: 2900
-  },
-  {
-    name: 'Shadow Dancer',
-    cr: 7,
-    xp: 2900
+const props = defineProps<{ monsters: MonsterDto[] }>()
+
+const totalMonsters = computed((): number => {
+  return props.monsters.length
+})
+
+const totalXp = computed((): number => {
+  let sum = 0
+  props.monsters.forEach((monster): void => {
+    // @ts-ignore
+    sum = sum + parseInt(monster.xp, 10)
+  })
+  return sum
+})
+
+const totalChallengePoints = computed((): number => {
+  return totalXp.value * getMultiplier(totalMonsters.value)
+})
+
+const getMultiplier = (totalMonsters: number): number => {
+  if (totalMonsters > 14) {
+    return 4
   }
-])
+  if (totalMonsters > 10) {
+    return 3
+  }
+  if (totalMonsters > 6) {
+    return 2.5
+  }
+  if (totalMonsters > 2) {
+    return 2
+  }
+  if (totalMonsters > 1) {
+    return 1.5
+  }
+  return 1
+}
 
 </script>
 
@@ -33,7 +59,7 @@ const currentMonsters = ref([
     </thead>
     <tbody>
       <tr
-        v-for="(monster, index) in currentMonsters"
+        v-for="(monster, index) in monsters"
         :key="index"
       >
         <td>{{ monster.name }}</td>
@@ -56,7 +82,7 @@ const currentMonsters = ref([
         <td
           class="text-right"
         >
-          2
+          {{ totalMonsters }}
         </td>
       </tr>
       <tr>
@@ -69,7 +95,7 @@ const currentMonsters = ref([
         <td
           class="text-right"
         >
-          5800
+          {{ totalXp }}
         </td>
       </tr>
       <tr>
@@ -82,7 +108,7 @@ const currentMonsters = ref([
         <td
           class="text-right"
         >
-          7200
+          {{ totalChallengePoints }}
         </td>
       </tr>
     </tfoot>

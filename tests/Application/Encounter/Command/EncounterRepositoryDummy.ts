@@ -4,7 +4,8 @@ import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 import { DomainEncounterOM } from '@tests/Domain/Encounter/DomainEncounterOM'
 
 export class EncounterRepositoryDummy implements EncounterRepository {
-  byId (ulid: Ulid): Promise<Encounter> {
+  // eslint-disable-next-line
+  byUlid (ulid: Ulid): Promise<Encounter> {
     return Promise.resolve(DomainEncounterOM.random())
   }
 }
