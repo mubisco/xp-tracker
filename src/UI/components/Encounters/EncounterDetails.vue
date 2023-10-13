@@ -55,6 +55,7 @@ const getMultiplier = (totalMonsters: number): number => {
         <th class="text-right">
           XP
         </th>
+        <th />
       </tr>
     </thead>
     <tbody>
@@ -69,13 +70,21 @@ const getMultiplier = (totalMonsters: number): number => {
         <td class="text-right">
           {{ monster.xp }}
         </td>
+        <td class="text-right">
+          <v-btn
+            variant="plain"
+            size="xs"
+            color="error"
+            icon="mdi-delete"
+          />
+        </td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
         <th
           class="text-right"
-          colspan="2"
+          colspan="3"
         >
           Total Monsters
         </th>
@@ -88,7 +97,7 @@ const getMultiplier = (totalMonsters: number): number => {
       <tr>
         <th
           class="text-right"
-          colspan="2"
+          colspan="3"
         >
           Total XP
         </th>
@@ -101,7 +110,7 @@ const getMultiplier = (totalMonsters: number): number => {
       <tr>
         <th
           class="text-right"
-          colspan="2"
+          colspan="3"
         >
           Total Points
         </th>
