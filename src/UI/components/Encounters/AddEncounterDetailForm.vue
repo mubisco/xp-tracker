@@ -15,7 +15,13 @@ const provider = new AddMonsterCommandHandlerProvider()
 
 const addRow = async () => {
   const handler = provider.provide()
-  const command = new AddMonsterToEncounterCommand(props.encounterUlid, name.value, xp.value, cr.value)
+  const command = new AddMonsterToEncounterCommand(
+    props.encounterUlid,
+    name.value,
+    // @ts-ignore
+    parseInt(xp.value, 10),
+    cr.value
+  )
   await handler.handle(command)
   name.value = ''
   xp.value = 0
