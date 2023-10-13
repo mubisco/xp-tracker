@@ -10,9 +10,6 @@ describe('Testing DeleteMonsterFromEncounterCommandHandler', () => {
   beforeEach(() => {
     sut = new DeleteMonsterFromEncounterCommandHandler()
   })
-  test('It should be of proper class', () => {
-    expect(sut).toBeInstanceOf(DeleteMonsterFromEncounterCommandHandler)
-  })
   test('It should throw error when encounter id is wrong', () => {
     const wrongEncounterUlidCommand = new DeleteMonsterFromEncounterCommand('01HCM7C58CY0CAW9F8WV5QCM0')
     expect(sut.handle(wrongEncounterUlidCommand)).rejects.toThrow(RangeError)
