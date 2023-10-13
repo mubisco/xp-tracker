@@ -9,13 +9,14 @@ import { FindEncounterReadModel } from '@/Domain/Encounter/FindEncounterReadMode
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 import { LocalStorageEncounterFactory } from './LocalStorageEncounterFactory'
 import { UpdateEncounterWriteModel } from '@/Domain/Encounter/UpdateEncounterWriteModel'
+import { AllEncountersReadModel } from '@/Domain/Encounter/AllEncountersReadModel'
 
 const LOCALSTORAGE_TAG = 'encounters'
 
 interface RawEncounterData { [key: string]: string }
 
 export class LocalStorageEncounterRepository
-implements AddEncounterWriteModel, FindEncounterReadModel, EncounterRepository, UpdateEncounterWriteModel {
+implements AddEncounterWriteModel, FindEncounterReadModel, EncounterRepository, UpdateEncounterWriteModel, AllEncountersReadModel {
   private rawEncounterData: RawEncounterData = {}
 
   // eslint-disable-next-line
@@ -24,6 +25,15 @@ implements AddEncounterWriteModel, FindEncounterReadModel, EncounterRepository, 
     private readonly factory: LocalStorageEncounterFactory
   ) {
     this.readEncounterData()
+  }
+
+  all (): Promise<EncounterDto[]> {
+    const parsedEncounters: EncounterDto[] = []
+    for (const encounterId in this.rawEncounterData) {
+      const currentEncounter = this.rawEncounterData[encounterId]
+      parsedEncounters.push(JSON.parse(currentEncounter))
+    }
+    return Promise.resolve(parsedEncounters)
   }
 
   async update (encounter: Encounter): Promise<void> {
