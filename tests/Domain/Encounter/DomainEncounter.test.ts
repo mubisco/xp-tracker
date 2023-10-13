@@ -4,6 +4,7 @@ import { describe, expect, test } from 'vitest'
 import { DomainEncounterOM } from './DomainEncounterOM'
 import { SimpleStringEncounterVisitor } from './SimpleStringEncounterVisitor'
 import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
+import { MonsterNotFoundError } from '@/Domain/Encounter/MonsterNotFoundError'
 
 describe('Testing DomainEncounter', () => {
   const visitor = new SimpleStringEncounterVisitor()
@@ -23,6 +24,24 @@ describe('Testing DomainEncounter', () => {
     const monsters = sut.monsters()
     expect(monsters).toHaveLength(1)
     expect(monsters[0]).toStrictEqual(monsterToAdd)
+  })
+
+  test('It should throw error when trying to remove a non-existant monster', () => {
+    const monsterToRemove = EncounterMonster.fromValues('Pollo Papi', 2500, '1/2')
+    const sut = DomainEncounterOM.withName('pollos')
+    expect(() => {
+      sut.removeMonster(monsterToRemove)
+    }).toThrow(MonsterNotFoundError)
+  })
+
+  test('It should remove properly a monster', () => {
+    const monsterToAdd = EncounterMonster.fromValues('Pollo Papi', 2500, '1/2')
+    const monsterToRemove = EncounterMonster.fromValues('Pollo Papi', 2500, '1/2')
+    const sut = DomainEncounterOM.withName('pollos')
+    sut.addMonster(monsterToAdd)
+    sut.removeMonster(monsterToRemove)
+    const monsters = sut.monsters()
+    expect(monsters).toHaveLength(0)
   })
 
   test('it should return proper visitor result', () => {

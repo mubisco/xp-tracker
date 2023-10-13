@@ -5,5 +5,6 @@ import { EncounterMonster } from './Monster/EncounterMonster'
 export interface Encounter {
   id(): Ulid
   addMonster (monster: EncounterMonster): void
+  removeMonster (monster: EncounterMonster): void
   visit (visitor: EncounterVisitor<any>): any
 }
