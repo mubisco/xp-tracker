@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
-import { AllEncountersQueryHandlerProvider } from '@/Infrastructure/Encounter/Provider/AllEncountersQueryHandlerProvider';
-import EncounterDetails from './EncounterDetails.vue';
+import { AllEncountersQueryHandlerProvider } from '@/Infrastructure/Encounter/Provider/AllEncountersQueryHandlerProvider'
+import EncounterDetails from './EncounterDetails.vue'
 // import LevelTag from '@/UI/components/Encounters/LevelTag.vue'
 import { ref, onMounted } from 'vue'
 
@@ -32,6 +32,7 @@ onMounted(async () => {
       </v-expansion-panel-title>
       <v-expansion-panel-text>
         <EncounterDetails
+          :show-delete-button="false"
           :monsters="encounter.monsters"
         />
         <div class="mt-4 d-flex justify-space-between">

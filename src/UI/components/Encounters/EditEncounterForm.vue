@@ -53,6 +53,7 @@ onMounted(loadEncounter)
     <template #text>
       <EncounterDetails
         :monsters="encounter !== null ? encounter.monsters : []"
+        :show-delete-button="true"
         @monster:deleted="onDeleteMonsterClicked"
       />
       <AddEncounterDetailForm

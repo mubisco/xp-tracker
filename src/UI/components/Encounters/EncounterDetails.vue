@@ -2,7 +2,7 @@
 import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
 import { computed } from 'vue'
 
-const props = defineProps<{ monsters: MonsterDto[] }>()
+const props = defineProps<{ monsters: MonsterDto[], showDeleteButton: boolean | null | undefined }>()
 defineEmits<{(e: 'monster:deleted', payload: MonsterDto): void}>()
 
 const totalMonsters = computed((): number => {
@@ -41,6 +41,10 @@ const getMultiplier = (totalMonsters: number): number => {
   return 1
 }
 
+const spanColumns = computed((): number => {
+  return props.showDeleteButton ? 3 : 2
+})
+
 </script>
 
 <template>
@@ -56,7 +60,7 @@ const getMultiplier = (totalMonsters: number): number => {
         <th class="text-right">
           XP
         </th>
-        <th />
+        <th v-if="showDeleteButton" />
       </tr>
     </thead>
     <tbody>
@@ -71,7 +75,10 @@ const getMultiplier = (totalMonsters: number): number => {
         <td class="text-right">
           {{ monster.xp }}
         </td>
-        <td class="text-right">
+        <td
+          v-if="showDeleteButton"
+          class="text-right"
+        >
           <v-btn
             variant="plain"
             size="xs"
@@ -86,7 +93,7 @@ const getMultiplier = (totalMonsters: number): number => {
       <tr>
         <th
           class="text-right"
-          colspan="3"
+          :colspan="spanColumns"
         >
           Total Monsters
         </th>
@@ -99,7 +106,7 @@ const getMultiplier = (totalMonsters: number): number => {
       <tr>
         <th
           class="text-right"
-          colspan="3"
+          :colspan="spanColumns"
         >
           Total XP
         </th>
@@ -112,7 +119,7 @@ const getMultiplier = (totalMonsters: number): number => {
       <tr>
         <th
           class="text-right"
-          colspan="3"
+          :colspan="spanColumns"
         >
           Total Points
         </th>
