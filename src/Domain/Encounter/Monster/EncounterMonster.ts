@@ -32,4 +32,10 @@ export class EncounterMonster {
   challengeRating (): string {
     return this._challengeRating.value()
   }
+
+  equalsTo (another: EncounterMonster): boolean {
+    return this.name() === another.name() &&
+      this.xp() === another.xp() &&
+      this.challengeRating() === another.challengeRating()
+  }
 }
