@@ -3,9 +3,7 @@ import { AddMonsterToEncounterCommand } from '@/Application/Encounter/Command/Ad
 import { AddMonsterCommandHandlerProvider } from '@/Infrastructure/Encounter/Provider/AddMonsterCommandHandlerProvider'
 import { ref } from 'vue'
 
-const props = defineProps({
-  encounterUlid: { type: String, required: true }
-})
+const props = defineProps({ encounterUlid: { type: String, required: true } })
 const emit = defineEmits(['monster:added'])
 
 const name = ref('')

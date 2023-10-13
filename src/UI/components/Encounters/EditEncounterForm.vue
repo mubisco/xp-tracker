@@ -42,21 +42,14 @@ onMounted(loadEncounter)
         @monster:added="loadEncounter"
       />
     </template>
-    <v-card-actions class="justify-space-between">
+    <v-card-actions class="justify-start">
       <v-btn
         color="primary"
         prepend-icon="mdi-arrow-left"
         :active="false"
         :to="{ name: 'Encounter' }"
       >
-        Cancel
-      </v-btn>
-      <v-btn
-        variant="elevated"
-        color="primary"
-        prepend-icon="mdi-plus"
-      >
-        Add
+        Back
       </v-btn>
     </v-card-actions>
   </v-card>
