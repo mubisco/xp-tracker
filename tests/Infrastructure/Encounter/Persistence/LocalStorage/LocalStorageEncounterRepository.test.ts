@@ -61,4 +61,20 @@ describe('Testing LocalStorageEncounterRepository', () => {
     // @ts-ignore
     expect(updatedEncounter.monsters()).toHaveLength(1)
   })
+  test('It should return empty array when no encounters found', async () => {
+    const result = await sut.all()
+    expect(result).toHaveLength(0)
+  })
+  test('It should return all encounters found', async () => {
+    const encounter = DomainEncounterOM.withName('asd')
+    await sut.write(encounter)
+    const anotherEncounter = DomainEncounterOM.withName('qwe')
+    await sut.write(anotherEncounter)
+    const result = await sut.all()
+    expect(result).toHaveLength(2)
+    const first = result[0]
+    expect(first.ulid).toBe(encounter.id().value())
+    const second = result[1]
+    expect(second.ulid).toBe(anotherEncounter.id().value())
+  })
 })
