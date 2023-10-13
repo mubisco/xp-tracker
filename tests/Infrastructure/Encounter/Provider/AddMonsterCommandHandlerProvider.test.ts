@@ -13,4 +13,3 @@ describe('Testing AddMonsterCommandHandlerProvider', () => {
     expect(handler).toBeInstanceOf(AddMonsterToEncounterCommandHandler)
   })
 })
-
