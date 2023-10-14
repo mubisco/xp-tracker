@@ -31,6 +31,11 @@ export class BasicCharacter implements Character {
     this._health = Health.fromValues(maxHp, actualHp)
   }
 
+  addExperience (experience: Experience): void {
+    const updatedExperience = this._experience.add(experience)
+    this._experience = updatedExperience
+  }
+
   id (): Ulid {
     return this._characterId
   }

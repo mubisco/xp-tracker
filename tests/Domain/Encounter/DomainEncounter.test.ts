@@ -5,6 +5,7 @@ import { DomainEncounterOM } from './DomainEncounterOM'
 import { SimpleStringEncounterVisitor } from './SimpleStringEncounterVisitor'
 import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
 import { MonsterNotFoundError } from '@/Domain/Encounter/MonsterNotFoundError'
+import { EncounterStatus } from '@/Domain/Encounter/EncounterStatus'
 
 describe('Testing DomainEncounter', () => {
   const visitor = new SimpleStringEncounterVisitor()
@@ -15,6 +16,9 @@ describe('Testing DomainEncounter', () => {
     expect(sut.name()).toBeInstanceOf(EncounterName)
     expect(sut.name().value()).toBe('pollos')
     expect(sut.monsters()).toHaveLength(0)
+    expect(sut.totalXp()).toBe(0)
+    expect(sut.status()).toBe(EncounterStatus.OPEN)
+    expect(sut.pullEvents()).toHaveLength(0)
   })
 
   test('It should add a monster properly', () => {
@@ -48,5 +52,27 @@ describe('Testing DomainEncounter', () => {
     const sut = DomainEncounterOM.withName('pollos')
     const result = sut.visit(visitor)
     expect(result).toBe(sut.id().value())
+  })
+
+  test('It should change status when encounter is done', () => {
+    const sut = DomainEncounterOM.withName('pollos')
+    sut.finish()
+    expect(sut.status()).toBe(EncounterStatus.DONE)
+  })
+
+  test('It should generate event when encounter is done', () => {
+    const monsterToAdd = EncounterMonster.fromValues('Pollo Papi', 2500, '1/2')
+    const sut = DomainEncounterOM.withName('pollos')
+    sut.addMonster(monsterToAdd)
+    sut.addMonster(monsterToAdd)
+    sut.finish()
+    const events = sut.pullEvents()
+    expect(events).toHaveLength(1)
+    const event = events[0]
+    expect(event.name()).toBe('EncounterWasFinished')
+    expect(event.occurredOn()).toBeInstanceOf(Date)
+    const expectedPayload = { encounterId: sut.id().value(), totalXp: 5000 }
+    expect(event.payload()).toStrictEqual(expectedPayload)
+    expect(sut.pullEvents()).toHaveLength(0)
   })
 })

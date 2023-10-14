@@ -6,6 +6,7 @@ import { HitPointsDto } from '@/Domain/Character/HitPointsDto'
 import { beforeEach, describe, test, expect } from 'vitest'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 import { BasicCharacterOM } from './BasicCharacterOM'
+import { Experience } from '@/Domain/Character/Experience'
 
 describe('Testing BasicCharacter', () => {
   let sut: BasicCharacter
@@ -39,5 +40,12 @@ describe('Testing BasicCharacter', () => {
   test('It should return proper visitor result', () => {
     const result = sut.visit(new DummyCharacterVisitor())
     expect(result).equals(sut.id().value())
+  })
+
+  test('It should update experience points', () => {
+    const xpToAdd = Experience.fromXp(3500)
+    sut.addExperience(xpToAdd)
+    const values = sut.experience()
+    expect(values.actual).toBe(3845)
   })
 })
