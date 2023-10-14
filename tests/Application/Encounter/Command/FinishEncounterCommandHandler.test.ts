@@ -1,5 +1,5 @@
-import { AddEncounterExperienceToPartyCommand } from '@/Application/Encounter/Command/AddEncounterExperienceToPartyCommand'
-import { AddEncounterExperienceToPartyCommandHandler } from '@/Application/Encounter/Command/AddEncounterExperienceToPartyCommandHandler'
+import { FinishEncounterCommand } from '@/Application/Encounter/Command/FinishEncounterCommand'
+import { FinishEncounterCommandHandler } from '@/Application/Encounter/Command/FinishEncounterCommandHandler'
 import { EncounterNotFoundError } from '@/Domain/Encounter/EncounterNotFoundError'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { NotFoundEncounterRepositoryDummy } from './NotFoundEncounterRepositoryDummy'
@@ -10,7 +10,7 @@ import { UpdateEncounterWriteModelSpy } from './UpdateEncounterWriteModelSpy'
 import { FailingUpdateEncounterWriteModel } from './FailingUpdateEncounterWriteModel'
 import { EncounterStatus } from '@/Domain/Encounter/EncounterStatus'
 
-describe('Testing AddEncounterExperienceToPartyCommandHandler', () => {
+describe('Testing FinishEncounterCommandHandler', () => {
   let notFoundEncounterRepository: NotFoundEncounterRepositoryDummy
   let encounterRepositoryDummy: EncounterRepositoryDummy
   let failingUpdateWriteModel: FailingUpdateEncounterWriteModel
@@ -26,27 +26,27 @@ describe('Testing AddEncounterExperienceToPartyCommandHandler', () => {
   })
 
   test('It should be of proper class', () => {
-    const sut = new AddEncounterExperienceToPartyCommandHandler(notFoundEncounterRepository, failingUpdateWriteModel, eventBusSpy)
-    expect(sut).toBeInstanceOf(AddEncounterExperienceToPartyCommandHandler)
+    const sut = new FinishEncounterCommandHandler(notFoundEncounterRepository, failingUpdateWriteModel, eventBusSpy)
+    expect(sut).toBeInstanceOf(FinishEncounterCommandHandler)
   })
   test('It should throw error when encounterId wrong', () => {
-    const sut = new AddEncounterExperienceToPartyCommandHandler(notFoundEncounterRepository, failingUpdateWriteModel, eventBusSpy)
-    const wrongUlidCommand = new AddEncounterExperienceToPartyCommand('asd')
+    const sut = new FinishEncounterCommandHandler(notFoundEncounterRepository, failingUpdateWriteModel, eventBusSpy)
+    const wrongUlidCommand = new  FinishEncounterCommand('asd')
     expect(sut.handle(wrongUlidCommand)).rejects.toThrow(RangeError)
   })
   test('It should throw error when encounter not found', () => {
-    const sut = new AddEncounterExperienceToPartyCommandHandler(notFoundEncounterRepository, failingUpdateWriteModel, eventBusSpy)
-    const command = new AddEncounterExperienceToPartyCommand('01HCPRBYFC131V8RX9KMD2SK9P')
+    const sut = new FinishEncounterCommandHandler(notFoundEncounterRepository, failingUpdateWriteModel, eventBusSpy)
+    const command = new  FinishEncounterCommand('01HCPRBYFC131V8RX9KMD2SK9P')
     expect(sut.handle(command)).rejects.toThrow(EncounterNotFoundError)
   })
   test('It should throw error when encounter cannot be updated', () => {
-    const sut = new AddEncounterExperienceToPartyCommandHandler(encounterRepositoryDummy, failingUpdateWriteModel, eventBusSpy)
-    const command = new AddEncounterExperienceToPartyCommand('01HCPRBYFC131V8RX9KMD2SK9P')
+    const sut = new FinishEncounterCommandHandler(encounterRepositoryDummy, failingUpdateWriteModel, eventBusSpy)
+    const command = new  FinishEncounterCommand('01HCPRBYFC131V8RX9KMD2SK9P')
     expect(sut.handle(command)).rejects.toThrow(EncounterWriteModelError)
   })
   test('It should generate proper events', async () => {
-    const sut = new AddEncounterExperienceToPartyCommandHandler(encounterRepositoryDummy, dummyUpdateWriteModel, eventBusSpy)
-    const command = new AddEncounterExperienceToPartyCommand('01HCPRBYFC131V8RX9KMD2SK9P')
+    const sut = new FinishEncounterCommandHandler(encounterRepositoryDummy, dummyUpdateWriteModel, eventBusSpy)
+    const command = new  FinishEncounterCommand('01HCPRBYFC131V8RX9KMD2SK9P')
     await sut.handle(command)
     expect(eventBusSpy.events).toHaveLength(1)
     const encounter = dummyUpdateWriteModel.getUpdatedEncounter()
