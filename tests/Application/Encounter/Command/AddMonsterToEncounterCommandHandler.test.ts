@@ -49,6 +49,6 @@ describe('Testing AddMonsterToEncounterCommandHandler', () => {
     const encounter = updateEncounterWriteModelSpy.getUpdatedEncounter()
     const monsters = encounter.monsters()
     const monster = monsters[0]
-    expect(monster.name()).toBe('Pollo primero')
+    expect(monster.name()).toBe('Some name')
   })
 })

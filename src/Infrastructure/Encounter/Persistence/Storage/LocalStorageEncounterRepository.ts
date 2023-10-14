@@ -10,13 +10,14 @@ import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 import { LocalStorageEncounterFactory } from './LocalStorageEncounterFactory'
 import { UpdateEncounterWriteModel } from '@/Domain/Encounter/UpdateEncounterWriteModel'
 import { AllEncountersReadModel } from '@/Domain/Encounter/AllEncountersReadModel'
+import { DeleteEncounterWriteModel } from '@/Domain/Encounter/DeleteEncounterWriteModel'
 
 const LOCALSTORAGE_TAG = 'encounters'
 
 interface RawEncounterData { [key: string]: string }
 
 export class LocalStorageEncounterRepository
-implements AddEncounterWriteModel, FindEncounterReadModel, EncounterRepository, UpdateEncounterWriteModel, AllEncountersReadModel {
+implements AddEncounterWriteModel, DeleteEncounterWriteModel, FindEncounterReadModel, EncounterRepository, UpdateEncounterWriteModel, AllEncountersReadModel {
   private rawEncounterData: RawEncounterData = {}
 
   // eslint-disable-next-line
@@ -25,6 +26,14 @@ implements AddEncounterWriteModel, FindEncounterReadModel, EncounterRepository, 
     private readonly factory: LocalStorageEncounterFactory
   ) {
     this.readEncounterData()
+  }
+
+  remove (encounter: Encounter): Promise<void> {
+    const updatedEncounterData: RawEncounterData = { ...this.rawEncounterData }
+    delete (updatedEncounterData[encounter.id().value()])
+    this.rawEncounterData = updatedEncounterData
+    this.updateStorage()
+    return Promise.resolve()
   }
 
   all (): Promise<EncounterDto[]> {
