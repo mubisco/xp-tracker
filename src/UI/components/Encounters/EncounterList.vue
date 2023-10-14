@@ -2,18 +2,33 @@
 import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
 import { AllEncountersQueryHandlerProvider } from '@/Infrastructure/Encounter/Provider/AllEncountersQueryHandlerProvider'
 import EncounterDetails from './EncounterDetails.vue'
+import RemoveEncounterDialog from './RemoveEncounterDialog.vue'
 // import LevelTag from '@/UI/components/Encounters/LevelTag.vue'
 import { ref, onMounted } from 'vue'
 
 const provider = new AllEncountersQueryHandlerProvider()
 
 const encounters = ref<EncounterDto[]>([])
+const encounterToDelete = ref('')
+const showDeleteDialog = ref(false)
 
-onMounted(async () => {
+const loadEncounters = async () => {
   const handler = provider.provide()
   const result = await handler.handle()
   encounters.value = result
-})
+}
+
+onMounted(loadEncounters)
+
+const onRemoveEncounterButtonClicked = async (encounterUlid: string): Promise<void> => {
+  encounterToDelete.value = encounterUlid
+  showDeleteDialog.value = true
+}
+
+const onEncounterDeleteConfirmed = async (): Promise<void> => {
+  encounterToDelete.value = ''
+  await loadEncounters()
+}
 
 </script>
 <template>
@@ -38,6 +53,14 @@ onMounted(async () => {
         <div class="mt-4 d-flex justify-space-between">
           <v-btn
             variant="outlined"
+            color="error"
+            prepend-icon="mdi-delete"
+            @click="onRemoveEncounterButtonClicked(encounter.ulid)"
+          >
+            Remove
+          </v-btn>
+          <v-btn
+            variant="outlined"
             color="primary"
             prepend-icon="mdi-pencil"
             :to="{ name: 'EditEncounter', params: { encounterId: encounter.ulid } }"
@@ -55,4 +78,9 @@ onMounted(async () => {
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
+  <RemoveEncounterDialog
+    v-model="showDeleteDialog"
+    :encounter-ulid="encounterToDelete"
+    @update:model-value="onEncounterDeleteConfirmed"
+  />
 </template>
