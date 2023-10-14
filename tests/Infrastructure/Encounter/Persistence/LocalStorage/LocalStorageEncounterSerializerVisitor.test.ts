@@ -8,7 +8,7 @@ describe('Testing LocalStorageEncounterSerializerVisitor', () => {
     const sut = new LocalStorageEncounterSerializerVisitor()
     const encounter = DomainEncounterOM.withName('Pollos')
     const result = encounter.visit(sut)
-    const expectedResult = `{"ulid":"${encounter.id().value()}","name":"Pollos","monsters":[]}`
+    const expectedResult = `{"ulid":"${encounter.id().value()}","name":"Pollos","status":"OPEN","monsters":[]}`
     expect(result).toBe(expectedResult)
   })
   test('It should visit encounter with monsters properly', () => {
@@ -17,7 +17,7 @@ describe('Testing LocalStorageEncounterSerializerVisitor', () => {
     const monster = EncounterMonsterOM.random()
     encounter.addMonster(monster)
     const result = encounter.visit(sut)
-    const expectedResult = `{"ulid":"${encounter.id().value()}","name":"Pollos","monsters":[{"name":"Some name","xp":2500,"cr":"1/2"}]}`
+    const expectedResult = `{"ulid":"${encounter.id().value()}","name":"Pollos","status":"OPEN","monsters":[{"name":"Some name","xp":2500,"cr":"1/2"}]}`
     expect(result).toBe(expectedResult)
   })
 })

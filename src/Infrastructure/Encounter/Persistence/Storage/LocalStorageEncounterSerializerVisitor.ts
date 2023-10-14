@@ -11,6 +11,7 @@ export class LocalStorageEncounterSerializerVisitor implements EncounterVisitor<
     const result = {
       ulid: encounter.id().value(),
       name: encounter.name().value(),
+      status: encounter.status(),
       monsters
     }
     return JSON.stringify(result)
