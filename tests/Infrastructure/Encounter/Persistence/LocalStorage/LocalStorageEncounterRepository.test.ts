@@ -77,4 +77,11 @@ describe('Testing LocalStorageEncounterRepository', () => {
     const second = result[1]
     expect(second.ulid).toBe(anotherEncounter.id().value())
   })
+  test('It should remove encounter properly', async () => {
+    const encounter = DomainEncounterOM.withName('asd')
+    await sut.write(encounter)
+    await sut.remove(encounter)
+    const results = await sut.all()
+    expect(results).toHaveLength(0)
+  })
 })
