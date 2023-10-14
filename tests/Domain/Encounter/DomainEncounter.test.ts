@@ -15,6 +15,7 @@ describe('Testing DomainEncounter', () => {
     expect(sut.name()).toBeInstanceOf(EncounterName)
     expect(sut.name().value()).toBe('pollos')
     expect(sut.monsters()).toHaveLength(0)
+    expect(sut.totalXp()).toBe(0)
   })
 
   test('It should add a monster properly', () => {
@@ -48,5 +49,13 @@ describe('Testing DomainEncounter', () => {
     const sut = DomainEncounterOM.withName('pollos')
     const result = sut.visit(visitor)
     expect(result).toBe(sut.id().value())
+  })
+
+  test('It should return proper value of total XP', () => {
+    const monsterToAdd = EncounterMonster.fromValues('Pollo Papi', 2500, '1/2')
+    const sut = DomainEncounterOM.withName('pollos')
+    sut.addMonster(monsterToAdd)
+    sut.addMonster(monsterToAdd)
+    expect(sut.totalXp()).toBe(5000)
   })
 })

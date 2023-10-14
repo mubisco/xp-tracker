@@ -7,4 +7,5 @@ export interface Encounter {
   addMonster (monster: EncounterMonster): void
   removeMonster (monster: EncounterMonster): void
   visit (visitor: EncounterVisitor<any>): any
+  totalXp(): number
 }

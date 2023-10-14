@@ -20,6 +20,14 @@ export class DomainEncounter implements Encounter {
     this._encounterMonsters = []
   }
 
+  totalXp (): number {
+    let totalXp = 0
+    this._encounterMonsters.forEach((monster): void => {
+      totalXp += monster.xp()
+    })
+    return totalXp
+  }
+
   id (): Ulid {
     return this.ulid
   }
