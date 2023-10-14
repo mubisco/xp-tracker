@@ -1,6 +1,7 @@
 import { DomainEncounter } from '@/Domain/Encounter/DomainEncounter'
 import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
 import { EncounterName } from '@/Domain/Encounter/EncounterName'
+import { EncounterStatus } from '@/Domain/Encounter/EncounterStatus'
 import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
 import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
@@ -12,6 +13,8 @@ export class LocalStorageEncounterFactory {
     encounter.ulid = Ulid.fromString(encounterData.ulid)
     // @ts-ignore
     encounter._encounterMonsters = this.hydrateMonsters(encounterData.monsters)
+    // @ts-ignore
+    encounter._status = EncounterStatus[encounterData.status]
     return encounter
   }
 
