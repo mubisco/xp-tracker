@@ -4,11 +4,17 @@ import { EncounterName } from './EncounterName'
 import { EncounterVisitor } from './EncounterVisitor'
 import { EncounterMonster } from './Monster/EncounterMonster'
 import { MonsterNotFoundError } from './MonsterNotFoundError'
+import { EncounterStatus } from './EncounterStatus'
+import { EventAware } from '../Shared/Event/EventAware'
+import { DomainEvent } from '../Shared/Event/DomainEvent'
+import { EncounterWasFinished } from './EncounterWasFinished'
 
-export class DomainEncounter implements Encounter {
+export class DomainEncounter implements Encounter, EventAware {
   private ulid: Ulid
   private _name: EncounterName
   private _encounterMonsters: EncounterMonster[]
+  private _status: EncounterStatus
+  private _events: DomainEvent[]
 
   static withName (name: EncounterName): DomainEncounter {
     return new DomainEncounter(name.value())
@@ -18,9 +24,26 @@ export class DomainEncounter implements Encounter {
     this.ulid = Ulid.fromEmpty()
     this._name = EncounterName.fromString(name)
     this._encounterMonsters = []
+    this._status = EncounterStatus.OPEN
+    this._events = []
   }
 
-  totalXp (): number {
+  pullEvents (): DomainEvent[] {
+    const events = [...this._events]
+    this._events = []
+    return events
+  }
+
+  finish (): void {
+    this._status = EncounterStatus.DONE
+    this._events.push(new EncounterWasFinished(this.ulid.value(), this.totalXp()))
+  }
+
+  status (): EncounterStatus {
+    return this._status
+  }
+
+  private totalXp (): number {
     let totalXp = 0
     this._encounterMonsters.forEach((monster): void => {
       totalXp += monster.xp()
