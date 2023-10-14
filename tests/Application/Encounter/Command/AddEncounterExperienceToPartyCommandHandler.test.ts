@@ -3,35 +3,53 @@ import { AddEncounterExperienceToPartyCommandHandler } from '@/Application/Encou
 import { EncounterNotFoundError } from '@/Domain/Encounter/EncounterNotFoundError'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { NotFoundEncounterRepositoryDummy } from './NotFoundEncounterRepositoryDummy'
-import { EmptyPartyError } from '@/Application/Encounter/Command/EmptyPartyError'
 import { EncounterRepositoryDummy } from './EncounterRepositoryDummy'
+import { EncounterWriteModelError } from '@/Domain/Encounter/EncounterWriteModelError'
+import { InMemoryEventBusSpy } from './InMemoryEventBusSpy'
+import { UpdateEncounterWriteModelSpy } from './UpdateEncounterWriteModelSpy'
+import { FailingUpdateEncounterWriteModel } from './FailingUpdateEncounterWriteModel'
+import { EncounterStatus } from '@/Domain/Encounter/EncounterStatus'
 
 describe('Testing AddEncounterExperienceToPartyCommandHandler', () => {
   let notFoundEncounterRepository: NotFoundEncounterRepositoryDummy
   let encounterRepositoryDummy: EncounterRepositoryDummy
+  let failingUpdateWriteModel: FailingUpdateEncounterWriteModel
+  let dummyUpdateWriteModel: UpdateEncounterWriteModelSpy
+  let eventBusSpy: InMemoryEventBusSpy
 
   beforeEach(() => {
     notFoundEncounterRepository = new NotFoundEncounterRepositoryDummy()
     encounterRepositoryDummy = new EncounterRepositoryDummy()
+    failingUpdateWriteModel = new FailingUpdateEncounterWriteModel()
+    dummyUpdateWriteModel = new UpdateEncounterWriteModelSpy()
+    eventBusSpy = new InMemoryEventBusSpy()
   })
 
   test('It should be of proper class', () => {
-    const sut = new AddEncounterExperienceToPartyCommandHandler(notFoundEncounterRepository)
+    const sut = new AddEncounterExperienceToPartyCommandHandler(notFoundEncounterRepository, failingUpdateWriteModel, eventBusSpy)
     expect(sut).toBeInstanceOf(AddEncounterExperienceToPartyCommandHandler)
   })
   test('It should throw error when encounterId wrong', () => {
-    const sut = new AddEncounterExperienceToPartyCommandHandler(notFoundEncounterRepository)
+    const sut = new AddEncounterExperienceToPartyCommandHandler(notFoundEncounterRepository, failingUpdateWriteModel, eventBusSpy)
     const wrongUlidCommand = new AddEncounterExperienceToPartyCommand('asd')
     expect(sut.handle(wrongUlidCommand)).rejects.toThrow(RangeError)
   })
   test('It should throw error when encounter not found', () => {
-    const sut = new AddEncounterExperienceToPartyCommandHandler(notFoundEncounterRepository)
+    const sut = new AddEncounterExperienceToPartyCommandHandler(notFoundEncounterRepository, failingUpdateWriteModel, eventBusSpy)
     const command = new AddEncounterExperienceToPartyCommand('01HCPRBYFC131V8RX9KMD2SK9P')
     expect(sut.handle(command)).rejects.toThrow(EncounterNotFoundError)
   })
-  test('It should throw error when empty party', () => {
-    const sut = new AddEncounterExperienceToPartyCommandHandler(encounterRepositoryDummy)
+  test('It should throw error when encounter cannot be updated', () => {
+    const sut = new AddEncounterExperienceToPartyCommandHandler(encounterRepositoryDummy, failingUpdateWriteModel, eventBusSpy)
     const command = new AddEncounterExperienceToPartyCommand('01HCPRBYFC131V8RX9KMD2SK9P')
-    expect(sut.handle(command)).rejects.toThrow(EmptyPartyError)
+    expect(sut.handle(command)).rejects.toThrow(EncounterWriteModelError)
+  })
+  test('It should generate proper events', async () => {
+    const sut = new AddEncounterExperienceToPartyCommandHandler(encounterRepositoryDummy, dummyUpdateWriteModel, eventBusSpy)
+    const command = new AddEncounterExperienceToPartyCommand('01HCPRBYFC131V8RX9KMD2SK9P')
+    await sut.handle(command)
+    expect(eventBusSpy.events).toHaveLength(1)
+    const encounter = dummyUpdateWriteModel.getUpdatedEncounter()
+    expect(encounter.status()).toBe(EncounterStatus.DONE)
   })
 })

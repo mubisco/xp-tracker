@@ -5,11 +5,10 @@ import { EncounterVisitor } from './EncounterVisitor'
 import { EncounterMonster } from './Monster/EncounterMonster'
 import { MonsterNotFoundError } from './MonsterNotFoundError'
 import { EncounterStatus } from './EncounterStatus'
-import { EventAware } from '../Shared/Event/EventAware'
 import { DomainEvent } from '../Shared/Event/DomainEvent'
 import { EncounterWasFinished } from './EncounterWasFinished'
 
-export class DomainEncounter implements Encounter, EventAware {
+export class DomainEncounter implements Encounter {
   private ulid: Ulid
   private _name: EncounterName
   private _encounterMonsters: EncounterMonster[]
