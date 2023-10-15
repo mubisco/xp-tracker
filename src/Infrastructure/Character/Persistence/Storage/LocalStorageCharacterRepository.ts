@@ -21,11 +21,11 @@ const LOCALSTORAGE_TAG = 'characters'
 interface CharacterRawData { [ key: string ]: string }
 
 export class LocalStorageCharacterRepository implements
-AddCharacterWriteModel,
-CharacterListReadModel,
-DeleteCharacterWriteModel,
-PartyRepository,
-UpdateExperiencePartyWriteModel {
+  AddCharacterWriteModel,
+  CharacterListReadModel,
+  DeleteCharacterWriteModel,
+  PartyRepository,
+  UpdateExperiencePartyWriteModel {
   private _localStorageRawCharacters: CharacterRawData = {}
 
   constructor (private readonly visitor: CharacterVisitor<string>) {
@@ -39,10 +39,10 @@ UpdateExperiencePartyWriteModel {
     characters.forEach(async (character: Character): Promise<void> => {
       await this.update(character)
     })
-    return Promise.resolve()
+    return this.updateLocalStorage()
   }
 
-  async update (character: Character): Promise<void> {
+  private async update (character: Character): Promise<void> {
     const characterId = character.id().value()
     if (!this.characterIdExists(character.id())) {
       return Promise.reject(
@@ -51,36 +51,33 @@ UpdateExperiencePartyWriteModel {
     }
     const visitedCharacter = character.visit(this.visitor)
     this._localStorageRawCharacters[characterId] = visitedCharacter
-    this.updateLocalStorage()
-    return Promise.resolve()
   }
 
   async find (): Promise<Party> {
     const charactersDto = await this.read()
-    const characters = charactersDto.map((dto: CharacterDto): Character => {
-      const character = BasicCharacter.fromValues(
-        CharacterName.fromString(dto.name),
-        Experience.fromXp(dto.xp),
-        Health.fromValues(dto.maxHp, dto.currentHp)
-      )
-      // @ts-ignore
-      character._characterId = Ulid.fromString(dto.ulid)
-      return character
-    })
+    const characters = charactersDto.map(this.hydrateCharacterFromDto)
     return new CharacterParty(characters)
+  }
+
+  private hydrateCharacterFromDto (dto: CharacterDto): Character {
+    const character = BasicCharacter.fromValues(
+      CharacterName.fromString(dto.name),
+      Experience.fromXp(dto.xp),
+      Health.fromValues(dto.maxHp, dto.currentHp)
+    )
+    // @ts-ignore
+    character._characterId = Ulid.fromString(dto.ulid)
+    return character
   }
 
   async invoke (character: Character): Promise<void> {
     const characterId = character.id().value()
     if (this.characterIdExists(character.id())) {
-      return Promise.reject(
-        new CharacterWriteModelError(`Character with id ${characterId} already present on Storage`)
-      )
+      throw new CharacterWriteModelError(`Character with id ${characterId} already present on Storage`)
     }
     const visitedCharacter = character.visit(this.visitor)
     this._localStorageRawCharacters[characterId] = visitedCharacter
-    this.updateLocalStorage()
-    return Promise.resolve()
+    return this.updateLocalStorage()
   }
 
   async remove (characterUlid: Ulid): Promise<void> {
@@ -88,8 +85,7 @@ UpdateExperiencePartyWriteModel {
       return Promise.reject(new CharacterNotFoundError())
     }
     this.removeCharacter(characterUlid)
-    this.updateLocalStorage()
-    return Promise.resolve()
+    return this.updateLocalStorage()
   }
 
   async read (): Promise<CharacterDto[]> {
@@ -112,7 +108,7 @@ UpdateExperiencePartyWriteModel {
     this._localStorageRawCharacters = filteredItems
   }
 
-  private updateLocalStorage (): void {
+  private async updateLocalStorage (): Promise<void> {
     window.localStorage.setItem(LOCALSTORAGE_TAG, JSON.stringify(this._localStorageRawCharacters))
   }
 
