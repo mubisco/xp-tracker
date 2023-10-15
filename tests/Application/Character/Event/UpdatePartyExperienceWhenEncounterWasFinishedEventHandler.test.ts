@@ -23,10 +23,6 @@ describe('Testing UpdatePartyExperienceWhenEncounterWasFinishedEventHandler', ()
     failingWriteModel = new FailingUpdateExperiencePartyWriteModel()
     writeModelSpy = new UpdateExperiencePartyWriteModelSpy()
   })
-  test('It should be of proper class', () => {
-    const sut = new UpdatePartyExperienceWhenEncounterWasFinishedEventHandler(failingPartyRepository, failingWriteModel)
-    expect(sut).toBeInstanceOf(UpdatePartyExperienceWhenEncounterWasFinishedEventHandler)
-  })
   test('It should throw error when Experience points not valid', () => {
     const sut = new UpdatePartyExperienceWhenEncounterWasFinishedEventHandler(failingPartyRepository, failingWriteModel)
     const badEvent = new EncounterWasFinished('01HCSAPRM9H79111WHMYRGYSB3', -1)
