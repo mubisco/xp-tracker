@@ -60,4 +60,9 @@ export class Experience {
     const anotherValues = another.values()
     return new Experience(this.actualXp + anotherValues.actual)
   }
+
+  split (quantity: number): Experience {
+    const finalValue = Math.floor(this.actualXp / quantity)
+    return Experience.fromXp(finalValue)
+  }
 }
