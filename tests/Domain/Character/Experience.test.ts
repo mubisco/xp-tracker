@@ -31,4 +31,10 @@ describe('Testing Experience', () => {
     const values = result.values()
     expect(values.actual).toBe(42564)
   })
+  test('It should split properly', () => {
+    const sut = Experience.fromXp(225)
+    const result = sut.split(2)
+    const values = result.values()
+    expect(values.actual).toBe(112)
+  })
 })

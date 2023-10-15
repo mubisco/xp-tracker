@@ -1,5 +1,6 @@
 import { CharacterNotFoundError } from '@/Domain/Character/CharacterNotFoundError'
 import { CharacterWriteModelError } from '@/Domain/Character/CharacterWriteModelError'
+import { Experience } from '@/Domain/Character/Experience'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 import { LocalStorageCharacterRepository } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterRepository'
 import { LocalStorageCharacterSerializerVisitor } from '@/Infrastructure/Character/Persistence/Storage/LocalStorageCharacterSerializerVisitor'
@@ -48,5 +49,26 @@ describe('Testing BasicCharacter', () => {
     await sut.remove(character.id())
     const characters = await sut.read()
     expect(characters.length).toBe(0)
+  })
+  test('It should return proper Party', async () => {
+    const character = BasicCharacterOM.random()
+    const anotherCharacter = BasicCharacterOM.random()
+    sut.invoke(character)
+    sut.invoke(anotherCharacter)
+    const party = await sut.find()
+    // @ts-ignore
+    expect(party.count()).toBe(2)
+  })
+  test('It should update party', async () => {
+    const character = BasicCharacterOM.random()
+    const anotherCharacter = BasicCharacterOM.random()
+    sut.invoke(character)
+    sut.invoke(anotherCharacter)
+    const party = await sut.find()
+    party.updateExperience(Experience.fromXp(300))
+    sut.updateParty(party)
+    const updatedCharacters = await sut.read()
+    expect(updatedCharacters[0].xp).toBe(495)
+    expect(updatedCharacters[1].xp).toBe(495)
   })
 })
