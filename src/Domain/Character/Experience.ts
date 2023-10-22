@@ -27,7 +27,11 @@ export class Experience {
     return new this(xp)
   }
 
-  private constructor (private readonly actualXp: number) {
+  private readonly actualXp: number
+
+  private constructor (actualXp: number) {
+    // @ts-ignore
+    this.actualXp = parseInt(actualXp, 10)
     if (this.actualXp < 0) {
       throw new RangeError(`Actual XP should be 0 or more, ${this.actualXp} given!!!`)
     }
