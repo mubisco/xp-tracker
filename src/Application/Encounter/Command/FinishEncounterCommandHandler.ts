@@ -12,7 +12,7 @@ export class FinishEncounterCommandHandler {
     private readonly eventBus: EventBus
   ) {}
 
-  async handle (command:  FinishEncounterCommand): Promise<void> {
+  async handle (command: FinishEncounterCommand): Promise<void> {
     const encounterUlid = Ulid.fromString(command.encounterUlid)
     const encounter = await this.encounterRepository.byUlid(encounterUlid)
     encounter.finish()
