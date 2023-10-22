@@ -6,7 +6,7 @@ import { UpdatePartyExperienceWhenEncounterWasFinishedProvider } from '@/Infrast
 export function eventSubscribe (app: App): void {
   const vueEventBus = new VueEventBus()
   const provider = new UpdatePartyExperienceWhenEncounterWasFinishedProvider()
-  vueEventBus.subscribe(provider.provide())
 
+  vueEventBus.subscribe(provider.provide())
   app.provide<EventBus>('eventBus', vueEventBus)
 }
