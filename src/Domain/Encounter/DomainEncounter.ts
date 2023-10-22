@@ -7,6 +7,7 @@ import { MonsterNotFoundError } from './MonsterNotFoundError'
 import { EncounterStatus } from './EncounterStatus'
 import { DomainEvent } from '../Shared/Event/DomainEvent'
 import { EncounterWasFinished } from './EncounterWasFinished'
+import { EncounterLevel } from './EncounterLevel'
 
 export class DomainEncounter implements Encounter {
   private ulid: Ulid
@@ -76,5 +77,9 @@ export class DomainEncounter implements Encounter {
 
   monsters (): EncounterMonster[] {
     return this._encounterMonsters
+  }
+
+  level (): EncounterLevel {
+    throw new Error('Method not implemented')
   }
 }
