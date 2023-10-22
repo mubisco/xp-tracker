@@ -12,9 +12,11 @@ import { createApp } from 'vue'
 
 // Plugins
 import { registerPlugins } from '@/UI/plugins'
+import { eventSubscribe } from '@/UI/plugins/eventSubscribe'
 
 const app = createApp(App)
 
 registerPlugins(app)
+eventSubscribe(app)
 
 app.mount('#app')

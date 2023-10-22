@@ -5,6 +5,7 @@ import EncounterDetails from './EncounterDetails.vue'
 import RemoveEncounterDialog from './RemoveEncounterDialog.vue'
 // import LevelTag from '@/UI/components/Encounters/LevelTag.vue'
 import { ref, onMounted } from 'vue'
+import FinishEncounterButton from './FinishEncounterButton.vue'
 
 const provider = new AllEncountersQueryHandlerProvider()
 
@@ -67,13 +68,9 @@ const onEncounterDeleteConfirmed = async (): Promise<void> => {
           >
             Edit
           </v-btn>
-          <v-btn
-            variant="elevated"
-            color="primary"
-            prepend-icon="mdi-content-save"
-          >
-            Add XP points to characters
-          </v-btn>
+          <FinishEncounterButton
+            :encounter-ulid="encounter.ulid"
+          />
         </div>
       </v-expansion-panel-text>
     </v-expansion-panel>

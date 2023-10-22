@@ -49,4 +49,8 @@ describe('Testing UpdatePartyExperienceWhenEncounterWasFinishedEventHandler', ()
     await sut.handle(event)
     expect(writeModelSpy.updatedPoints).toBe(250)
   })
+  test('It should return true to appropiate event', () => {
+    const sut = new UpdatePartyExperienceWhenEncounterWasFinishedEventHandler(partyRepositoryDummy, writeModelSpy)
+    expect(sut.listensTo('EncounterWasFinished')).toBe(true)
+  })
 })
