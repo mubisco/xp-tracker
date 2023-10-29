@@ -6,6 +6,8 @@ import { SimpleStringEncounterVisitor } from './SimpleStringEncounterVisitor'
 import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
 import { MonsterNotFoundError } from '@/Domain/Encounter/MonsterNotFoundError'
 import { EncounterStatus } from '@/Domain/Encounter/EncounterStatus'
+import { EncounterLevel } from '@/Domain/Encounter/EncounterLevel'
+import { PartyTresholdDto } from '@/Domain/Encounter/Party/PartyTresholdDto'
 
 describe('Testing DomainEncounter', () => {
   const visitor = new SimpleStringEncounterVisitor()
@@ -16,8 +18,8 @@ describe('Testing DomainEncounter', () => {
     expect(sut.name()).toBeInstanceOf(EncounterName)
     expect(sut.name().value()).toBe('pollos')
     expect(sut.monsters()).toHaveLength(0)
-    expect(sut.totalXp()).toBe(0)
     expect(sut.status()).toBe(EncounterStatus.OPEN)
+    expect(sut.level()).toBe(EncounterLevel.UNASSIGNED)
     expect(sut.pullEvents()).toHaveLength(0)
   })
 
@@ -74,5 +76,13 @@ describe('Testing DomainEncounter', () => {
     const expectedPayload = { encounterId: sut.id().value(), totalXp: 5000 }
     expect(event.payload()).toStrictEqual(expectedPayload)
     expect(sut.pullEvents()).toHaveLength(0)
+  })
+
+  test('It should update level properly', () => {
+    const monsterToAdd = EncounterMonster.fromValues('Pollo Papi', 550, '1/2')
+    const sut = DomainEncounterOM.withName('pollos')
+    sut.addMonster(monsterToAdd)
+    sut.updateLevel(new PartyTresholdDto([9]))
+    expect(sut.level()).toBe(EncounterLevel.EASY)
   })
 })
