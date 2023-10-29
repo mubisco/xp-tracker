@@ -1,4 +1,4 @@
-export enum EncounterLevel {
+export enum EncounterLevelTag {
   UNASSIGNED = 'UNASSIGNED',
   EASY = 'EASY',
   MEDIUM = 'MEDIUM',

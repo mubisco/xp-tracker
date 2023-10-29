@@ -7,7 +7,7 @@ import { MonsterNotFoundError } from './MonsterNotFoundError'
 import { EncounterStatus } from './EncounterStatus'
 import { DomainEvent } from '../Shared/Event/DomainEvent'
 import { EncounterWasFinished } from './EncounterWasFinished'
-import { EncounterLevel } from './EncounterLevel'
+import { EncounterLevelTag } from './EncounterLevel'
 import { PartyTresholdDto } from './Party/PartyTresholdDto'
 
 export class DomainEncounter implements Encounter {
@@ -16,7 +16,7 @@ export class DomainEncounter implements Encounter {
   private _encounterMonsters: EncounterMonster[]
   private _status: EncounterStatus
   private _events: DomainEvent[]
-  private _level: EncounterLevel
+  private _level: EncounterLevelTag
 
   static withName (name: EncounterName): DomainEncounter {
     return new DomainEncounter(name.value())
@@ -27,7 +27,7 @@ export class DomainEncounter implements Encounter {
     this._name = EncounterName.fromString(name)
     this._encounterMonsters = []
     this._status = EncounterStatus.OPEN
-    this._level = EncounterLevel.UNASSIGNED
+    this._level = EncounterLevelTag.UNASSIGNED
     this._events = []
   }
 
@@ -83,10 +83,10 @@ export class DomainEncounter implements Encounter {
   }
 
   updateLevel (tresholds: PartyTresholdDto): void {
-    this._level = EncounterLevel.EASY
+    this._level = EncounterLevelTag.EASY
   }
 
-  level (): EncounterLevel {
+  level (): EncounterLevelTag {
     return this._level
   }
 }

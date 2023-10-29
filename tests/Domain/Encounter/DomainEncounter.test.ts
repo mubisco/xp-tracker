@@ -6,7 +6,7 @@ import { SimpleStringEncounterVisitor } from './SimpleStringEncounterVisitor'
 import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
 import { MonsterNotFoundError } from '@/Domain/Encounter/MonsterNotFoundError'
 import { EncounterStatus } from '@/Domain/Encounter/EncounterStatus'
-import { EncounterLevel } from '@/Domain/Encounter/EncounterLevel'
+import { EncounterLevelTag } from '@/Domain/Encounter/EncounterLevel'
 import { PartyTresholdDto } from '@/Domain/Encounter/Party/PartyTresholdDto'
 
 describe('Testing DomainEncounter', () => {
@@ -19,7 +19,7 @@ describe('Testing DomainEncounter', () => {
     expect(sut.name().value()).toBe('pollos')
     expect(sut.monsters()).toHaveLength(0)
     expect(sut.status()).toBe(EncounterStatus.OPEN)
-    expect(sut.level()).toBe(EncounterLevel.UNASSIGNED)
+    expect(sut.level()).toBe(EncounterLevelTag.UNASSIGNED)
     expect(sut.pullEvents()).toHaveLength(0)
   })
 
@@ -83,6 +83,6 @@ describe('Testing DomainEncounter', () => {
     const sut = DomainEncounterOM.withName('pollos')
     sut.addMonster(monsterToAdd)
     sut.updateLevel(new PartyTresholdDto([9]))
-    expect(sut.level()).toBe(EncounterLevel.EASY)
+    expect(sut.level()).toBe(EncounterLevelTag.EASY)
   })
 })
