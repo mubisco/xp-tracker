@@ -33,7 +33,7 @@ export class EncounterLevel {
   // eslint-disable-next-line
   private constructor (
     private readonly characterLevels: number[],
-    private monsterXpValues: number[]
+    monsterXpValues: number[]
   ) {
     this.monsterEncounterPoints = MonsterEncounterPoints.fromXpValues(monsterXpValues)
   }
