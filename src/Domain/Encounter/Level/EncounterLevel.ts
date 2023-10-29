@@ -1,4 +1,5 @@
 import { EncounterLevelTag } from './EncounterLevelTag'
+import { MonsterEncounterPoints } from './MonsterEncounterPoints'
 const TRESHOLDS = [
   [0, 0, 0, 0],
   [25, 50, 75, 100],
@@ -24,27 +25,28 @@ const TRESHOLDS = [
 ]
 
 export class EncounterLevel {
-  static fromValues (characterLevels: number[], monsterLevels: number[]): EncounterLevel {
-    return new this(characterLevels, monsterLevels)
+  static fromValues (characterLevels: number[], monsterXpValues: number[]): EncounterLevel {
+    return new this(characterLevels, monsterXpValues)
   }
+
+  private readonly monsterEncounterPoints: MonsterEncounterPoints
   // eslint-disable-next-line
   private constructor (
     private readonly characterLevels: number[],
-    private readonly monsterLevels: number[]
-  ) {}
+    private monsterXpValues: number[]
+  ) {
+    this.monsterEncounterPoints = MonsterEncounterPoints.fromXpValues(monsterXpValues)
+  }
 
   value (): EncounterLevelTag {
     if (this.characterLevels.length === 0) {
       return EncounterLevelTag.UNASSIGNED
     }
-    const monsterXpSum = this.monsterLevels.reduce((accumulator, currentValue) => {
-      return accumulator + currentValue
-    }, 0)
-    const modifiedXpTotal = monsterXpSum * this.multiplier()
+    const monsterPoints = this.monsterEncounterPoints.value()
     const tresholds = this.getTresholds()
     for (let i = 0; i < tresholds.length - 1; i++) {
       const currentTreshold = tresholds[i]
-      if (modifiedXpTotal <= currentTreshold) {
+      if (monsterPoints <= currentTreshold) {
         return this.levelByIndex(i)
       }
     }
@@ -74,25 +76,5 @@ export class EncounterLevel {
       return EncounterLevelTag.HARD
     }
     return EncounterLevelTag.DEADLY
-  }
-
-  private multiplier (): number {
-    const monsterQuantity = this.monsterLevels.length
-    if (monsterQuantity > 14) {
-      return 4
-    }
-    if (monsterQuantity > 10) {
-      return 3
-    }
-    if (monsterQuantity > 6) {
-      return 2.5
-    }
-    if (monsterQuantity > 2) {
-      return 2
-    }
-    if (monsterQuantity > 1) {
-      return 1.5
-    }
-    return 1
   }
 }
