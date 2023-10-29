@@ -24,36 +24,52 @@ const TRESHOLDS = [
   [2800, 5700, 8500, 12700]
 ]
 
+const LEVEL_BY_INDEX = [
+  EncounterLevelTag.EASY,
+  EncounterLevelTag.MEDIUM,
+  EncounterLevelTag.HARD,
+  EncounterLevelTag.DEADLY
+]
+
 export class EncounterLevel {
   static fromValues (characterLevels: number[], monsterXpValues: number[]): EncounterLevel {
     return new this(characterLevels, monsterXpValues)
   }
 
   private readonly monsterEncounterPoints: MonsterEncounterPoints
+  private readonly totalCharacters: number
   // eslint-disable-next-line
   private constructor (
     private readonly characterLevels: number[],
     monsterXpValues: number[]
   ) {
     this.monsterEncounterPoints = MonsterEncounterPoints.fromXpValues(monsterXpValues)
+    this.totalCharacters = characterLevels.length
   }
 
   value (): EncounterLevelTag {
-    if (this.characterLevels.length === 0) {
+    if (this.totalCharacters === 0) {
       return EncounterLevelTag.UNASSIGNED
     }
-    const monsterPoints = this.monsterEncounterPoints.value()
-    const tresholds = this.getTresholds()
-    for (let i = 0; i < tresholds.length - 1; i++) {
-      const currentTreshold = tresholds[i]
-      if (monsterPoints <= currentTreshold) {
-        return this.levelByIndex(i)
-      }
-    }
-    return EncounterLevelTag.DEADLY
+    const tresholdIndex = this.calculateIndex()
+    return LEVEL_BY_INDEX[tresholdIndex]
   }
 
-  private getTresholds (): number[] {
+  private calculateIndex (): number {
+    const monsterPoints = this.monsterEncounterPoints.value()
+    const tresholds = this.sumTresholds()
+    let tresholdIndex = 0
+    for (let i = 0; i < tresholds.length; i++) {
+      const currentTreshold = tresholds[i]
+      if (monsterPoints < currentTreshold) {
+        continue
+      }
+      tresholdIndex = i
+    }
+    return tresholdIndex
+  }
+
+  private sumTresholds (): number[] {
     const baseTresholds = [0, 0, 0, 0]
     this.characterLevels.forEach(characterLevel => {
       const characterTresholds = TRESHOLDS[characterLevel]
@@ -63,18 +79,5 @@ export class EncounterLevel {
       baseTresholds[3] += characterTresholds[3]
     })
     return baseTresholds
-  }
-
-  private levelByIndex (index: number): EncounterLevelTag {
-    if (index === 0) {
-      return EncounterLevelTag.EASY
-    }
-    if (index === 1) {
-      return EncounterLevelTag.MEDIUM
-    }
-    if (index === 2) {
-      return EncounterLevelTag.HARD
-    }
-    return EncounterLevelTag.DEADLY
   }
 }

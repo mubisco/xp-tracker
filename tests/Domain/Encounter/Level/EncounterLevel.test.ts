@@ -12,7 +12,7 @@ describe('Testing EncounterLevel', () => {
     { characterLevels: [1, 1], monsterXp: [100], expectedResult: EncounterLevelTag.MEDIUM },
     { characterLevels: [1, 2], monsterXp: [75], expectedResult: EncounterLevelTag.EASY },
     { characterLevels: [1], monsterXp: [25, 25], expectedResult: EncounterLevelTag.HARD },
-    // { characterLevels: [1, 2], monsterXp: [100], expectedResult: EncounterLevelTag.EASY }
+    { characterLevels: [1, 2], monsterXp: [100], expectedResult: EncounterLevelTag.EASY },
     { characterLevels: [1, 2], monsterXp: [25, 25, 25], expectedResult: EncounterLevelTag.MEDIUM }
   ]
   test.each(encounterData)('It should return proper values', (rawData) => {
