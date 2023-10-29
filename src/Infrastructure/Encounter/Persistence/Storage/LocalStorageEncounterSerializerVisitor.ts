@@ -12,6 +12,9 @@ export class LocalStorageEncounterSerializerVisitor implements EncounterVisitor<
       ulid: encounter.id().value(),
       name: encounter.name().value(),
       status: encounter.status(),
+      level: encounter.level(),
+      // @ts-ignore
+      characterLevels: encounter._characterLevels,
       monsters
     }
     return JSON.stringify(result)
