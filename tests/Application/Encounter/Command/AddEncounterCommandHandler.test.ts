@@ -3,13 +3,16 @@ import { AddEncounterCommandHandler } from '@/Application/Encounter/Command/AddE
 import { AddEncounterWritelModelError } from '@/Domain/Encounter/AddEncounterWriteModelError'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { AddEncounterWriteModelSpy } from './AddEncounterWriteModelSpy'
+import { PartyTresholdReadModelDummy } from './PartyTresholdReadModelDummy'
 
 describe('Testing AddEncounterCommandHandler', () => {
   let sut: AddEncounterCommandHandler
   let writeModel: AddEncounterWriteModelSpy
+  let partyTresholdReadModelDummy: PartyTresholdReadModelDummy
   beforeEach(() => {
     writeModel = new AddEncounterWriteModelSpy()
-    sut = new AddEncounterCommandHandler(writeModel)
+    partyTresholdReadModelDummy = new PartyTresholdReadModelDummy()
+    sut = new AddEncounterCommandHandler(writeModel, partyTresholdReadModelDummy)
   })
   test('It should be of proper class', () => {
     expect(sut).toBeInstanceOf(AddEncounterCommandHandler)
@@ -24,5 +27,9 @@ describe('Testing AddEncounterCommandHandler', () => {
   test('It should add encounter successfully', async () => {
     await sut.handle(new AddEncounterCommand('Bichoños'))
     expect(writeModel.writeSuccessful).toBe(true)
+    const encounter = writeModel.encounter
+    expect(encounter).not.toBeNull()
+    // @ts-ignore
+    expect(encounter.level()).toBe('EASY')
   })
 })
