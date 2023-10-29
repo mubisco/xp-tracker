@@ -14,10 +14,9 @@ export class UpdateEncounterLevelCommandHandler {
 
   async handle (command: UpdateEncounterLevelCommand): Promise<void> {
     const ulid = Ulid.fromString(command.encounterUlid)
-    await this.partyTresholdsReadModel.fetchTresholds()
-    // update level with party dto
-
+    const partyTresholds = await this.partyTresholdsReadModel.fetchTresholds()
     const encounter = await this.encounterRepository.byUlid(ulid)
+    encounter.updateLevel(partyTresholds)
     await this.updateEncounterWriteModel.update(encounter)
   }
 }
