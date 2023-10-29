@@ -32,6 +32,10 @@ const LEVEL_BY_INDEX = [
 ]
 
 export class EncounterLevel {
+  static empty (): EncounterLevel {
+    return new this([], [])
+  }
+
   static fromValues (characterLevels: number[], monsterXpValues: number[]): EncounterLevel {
     return new this(characterLevels, monsterXpValues)
   }

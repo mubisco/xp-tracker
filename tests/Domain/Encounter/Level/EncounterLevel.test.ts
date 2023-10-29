@@ -15,6 +15,10 @@ describe('Testing EncounterLevel', () => {
     { characterLevels: [1, 2], monsterXp: [100], expectedResult: EncounterLevelTag.EASY },
     { characterLevels: [1, 2], monsterXp: [25, 25, 25], expectedResult: EncounterLevelTag.MEDIUM }
   ]
+  test('It shold create empty values VO', () => {
+    const sut = EncounterLevel.empty()
+    expect(sut.value()).toBe(EncounterLevelTag.UNASSIGNED)
+  })
   test.each(encounterData)('It should return proper values', (rawData) => {
     const sut = EncounterLevel.fromValues(rawData.characterLevels, rawData.monsterXp)
     expect(sut.value()).toBe(rawData.expectedResult)
