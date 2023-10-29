@@ -9,6 +9,7 @@ import { DomainEvent } from '../Shared/Event/DomainEvent'
 import { EncounterWasFinished } from './EncounterWasFinished'
 import { EncounterLevelTag } from './Level/EncounterLevelTag'
 import { PartyTresholdDto } from './Party/PartyTresholdDto'
+import { EncounterLevel } from './Level/EncounterLevel'
 
 export class DomainEncounter implements Encounter {
   private ulid: Ulid
@@ -16,7 +17,7 @@ export class DomainEncounter implements Encounter {
   private _encounterMonsters: EncounterMonster[]
   private _status: EncounterStatus
   private _events: DomainEvent[]
-  private _level: EncounterLevelTag
+  private _characterLevels: number[]
 
   static withName (name: EncounterName): DomainEncounter {
     return new DomainEncounter(name.value())
@@ -27,8 +28,8 @@ export class DomainEncounter implements Encounter {
     this._name = EncounterName.fromString(name)
     this._encounterMonsters = []
     this._status = EncounterStatus.OPEN
-    this._level = EncounterLevelTag.UNASSIGNED
     this._events = []
+    this._characterLevels = []
   }
 
   pullEvents (): DomainEvent[] {
@@ -83,10 +84,19 @@ export class DomainEncounter implements Encounter {
   }
 
   updateLevel (tresholds: PartyTresholdDto): void {
-    this._level = EncounterLevelTag.EASY
+    this._characterLevels = tresholds.characterLevels
+  }
+
+  private monsterXpValues (): number[] {
+    const values: number[] = []
+    this._encounterMonsters.forEach((currentMonster) => {
+      values.push(currentMonster.xp())
+    })
+    return values
   }
 
   level (): EncounterLevelTag {
-    return this._level
+    const level = EncounterLevel.fromValues(this._characterLevels, this.monsterXpValues())
+    return level.value()
   }
 }

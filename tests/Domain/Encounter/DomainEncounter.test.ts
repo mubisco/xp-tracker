@@ -85,4 +85,22 @@ describe('Testing DomainEncounter', () => {
     sut.updateLevel(new PartyTresholdDto([9]))
     expect(sut.level()).toBe(EncounterLevelTag.EASY)
   })
+
+  test('It should update level properly when two monster', () => {
+    const monsterToAdd = EncounterMonster.fromValues('Pollo Papi', 550, '1/2')
+    const sut = DomainEncounterOM.withName('pollos')
+    sut.addMonster(monsterToAdd)
+    sut.addMonster(monsterToAdd)
+    sut.updateLevel(new PartyTresholdDto([9]))
+    expect(sut.level()).toBe(EncounterLevelTag.HARD)
+  })
+
+  test('It should update level properly when monster added', () => {
+    const monsterToAdd = EncounterMonster.fromValues('Pollo Papi', 550, '1/2')
+    const sut = DomainEncounterOM.withName('pollos')
+    sut.addMonster(monsterToAdd)
+    sut.updateLevel(new PartyTresholdDto([9]))
+    sut.addMonster(monsterToAdd)
+    expect(sut.level()).toBe(EncounterLevelTag.HARD)
+  })
 })
