@@ -2,6 +2,7 @@ import { AddEncounterCommandHandler } from '@/Application/Encounter/Command/AddE
 import { LocalStorageEncounterRepository } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterRepository'
 import { LocalStorageEncounterSerializerVisitor } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterSerializerVisitor'
 import { LocalStorageEncounterFactory } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStorageEncounterFactory'
+import { LocalStoragePartyTresholdsRepository } from '@/Infrastructure/Encounter/Persistence/Storage/LocalStoragePartyTresholdsReadModel'
 
 export class AddEncounterCommandHandlerProvider {
   provide (): AddEncounterCommandHandler {
@@ -9,6 +10,7 @@ export class AddEncounterCommandHandlerProvider {
       new LocalStorageEncounterSerializerVisitor(),
       new LocalStorageEncounterFactory()
     )
-    return new AddEncounterCommandHandler(writeModel)
+    const partyTresholdReadModel = new LocalStoragePartyTresholdsRepository()
+    return new AddEncounterCommandHandler(writeModel, partyTresholdReadModel)
   }
 }
