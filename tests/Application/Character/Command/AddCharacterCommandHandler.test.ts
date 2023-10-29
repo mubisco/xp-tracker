@@ -3,14 +3,18 @@ import { AddCharacterCommandHandler } from '@/Application/Character/Command/AddC
 import { AddCharacterCommand } from '@/Application/Character/Command/AddCharacterCommand'
 import { CharacterWriteModelError } from '@/Domain/Character/CharacterWriteModelError'
 import { AddCharacterWriteModelSpy } from './AddCharacterWriteModelSpy'
+import { InMemoryEventBusSpy } from '@tests/Application/Encounter/Command/InMemoryEventBusSpy'
+import { PartyWasUpdated } from '@/Domain/Character/Party/PartyWasUpdated'
 
 let sut: AddCharacterCommandHandler
 let writeModel: AddCharacterWriteModelSpy
+let inMemoryEventBus: InMemoryEventBusSpy
 
 describe('Testing AddCharacterCommandHandler', () => {
   beforeEach(() => {
+    inMemoryEventBus = new InMemoryEventBusSpy()
     writeModel = new AddCharacterWriteModelSpy()
-    sut = new AddCharacterCommandHandler(writeModel)
+    sut = new AddCharacterCommandHandler(writeModel, inMemoryEventBus)
   })
   test('It should throw error when wrong name', () => {
     const command = new AddCharacterCommand('', 325, 25)
@@ -25,5 +29,12 @@ describe('Testing AddCharacterCommandHandler', () => {
     const command = new AddCharacterCommand('Darling', 325, 25)
     await sut.handle(command)
     expect(writeModel.wasAdded()).toBe(true)
+  })
+  test('It should send event', async () => {
+    const command = new AddCharacterCommand('Darling', 325, 25)
+    await sut.handle(command)
+    const events = inMemoryEventBus.events
+    expect(events).toHaveLength(1)
+    expect(events[0]).toBeInstanceOf(PartyWasUpdated)
   })
 })
