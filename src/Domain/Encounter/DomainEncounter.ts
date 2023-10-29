@@ -7,7 +7,7 @@ import { MonsterNotFoundError } from './MonsterNotFoundError'
 import { EncounterStatus } from './EncounterStatus'
 import { DomainEvent } from '../Shared/Event/DomainEvent'
 import { EncounterWasFinished } from './EncounterWasFinished'
-import { EncounterLevelTag } from './EncounterLevel'
+import { EncounterLevelTag } from './Level/EncounterLevelTag'
 import { PartyTresholdDto } from './Party/PartyTresholdDto'
 
 export class DomainEncounter implements Encounter {

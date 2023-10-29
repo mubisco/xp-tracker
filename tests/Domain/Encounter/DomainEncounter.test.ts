@@ -6,7 +6,7 @@ import { SimpleStringEncounterVisitor } from './SimpleStringEncounterVisitor'
 import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
 import { MonsterNotFoundError } from '@/Domain/Encounter/MonsterNotFoundError'
 import { EncounterStatus } from '@/Domain/Encounter/EncounterStatus'
-import { EncounterLevelTag } from '@/Domain/Encounter/EncounterLevel'
+import { EncounterLevelTag } from '@/Domain/Encounter/Level/EncounterLevelTag'
 import { PartyTresholdDto } from '@/Domain/Encounter/Party/PartyTresholdDto'
 
 describe('Testing DomainEncounter', () => {
