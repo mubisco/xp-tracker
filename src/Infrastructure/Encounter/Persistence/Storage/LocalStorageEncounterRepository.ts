@@ -54,8 +54,11 @@ implements AddEncounterWriteModel, DeleteEncounterWriteModel, FindEncounterReadM
   }
 
   async byUlid (ulid: Ulid): Promise<Encounter> {
-    const encounterData = await this.byId(ulid)
-    return this.factory.make(encounterData)
+    if (!this.encounterKeyExists(ulid)) {
+      throw new EncounterNotFoundError(`Encounter ${ulid.value()} not found !!!`)
+    }
+    const rawEncounter = this.rawEncounterData[ulid.value()]
+    return this.factory.make(rawEncounter)
   }
 
   async byId (ulid: Ulid): Promise<EncounterDto> {
