@@ -16,8 +16,13 @@ const LOCALSTORAGE_TAG = 'encounters'
 
 interface RawEncounterData { [key: string]: string }
 
-export class LocalStorageEncounterRepository
-implements AddEncounterWriteModel, DeleteEncounterWriteModel, FindEncounterReadModel, EncounterRepository, UpdateEncounterWriteModel, AllEncountersReadModel {
+export class LocalStorageEncounterRepository implements
+  AddEncounterWriteModel,
+  DeleteEncounterWriteModel,
+  FindEncounterReadModel,
+  EncounterRepository,
+  UpdateEncounterWriteModel,
+  AllEncountersReadModel {
   private rawEncounterData: RawEncounterData = {}
 
   // eslint-disable-next-line
