@@ -14,7 +14,8 @@ export class DeleteCharacterCommandHandler {
 
   async handle (command: DeleteCharacterCommand): Promise<void> {
     const characterUlid = Ulid.fromString(command.characterId)
+    await this.writeModel.remove(characterUlid)
     this.eventBus.publish([new PartyWasUpdated()])
-    return this.writeModel.remove(characterUlid)
+    return Promise.resolve()
   }
 }

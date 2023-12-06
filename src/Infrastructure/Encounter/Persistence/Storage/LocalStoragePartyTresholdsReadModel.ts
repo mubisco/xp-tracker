@@ -14,6 +14,7 @@ export class LocalStoragePartyTresholdsRepository implements PartyTresholdsReadM
   }
 
   async fetchTresholds (): Promise<PartyTresholdDto> {
+    this.readLocalStorageContent()
     const levels: number[] = []
     for (const characterId in this._localStorageRawCharacters) {
       const characterData = JSON.parse(this._localStorageRawCharacters[characterId])
