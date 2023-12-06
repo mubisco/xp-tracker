@@ -9,7 +9,7 @@ export function eventSubscribe (app: App): void {
   const provider = new UpdatePartyExperienceWhenEncounterWasFinishedProvider()
   const updateEncounterLevelWhenPartyWasUpdatedProvider = new UpdateEncounterLevelsWhenPartyUpdatedProvider()
 
-  vueEventBus.subscribe(provider.provide())
+  vueEventBus.subscribe(provider.provide(vueEventBus))
   vueEventBus.subscribe(updateEncounterLevelWhenPartyWasUpdatedProvider.provide())
   app.provide<EventBus>('eventBus', vueEventBus)
 }
