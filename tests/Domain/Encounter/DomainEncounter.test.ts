@@ -19,7 +19,7 @@ describe('Testing DomainEncounter', () => {
     expect(sut.name().value()).toBe('pollos')
     expect(sut.monsters()).toHaveLength(0)
     expect(sut.status()).toBe(EncounterStatus.OPEN)
-    expect(sut.level()).toBe(EncounterLevelTag.UNASSIGNED)
+    expect(sut.level()).toBe(EncounterLevelTag.EMPTY)
     expect(sut.pullEvents()).toHaveLength(0)
   })
 

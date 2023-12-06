@@ -35,7 +35,7 @@ describe('Testing LocalStorageEncounterRepository', () => {
     await sut.write(encounter)
     const result = await sut.byId(encounter.id())
     expect(result.ulid).toBe(encounter.id().value())
-    expect(result.level).toBe('UNASSIGNED')
+    expect(result.level).toBe('EMPTY')
   })
   test('It should throw error when encounter not found by ulid', () => {
     const ulid = Ulid.fromEmpty()

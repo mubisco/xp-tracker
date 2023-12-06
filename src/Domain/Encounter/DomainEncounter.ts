@@ -96,6 +96,9 @@ export class DomainEncounter implements Encounter {
   }
 
   level (): EncounterLevelTag {
+    if (this._encounterMonsters.length === 0) {
+      return EncounterLevelTag.EMPTY
+    }
     const level = EncounterLevel.fromValues(this._characterLevels, this.monsterXpValues())
     return level.value()
   }
