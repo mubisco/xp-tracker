@@ -1,4 +1,4 @@
-import { UpdateEncounterLevelsWhenPartyUpdated } from '@/Application/Encounter/Event/UpdateEncounterLevelsWhenPartyUpdated'
+import { UpdateEncounterLevelsWhenPartyUpdatedEventHandler } from '@/Application/Encounter/Event/UpdateEncounterLevelsWhenPartyUpdated'
 import { PartyWasUpdated } from '@/Domain/Character/Party/PartyWasUpdated'
 import { EncounterRepositoryError } from '@/Domain/Encounter/EncounterRepositoryError'
 import { PartyTresholdReadModelError } from '@/Domain/Encounter/Party/PartyTresholdsReadModelError'
@@ -29,7 +29,7 @@ describe('Testing UpdateEncounterLevelsWhenPartyUpdated', () => {
     updateEncounterWriteModelSpy = new UpdateEncounterWriteModelSpy()
   })
   test('It should listen to proper event', () => {
-    const sut = new UpdateEncounterLevelsWhenPartyUpdated(
+    const sut = new UpdateEncounterLevelsWhenPartyUpdatedEventHandler(
       failingPartyTresholdReadModel,
       failingEncounterRepository,
       failingUpdateEncounterWritModel
@@ -37,7 +37,7 @@ describe('Testing UpdateEncounterLevelsWhenPartyUpdated', () => {
     expect(sut.listensTo('PartyWasUpdated')).toBe(true)
   })
   test('It should throw error when party tresholds cannot be fetched', () => {
-    const sut = new UpdateEncounterLevelsWhenPartyUpdated(
+    const sut = new UpdateEncounterLevelsWhenPartyUpdatedEventHandler(
       failingPartyTresholdReadModel,
       failingEncounterRepository,
       failingUpdateEncounterWritModel
@@ -45,7 +45,7 @@ describe('Testing UpdateEncounterLevelsWhenPartyUpdated', () => {
     expect(sut.handle(event)).rejects.toThrow(PartyTresholdReadModelError)
   })
   test('It should throw error when encounters cannot be loaded', () => {
-    const sut = new UpdateEncounterLevelsWhenPartyUpdated(
+    const sut = new UpdateEncounterLevelsWhenPartyUpdatedEventHandler(
       partyTresholdReadModelDummy,
       failingEncounterRepository,
       failingUpdateEncounterWritModel
@@ -53,7 +53,7 @@ describe('Testing UpdateEncounterLevelsWhenPartyUpdated', () => {
     expect(sut.handle(event)).rejects.toThrow(EncounterRepositoryError)
   })
   test('It should throw error when encounters cannot be updated', () => {
-    const sut = new UpdateEncounterLevelsWhenPartyUpdated(
+    const sut = new UpdateEncounterLevelsWhenPartyUpdatedEventHandler(
       partyTresholdReadModelDummy,
       encounterRepositoryDummy,
       failingUpdateEncounterWritModel
@@ -61,7 +61,7 @@ describe('Testing UpdateEncounterLevelsWhenPartyUpdated', () => {
     expect(sut.handle(event)).rejects.toThrow(EncounterWriteModelError)
   })
   test('It should update all encounters', async () => {
-    const sut = new UpdateEncounterLevelsWhenPartyUpdated(
+    const sut = new UpdateEncounterLevelsWhenPartyUpdatedEventHandler(
       partyTresholdReadModelDummy,
       encounterRepositoryDummy,
       updateEncounterWriteModelSpy

@@ -4,7 +4,7 @@ import { PartyTresholdsReadModel } from '@/Domain/Encounter/Party/PartyTresholds
 import { UpdateEncounterWriteModel } from '@/Domain/Encounter/UpdateEncounterWriteModel'
 import { EventListener } from '@/Domain/Shared/Event/EventListener'
 
-export class UpdateEncounterLevelsWhenPartyUpdated implements EventListener {
+export class UpdateEncounterLevelsWhenPartyUpdatedEventHandler implements EventListener {
   // eslint-disable-next-line
   constructor (
     private readonly partyTresholdReadModel: PartyTresholdsReadModel,
