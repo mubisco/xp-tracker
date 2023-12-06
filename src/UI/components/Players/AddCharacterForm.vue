@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { AddCharacterCommand } from '@/Application/Character/Command/AddCharacterCommand'
+import { EventBus } from '@/Domain/Shared/Event/EventBus'
 import { AddCharacterCommandHandlerProvider } from '@/Infrastructure/Character/Provider/AddCharacterCommandHandlerProvider'
 import { useSnackbarStore } from '@/UI/store/snackbar'
-import { ref, computed } from 'vue'
+import { inject, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const name = ref('')
 const actualXp = ref(0)
 const maxHp = ref(0)
 const isValid = computed((): boolean => name.value !== '' && maxHp.value > 0)
+const eventBus = inject('eventBus')
 
 const rules = ref({
   nameNotEmpty: (value: string) => !!value || 'Name must not be empty',
@@ -16,7 +18,7 @@ const rules = ref({
 })
 
 const useCaseProvider = new AddCharacterCommandHandlerProvider()
-const useCase = useCaseProvider.provide()
+const useCase = useCaseProvider.provide(eventBus as EventBus)
 const router = useRouter()
 
 const snackbarStore = useSnackbarStore()

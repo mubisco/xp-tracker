@@ -7,6 +7,9 @@ import { MonsterNotFoundError } from './MonsterNotFoundError'
 import { EncounterStatus } from './EncounterStatus'
 import { DomainEvent } from '../Shared/Event/DomainEvent'
 import { EncounterWasFinished } from './EncounterWasFinished'
+import { EncounterLevelTag } from './Level/EncounterLevelTag'
+import { PartyTresholdDto } from './Party/PartyTresholdDto'
+import { EncounterLevel } from './Level/EncounterLevel'
 
 export class DomainEncounter implements Encounter {
   private ulid: Ulid
@@ -14,6 +17,7 @@ export class DomainEncounter implements Encounter {
   private _encounterMonsters: EncounterMonster[]
   private _status: EncounterStatus
   private _events: DomainEvent[]
+  private _characterLevels: number[]
 
   static withName (name: EncounterName): DomainEncounter {
     return new DomainEncounter(name.value())
@@ -25,6 +29,7 @@ export class DomainEncounter implements Encounter {
     this._encounterMonsters = []
     this._status = EncounterStatus.OPEN
     this._events = []
+    this._characterLevels = []
   }
 
   pullEvents (): DomainEvent[] {
@@ -69,12 +74,29 @@ export class DomainEncounter implements Encounter {
   removeMonster (monster: EncounterMonster): void {
     const updatedMonsters = this._encounterMonsters.filter((currenMonster) => !currenMonster.equalsTo(monster))
     if (this._encounterMonsters.length === updatedMonsters.length) {
-      throw new MonsterNotFoundError('Method not implemented.')
+      throw new MonsterNotFoundError(`${monster.name()} not in this encounter`)
     }
     this._encounterMonsters = updatedMonsters
   }
 
   monsters (): EncounterMonster[] {
     return this._encounterMonsters
+  }
+
+  updateLevel (tresholds: PartyTresholdDto): void {
+    this._characterLevels = tresholds.characterLevels
+  }
+
+  private monsterXpValues (): number[] {
+    const values: number[] = []
+    this._encounterMonsters.forEach((currentMonster) => {
+      values.push(currentMonster.xp())
+    })
+    return values
+  }
+
+  level (): EncounterLevelTag {
+    const level = EncounterLevel.fromValues(this._characterLevels, this.monsterXpValues())
+    return level.value()
   }
 }

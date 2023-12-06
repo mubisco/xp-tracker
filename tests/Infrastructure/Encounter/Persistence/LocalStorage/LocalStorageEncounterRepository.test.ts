@@ -35,6 +35,7 @@ describe('Testing LocalStorageEncounterRepository', () => {
     await sut.write(encounter)
     const result = await sut.byId(encounter.id())
     expect(result.ulid).toBe(encounter.id().value())
+    expect(result.level).toBe('UNASSIGNED')
   })
   test('It should throw error when encounter not found by ulid', () => {
     const ulid = Ulid.fromEmpty()
@@ -83,5 +84,18 @@ describe('Testing LocalStorageEncounterRepository', () => {
     await sut.remove(encounter)
     const results = await sut.all()
     expect(results).toHaveLength(0)
+  })
+
+  test('It should return empty array when no encounters found', async () => {
+    const encounters = await sut.allEncounters()
+    expect(encounters).toHaveLength(0)
+  })
+
+  test('It should return encounters when queried', async () => {
+    const encounter = DomainEncounterOM.withName('asd')
+    await sut.write(encounter)
+    const encounters = await sut.allEncounters()
+    expect(encounters).toHaveLength(1)
+    expect(encounters[0]).toStrictEqual(encounter)
   })
 })

@@ -16,8 +16,13 @@ const LOCALSTORAGE_TAG = 'encounters'
 
 interface RawEncounterData { [key: string]: string }
 
-export class LocalStorageEncounterRepository
-implements AddEncounterWriteModel, DeleteEncounterWriteModel, FindEncounterReadModel, EncounterRepository, UpdateEncounterWriteModel, AllEncountersReadModel {
+export class LocalStorageEncounterRepository implements
+  AddEncounterWriteModel,
+  DeleteEncounterWriteModel,
+  FindEncounterReadModel,
+  EncounterRepository,
+  UpdateEncounterWriteModel,
+  AllEncountersReadModel {
   private rawEncounterData: RawEncounterData = {}
 
   // eslint-disable-next-line
@@ -28,7 +33,15 @@ implements AddEncounterWriteModel, DeleteEncounterWriteModel, FindEncounterReadM
     this.readEncounterData()
   }
 
-  remove (encounter: Encounter): Promise<void> {
+  async allEncounters (): Promise<Encounter[]> {
+    const encounters: Encounter[] = []
+    for (const encounterUlid in this.rawEncounterData) {
+      encounters.push(this.factory.make(this.rawEncounterData[encounterUlid]))
+    }
+    return Promise.resolve(encounters)
+  }
+
+  async remove (encounter: Encounter): Promise<void> {
     const updatedEncounterData: RawEncounterData = { ...this.rawEncounterData }
     delete (updatedEncounterData[encounter.id().value()])
     this.rawEncounterData = updatedEncounterData
@@ -36,7 +49,7 @@ implements AddEncounterWriteModel, DeleteEncounterWriteModel, FindEncounterReadM
     return Promise.resolve()
   }
 
-  all (): Promise<EncounterDto[]> {
+  async all (): Promise<EncounterDto[]> {
     const parsedEncounters: EncounterDto[] = []
     for (const encounterId in this.rawEncounterData) {
       const currentEncounter = this.rawEncounterData[encounterId]
@@ -54,8 +67,11 @@ implements AddEncounterWriteModel, DeleteEncounterWriteModel, FindEncounterReadM
   }
 
   async byUlid (ulid: Ulid): Promise<Encounter> {
-    const encounterData = await this.byId(ulid)
-    return this.factory.make(encounterData)
+    if (!this.encounterKeyExists(ulid)) {
+      throw new EncounterNotFoundError(`Encounter ${ulid.value()} not found !!!`)
+    }
+    const rawEncounter = this.rawEncounterData[ulid.value()]
+    return this.factory.make(rawEncounter)
   }
 
   async byId (ulid: Ulid): Promise<EncounterDto> {

@@ -3,4 +3,5 @@ import { Encounter } from './Encounter'
 
 export interface EncounterRepository {
   byUlid (ulid: Ulid): Promise<Encounter>
+  allEncounters (): Promise<Encounter[]>
 }

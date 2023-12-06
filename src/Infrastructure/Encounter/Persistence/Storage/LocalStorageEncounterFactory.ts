@@ -1,5 +1,4 @@
 import { DomainEncounter } from '@/Domain/Encounter/DomainEncounter'
-import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
 import { EncounterName } from '@/Domain/Encounter/EncounterName'
 import { EncounterStatus } from '@/Domain/Encounter/EncounterStatus'
 import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
@@ -7,14 +6,17 @@ import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
 import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 
 export class LocalStorageEncounterFactory {
-  make (encounterData: EncounterDto): DomainEncounter {
-    const encounter = DomainEncounter.withName(EncounterName.fromString(encounterData.name))
+  make (encounterData: string): DomainEncounter {
+    const parsedData = JSON.parse(encounterData)
+    const encounter = DomainEncounter.withName(EncounterName.fromString(parsedData.name))
     // @ts-ignore
-    encounter.ulid = Ulid.fromString(encounterData.ulid)
+    encounter.ulid = Ulid.fromString(parsedData.ulid)
     // @ts-ignore
-    encounter._encounterMonsters = this.hydrateMonsters(encounterData.monsters)
+    encounter._encounterMonsters = this.hydrateMonsters(parsedData.monsters)
     // @ts-ignore
-    encounter._status = EncounterStatus[encounterData.status]
+    encounter._status = EncounterStatus[parsedData.status]
+    // @ts-ignore
+    encounter._characterLevels = parsedData.characterLevels
     return encounter
   }
 

@@ -4,14 +4,15 @@ import { EncounterMonster } from '@/Domain/Encounter/Monster/EncounterMonster'
 import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
 
 export class LocalStorageEncounterSerializerVisitor implements EncounterVisitor<string> {
-  // TODO To simplify maintanibility, this visitor shouls generate a EncounterDto structure
-  // so the read model was just to parse the stored item
   visitDomainEncounter (encounter: DomainEncounter): string {
     const monsters = this.visitMonsters(encounter.monsters())
     const result = {
       ulid: encounter.id().value(),
       name: encounter.name().value(),
       status: encounter.status(),
+      level: encounter.level(),
+      // @ts-ignore
+      characterLevels: encounter._characterLevels,
       monsters
     }
     return JSON.stringify(result)

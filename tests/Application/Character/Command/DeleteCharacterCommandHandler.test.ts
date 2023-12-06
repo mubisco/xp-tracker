@@ -4,15 +4,19 @@ import { CharacterNotFoundError } from '@/Domain/Character/CharacterNotFoundErro
 import { CharacterWriteModelError } from '@/Domain/Character/CharacterWriteModelError'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { DeleteCharacterWriteModelStub } from './DeleteCharacterWriteModelStub'
+import { InMemoryEventBusSpy } from '@tests/Application/Encounter/Command/InMemoryEventBusSpy'
+import { PartyWasUpdated } from '@/Domain/Character/Party/PartyWasUpdated'
 
 describe('Testing DeleteCharacterCommandHandler', () => {
   let sut: DeleteCharacterCommandHandler
   let writeModel: DeleteCharacterWriteModelStub
+  let inMemoryEventBus: InMemoryEventBusSpy
   const command = new DeleteCharacterCommand('01HB0V6TZFYR4XEG3FJAS177J4')
 
   beforeEach(() => {
+    inMemoryEventBus = new InMemoryEventBusSpy()
     writeModel = new DeleteCharacterWriteModelStub()
-    sut = new DeleteCharacterCommandHandler(writeModel)
+    sut = new DeleteCharacterCommandHandler(writeModel, inMemoryEventBus)
   })
   test('It should be of proper class', () => {
     expect(sut).toBeInstanceOf(DeleteCharacterCommandHandler)
@@ -31,5 +35,11 @@ describe('Testing DeleteCharacterCommandHandler', () => {
   test('It should delete character properly', async () => {
     await sut.handle(command)
     expect(writeModel.deleted).toBe(true)
+  })
+  test('It should send event', async () => {
+    await sut.handle(command)
+    const events = inMemoryEventBus.events
+    expect(events).toHaveLength(1)
+    expect(events[0]).toBeInstanceOf(PartyWasUpdated)
   })
 })

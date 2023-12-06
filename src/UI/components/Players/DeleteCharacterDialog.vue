@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { DeleteCharacterCommand } from '@/Application/Character/Command/DeleteCharacterCommand'
 import { DeleteCharacterCommandHandlerProvider } from '@/Infrastructure/Character/Provider/DeleteCharacterCommandHandlerProvider'
-import { computed } from 'vue'
+import { inject, computed } from 'vue'
 import { useSnackbarStore } from '@/UI/store/snackbar'
+import { EventBus } from '@/Domain/Shared/Event/EventBus'
 
 const props = defineProps({
   characterName: { type: String, required: true },
@@ -10,12 +11,14 @@ const props = defineProps({
   modelValue: { type: Boolean, required: true }
 })
 
+const eventBus = inject('eventBus')
+
 const emit = defineEmits(['update:modelValue'])
 const useCaseProvider = new DeleteCharacterCommandHandlerProvider()
 const snackbarStore = useSnackbarStore()
 
 const onDeleteConfirmationClicked = async () => {
-  const handler = useCaseProvider.provide()
+  const handler = useCaseProvider.provide(eventBus as EventBus)
   const command = new DeleteCharacterCommand(props.characterUlid)
   await handler.handle(command)
   showDialog.value = false
