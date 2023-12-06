@@ -14,7 +14,7 @@ describe('Testing LocalStorageEncounterFactory', () => {
     expect(result.id().value()).toBe('01HDXRYRYTN9S5RVEY1ZYZQZ7Y')
     expect(result.name().value()).toBe('Pollos')
     expect(result.status()).toBe(EncounterStatus.OPEN)
-    expect(result.level()).toBe(EncounterLevelTag.UNASSIGNED)
+    expect(result.level()).toBe(EncounterLevelTag.EMPTY)
   })
 
   test('It should return proper basic Domain Encounter with monster', () => {

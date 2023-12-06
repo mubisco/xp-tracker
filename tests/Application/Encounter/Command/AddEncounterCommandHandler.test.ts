@@ -30,6 +30,6 @@ describe('Testing AddEncounterCommandHandler', () => {
     const encounter = writeModel.encounter
     expect(encounter).not.toBeNull()
     // @ts-ignore
-    expect(encounter.level()).toBe('EASY')
+    expect(encounter.level()).toBe('EMPTY')
   })
 })

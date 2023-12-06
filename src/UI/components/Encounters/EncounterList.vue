@@ -3,7 +3,7 @@ import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
 import { AllEncountersQueryHandlerProvider } from '@/Infrastructure/Encounter/Provider/AllEncountersQueryHandlerProvider'
 import EncounterDetails from './EncounterDetails.vue'
 import RemoveEncounterDialog from './RemoveEncounterDialog.vue'
-// import LevelTag from '@/UI/components/Encounters/LevelTag.vue'
+import LevelTag from '@/UI/components/Encounters/LevelTag.vue'
 import { ref, onMounted } from 'vue'
 import FinishEncounterButton from './FinishEncounterButton.vue'
 
@@ -43,7 +43,7 @@ const onEncounterDeleteConfirmed = async (): Promise<void> => {
           <div class="flex-grow-1">
             {{ encounter.name }}
           </div>
-          <!-- <LevelTag :level="encounter.level" /> -->
+          <LevelTag :level="encounter.level" />
         </div>
       </v-expansion-panel-title>
       <v-expansion-panel-text>
