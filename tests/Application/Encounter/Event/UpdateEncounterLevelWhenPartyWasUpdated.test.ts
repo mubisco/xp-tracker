@@ -28,13 +28,13 @@ describe('Testing UpdateEncounterLevelsWhenPartyUpdated', () => {
     failingUpdateEncounterWritModel = new FailingUpdateEncounterWriteModel()
     updateEncounterWriteModelSpy = new UpdateEncounterWriteModelSpy()
   })
-  test('It should be of proper class', () => {
+  test('It should listen to proper event', () => {
     const sut = new UpdateEncounterLevelsWhenPartyUpdated(
       failingPartyTresholdReadModel,
       failingEncounterRepository,
       failingUpdateEncounterWritModel
     )
-    expect(sut).toBeInstanceOf(UpdateEncounterLevelsWhenPartyUpdated)
+    expect(sut.listensTo('PartyWasUpdated')).toBe(true)
   })
   test('It should throw error when party tresholds cannot be fetched', () => {
     const sut = new UpdateEncounterLevelsWhenPartyUpdated(
