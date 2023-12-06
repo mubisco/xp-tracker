@@ -4,7 +4,7 @@ import { inject } from 'vue'
 import { FinishEncounterCommand } from '@/Application/Encounter/Command/FinishEncounterCommand'
 import { EventBus } from '@/Domain/Shared/Event/EventBus'
 
-const props = defineProps<{ encounterUlid: string }>()
+const props = defineProps<{ encounterUlid: string, encounterStatus: string }>()
 
 const provider = new FinishEncounterCommandHandlerProvider()
 const eventBus = inject('eventBus')
@@ -23,6 +23,7 @@ const onAddXpButtonClicked = async (): Promise<void> => {
   <v-btn
     variant="elevated"
     color="primary"
+    :disabled="encounterStatus === 'DONE'"
     prepend-icon="mdi-content-save"
     @click="onAddXpButtonClicked()"
   >

@@ -2,10 +2,14 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  level: { type: String, required: true }
+  level: { type: String, required: true },
+  status: { type: String, required: true }
 })
 
 const colorTag = computed(() => {
+  if (props.status === 'DONE') {
+    return 'grey'
+  }
   if (props.level === 'EASY') {
     return 'green-darken-1'
   }

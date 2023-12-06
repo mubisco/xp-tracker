@@ -2,6 +2,7 @@ import { CharacterParty } from '@/Domain/Character/Party/CharacterParty'
 import { describe, expect, test } from 'vitest'
 import { BasicCharacterOM } from '../BasicCharacterOM'
 import { Experience } from '@/Domain/Character/Experience'
+import { PartyWasUpdated } from '@/Domain/Character/Party/PartyWasUpdated'
 
 describe('Testing CharacterParty', () => {
   test('It should be of proper class', () => {
@@ -26,6 +27,9 @@ describe('Testing CharacterParty', () => {
     sut.updateExperience(experience)
     const characterExperience = characterOne.experience()
     expect(characterExperience.actual).toBe(545)
+    const events = sut.pullEvents()
+    expect(events).toHaveLength(1)
+    expect(events[0]).toBeInstanceOf(PartyWasUpdated)
   })
   test('It should split equally all experience between characters', () => {
     const characterOne = BasicCharacterOM.withActualHp(25)
