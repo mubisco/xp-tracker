@@ -43,7 +43,10 @@ const onEncounterDeleteConfirmed = async (): Promise<void> => {
           <div class="flex-grow-1">
             {{ encounter.name }}
           </div>
-          <LevelTag :level="encounter.level" />
+          <LevelTag
+            :level="encounter.level"
+            :status="encounter.status"
+          />
         </div>
       </v-expansion-panel-title>
       <v-expansion-panel-text>
@@ -64,12 +67,14 @@ const onEncounterDeleteConfirmed = async (): Promise<void> => {
             variant="outlined"
             color="primary"
             prepend-icon="mdi-pencil"
+            :disabled="encounter.status === 'DONE'"
             :to="{ name: 'EditEncounter', params: { encounterId: encounter.ulid } }"
           >
             Edit
           </v-btn>
           <FinishEncounterButton
             :encounter-ulid="encounter.ulid"
+            :encounter-status="encounter.status"
           />
         </div>
       </v-expansion-panel-text>
