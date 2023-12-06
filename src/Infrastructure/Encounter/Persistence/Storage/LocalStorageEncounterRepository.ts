@@ -33,7 +33,7 @@ export class LocalStorageEncounterRepository implements
     this.readEncounterData()
   }
 
-  allEncounters (): Promise<Encounter[]> {
+  async allEncounters (): Promise<Encounter[]> {
     const encounters: Encounter[] = []
     for (const encounterUlid in this.rawEncounterData) {
       encounters.push(this.factory.make(this.rawEncounterData[encounterUlid]))
@@ -41,7 +41,7 @@ export class LocalStorageEncounterRepository implements
     return Promise.resolve(encounters)
   }
 
-  remove (encounter: Encounter): Promise<void> {
+  async remove (encounter: Encounter): Promise<void> {
     const updatedEncounterData: RawEncounterData = { ...this.rawEncounterData }
     delete (updatedEncounterData[encounter.id().value()])
     this.rawEncounterData = updatedEncounterData
@@ -49,7 +49,7 @@ export class LocalStorageEncounterRepository implements
     return Promise.resolve()
   }
 
-  all (): Promise<EncounterDto[]> {
+  async all (): Promise<EncounterDto[]> {
     const parsedEncounters: EncounterDto[] = []
     for (const encounterId in this.rawEncounterData) {
       const currentEncounter = this.rawEncounterData[encounterId]
