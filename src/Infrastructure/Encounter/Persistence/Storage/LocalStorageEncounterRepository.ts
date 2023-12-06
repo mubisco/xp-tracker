@@ -28,6 +28,14 @@ implements AddEncounterWriteModel, DeleteEncounterWriteModel, FindEncounterReadM
     this.readEncounterData()
   }
 
+  allEncounters (): Promise<Encounter[]> {
+    const encounters: Encounter[] = []
+    for (const encounterUlid in this.rawEncounterData) {
+      encounters.push(this.factory.make(this.rawEncounterData[encounterUlid]))
+    }
+    return Promise.resolve(encounters)
+  }
+
   remove (encounter: Encounter): Promise<void> {
     const updatedEncounterData: RawEncounterData = { ...this.rawEncounterData }
     delete (updatedEncounterData[encounter.id().value()])
