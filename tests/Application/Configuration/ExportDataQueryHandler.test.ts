@@ -9,10 +9,6 @@ describe('Testing ExportDataQueryHandler', () => {
   const failingReadModel = new FailingConfigurationReadModelDummy()
   const stubReadModel = new ConfigurationReadModelStub()
 
-  test('It should be of proper class', () => {
-    const sut = new ExportDataQueryHandler(failingReadModel)
-    expect(sut).toBeInstanceOf(ExportDataQueryHandler)
-  })
   test('It should throw exception when filename provided is not valid', () => {
     const sut = new ExportDataQueryHandler(failingReadModel)
     const query = new ExportDataQuery('as')
