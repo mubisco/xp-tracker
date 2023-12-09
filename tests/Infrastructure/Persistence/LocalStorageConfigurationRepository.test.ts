@@ -1,7 +1,6 @@
 import { LocalStorageConfigurationRepository } from '@/Infrastructure/Persistence/LocalStorage/LocalStorageConfigurationRepository'
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, beforeEach } from 'vitest'
 import exampleData from './exampleData.json'
-import { beforeEach } from 'node:test'
 
 describe('Testing LocalStorageConfigurationRepository', () => {
   beforeEach(() => {
