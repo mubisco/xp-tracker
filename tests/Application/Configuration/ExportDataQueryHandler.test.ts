@@ -27,6 +27,7 @@ describe('Testing ExportDataQueryHandler', () => {
     const sut = new ExportDataQueryHandler(stubReadModel)
     const query = new ExportDataQuery('valid_filename8')
     const result = await sut.handle(query)
-    expect(result).toStrictEqual({ 'valid_filename8.json': 'asdasdasd' })
+    expect(result.filename).toBe('valid_filename8.json')
+    expect(result.base64content).toBe('asdasdasd')
   })
 })
