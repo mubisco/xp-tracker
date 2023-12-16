@@ -21,7 +21,7 @@ const readFiles = (event: Event) => {
     return
   }
   const reader = new FileReader()
-  reader.readAsText(file, 'UTF-8');
+  reader.readAsText(file, 'UTF-8')
   reader.onloadend = (readerEvent: ProgressEvent<FileReader>) => {
     if (readerEvent?.target?.result) {
       content.value = readerEvent.target.result.toString()
