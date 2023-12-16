@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { ImportDataCommandHandlerProvider } from './ImportDataCommandHandlerProvider'
 import { ImportDataCommandHandler } from '@/Application/Configuration/Command/ImportDataCommandHandler'
+import { ImportDataCommandHandlerProvider } from '@/Infrastructure/Configuration/Provider/ImportDataCommandHandlerProvider'
 
 describe('Testing ExportDataQueryHandlerProvider', () => {
   test('It should return proper handler', () => {
