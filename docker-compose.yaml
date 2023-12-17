@@ -1,0 +1,52 @@
+---
+version: '3'
+services:
+  backend:
+    container_name: xp-track-back
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.local
+      args:
+        - PORT=5000
+    ports:
+      - 5000:5000
+    volumes:
+      - ./backend:/app
+    command: gow run .
+    networks:
+      - xp_tracker
+  # database:
+  #   container_name: database
+  #   image: mariadb:10.7.3
+  #   command:
+  #     - '--character-set-server=utf8mb4'
+  #     - '--collation-server=utf8mb4_unicode_ci'
+  #     - '--default-authentication-plugin=mysql_native_password'
+  #   environment:
+  #     MYSQL_DATABASE: develop_db
+  #     MYSQL_USER: developer
+  #     MYSQL_PASSWORD: password
+  #     MYSQL_ROOT_PASSWORD: root
+  #   volumes:
+  #     - .docker/mysql/init:/docker-entrypoint-initdb.d
+  #     - .docker/mysql/data:/var/lib/mysql
+  #   ports:
+  #     - 3500:3306
+  #   networks:
+  #     - rm_next
+  frontend:
+    container_name: xp-track-front
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.local
+      args:
+        - PORT=3000
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/home/node/app
+    command: "npm run docker-dev"
+    networks:
+      - xp_tracker
+networks:
+  xp_tracker:
