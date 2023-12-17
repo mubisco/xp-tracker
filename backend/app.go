@@ -11,6 +11,14 @@ import (
 )
 
 func main() {
+	r := setupRouter()
+	err := http.ListenAndServe(":5000", r)
+	if err != nil {
+		log.Fatalf("Fatal error building base server. Err: %s", err)
+	}
+}
+
+func setupRouter() chi.Router {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -19,8 +27,5 @@ func main() {
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	r.Get("/", ReadyController.Invoke)
-	err := http.ListenAndServe(":5000", r)
-	if err != nil {
-		log.Fatalf("Fatal error building base server. Err: %s", err)
-	}
+	return r
 }
