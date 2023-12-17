@@ -1,8 +1,12 @@
-FROM golang:1.21.5
+FROM golang:1.21.5-alpine
 
 WORKDIR /app
 
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
+RUN apk --update upgrade \
+  && apk add sudo shadow bash zsh curl neovim git
 RUN go install github.com/mitranim/gow@latest 
+RUN sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 EXPOSE 5000
 
