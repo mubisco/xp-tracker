@@ -13,11 +13,13 @@ func Invoke(w http.ResponseWriter, r *http.Request) {
 	jsonResp, err := json.Marshal(resp)
 	if err != nil {
 		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	_, writeErr := w.Write(jsonResp)
 	if writeErr != nil {
 		log.Fatalf("Fatal error writing response. Err: %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }
