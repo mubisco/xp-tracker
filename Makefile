@@ -38,3 +38,7 @@ sh-root: ##  Access to backend shell as root
 .PHONY: logs
 logs: ##  Access to backend shell
 	@$(DOCKER_COMPOSE) logs $(BACK_IMAGE)
+
+.PHONY: test-back
+test-back:
+	@$(DOCKER_COMPOSE) exec $(BACK_IMAGE) go test ./...
