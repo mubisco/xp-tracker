@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	ReadyController "mubisco/xptracker/src/readyness/infrastructure/entrypoint/api"
+	BasicController "mubisco/xptracker/src/readyness/infrastructure/entrypoint/api"
 	"net/http"
 	"time"
 
@@ -26,6 +26,7 @@ func setupRouter() chi.Router {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	r.Get("/", ReadyController.Invoke)
+	r.Get("/health", BasicController.Ready)
+	r.Get("/", BasicController.NotFound)
 	return r
 }

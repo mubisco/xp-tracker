@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Invoke(w http.ResponseWriter, r *http.Request) {
+func Ready(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	resp := make(map[string]bool)
 	resp["ready"] = true
