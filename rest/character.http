@@ -1,0 +1,18 @@
+POST http://localhost:5000/character
+Content-Type: application/json
+
+{
+  "id": "01HJCGHACDM5XTZVCECF88N2KZ",
+  "name": "morpheus",
+  "actualXp": 300,
+  "maxHp": 50
+}
+
+POST http://localhost:5000/character
+Content-Type: application/json
+
+{
+  "name": "morpheus",
+  "actualXp": 300,
+  "maxHp": 50
+}
