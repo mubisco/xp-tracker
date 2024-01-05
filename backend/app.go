@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	BasicController "mubisco/xptracker/src/readyness/infrastructure/entrypoint/api"
+  CharacterController "mubisco/xptracker/src/infrastructure/entrypoint/api/character"
 	"net/http"
 	"time"
 
@@ -25,6 +26,11 @@ func setupRouter() chi.Router {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
+
+  r.Route("/character", func(r chi.Router) {
+    r.Post("/", CharacterController.AddCharacter)
+    r.Get("/all", CharacterController.GetCharacters)
+  })
 
 	r.Get("/health", BasicController.Ready)
 	r.Get("/", BasicController.NotFound)
