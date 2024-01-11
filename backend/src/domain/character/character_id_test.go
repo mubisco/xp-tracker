@@ -18,11 +18,11 @@ func TestFromEmpty(t *testing.T) {
 func TestShouldReturnValidUlid(t *testing.T) {
 	expectedValue := "01AN4Z07BY79KA1307SR9X4MV3"
 	sut, err := NewCharacterId(expectedValue)
-  if (err != nil) {
+	if err != nil {
 		t.Errorf("Should not fail when valid id")
-  }
+	}
 	receivedValue := sut.value()
-	if receivedValue != "" {
+	if receivedValue != expectedValue {
 		t.Errorf("Values dont match, expected %s, received %s", expectedValue, receivedValue)
 	}
 }
