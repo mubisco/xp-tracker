@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"testing"
 )
+const ULID = "01AN4Z07BY79KA1307SR9X4MV3";
 
 func TestInstanceOf(t *testing.T) {
-	characterId := FromEmpty()
-	sut := Character{characterId}
+	sut := dummyCharacter()
 	instance := reflect.TypeOf(sut).String()
 	if instance != "character.Character" {
 		t.Errorf("Not proper type, %v received", instance)
@@ -15,11 +15,15 @@ func TestInstanceOf(t *testing.T) {
 }
 
 func TestValues(t *testing.T) {
-	characterId := FromEmpty()
-	sut := Character{characterId}
-	if sut.Id() != characterId.value() {
+	sut := dummyCharacter()
+	if sut.Id() != ULID {
 		t.Errorf("Not matching ids")
 	}
+}
+
+func dummyCharacter() Character {
+	characterId, _ := NewCharacterId(ULID)
+	return Character{characterId}
 }
 
 // func TestInvoke(t *testing.T) {
