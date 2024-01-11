@@ -16,7 +16,7 @@ func TestInstanceOf(t *testing.T) {
 }
 
 func TestErrorWhenWrongUlid(t *testing.T) {
-	_, err := NewCharacter("asd")
+	_, err := NewCharacter("asd", "Chindasvinto")
 	if err == nil {
 		t.Errorf("Should return error when wrong ULID")
 	}
@@ -27,8 +27,11 @@ func TestValues(t *testing.T) {
 	if sut.Id() != ULID {
 		t.Errorf("Not matching ids")
 	}
+	if sut.Name() != "Chindasvinto" {
+		t.Errorf("Character name not valid!!!")
+	}
 }
 
 func dummyCharacter() (Character, error) {
-	return NewCharacter(ULID)
+	return NewCharacter(ULID, "Chindasvinto")
 }
