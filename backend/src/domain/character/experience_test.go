@@ -16,7 +16,7 @@ import (
 
 func TestShouldReturnErrorWhenZero(t *testing.T) {
 	_, err := NewExperience(-1)
-	if err != nil {
+	if err == nil {
 		t.Errorf("Values below Zero experience should throw error")
 	}
 }
