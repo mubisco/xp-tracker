@@ -1,0 +1,6 @@
+---
+controllers:
+  resource:
+    path: ../src/Controller/
+    namespace: XpTracker\Controller
+  type: attribute
