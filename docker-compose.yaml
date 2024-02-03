@@ -12,12 +12,13 @@ services:
       - 5000:5000
     volumes:
       - ./backend:/app
-    command: gow run .
+    command: symfony serve --port=5000 --allow-http
+    # command: tail -f /dev/null
     networks:
       - xp_tracker
   # database:
   #   container_name: database
-  #   image: mariadb:10.7.3
+  #   image: mariadb:11.2.2
   #   command:
   #     - '--character-set-server=utf8mb4'
   #     - '--collation-server=utf8mb4_unicode_ci'
@@ -33,7 +34,7 @@ services:
   #   ports:
   #     - 3500:3306
   #   networks:
-  #     - rm_next
+  #     - xp_tracker
   frontend:
     container_name: xp-track-front
     build:

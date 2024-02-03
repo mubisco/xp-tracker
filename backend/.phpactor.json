@@ -1,0 +1,13 @@
+{
+    "$schema": "/home/mubisco/.local/share/nvim/mason/packages/phpactor/phpactor.schema.json",
+    "symfony.enabled": true,
+    "indexer.exclude_patterns": [
+        "/vendor/**/Tests/**/*",
+        "/vendor/**/tests/**/*",
+        "/var/cache/**/*",
+        "/vendor/composer/**/*"
+    ],
+    "behat.enabled": true,
+    "language_server_phpstan.enabled": false,
+    "php_code_sniffer.enabled": true
+}
