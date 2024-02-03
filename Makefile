@@ -20,11 +20,11 @@ down: ##  Stop containers
 	@$(DOCKER_COMPOSE) down
 
 .PHONY: restart
-restart: stop start ##  Restart containers
+restart: down up ##  Restart containers
 
 .PHONY: build
 build: ##  Force container build
-	@make stop
+	@make down
 	@$(DOCKER_COMPOSE) build --no-cache
 
 .PHONY: sh-back
@@ -39,6 +39,6 @@ sh-root: ##  Access to backend shell as root
 logs: ##  Access to backend shell
 	@$(DOCKER_COMPOSE) logs -f $(BACK_IMAGE)
 
-.PHONY: test-back
-test-back:
-	@$(DOCKER_COMPOSE) exec $(BACK_IMAGE) go test ./...
+# .PHONY: test-back
+# test-back:
+# 	@$(DOCKER_COMPOSE) exec $(BACK_IMAGE) go test ./...
