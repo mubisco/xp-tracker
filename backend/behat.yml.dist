@@ -1,0 +1,16 @@
+---
+default:
+  suites:
+    default:
+      contexts:
+        - XpTracker\Tests\Acceptance\DemoContext
+      paths:
+        - 'tests/Acceptance/features'
+  extensions:
+    FriendsOfBehat\SymfonyExtension:
+      bootstrap: ~
+      kernel:
+        class: XpTracker\Kernel
+        path: ~
+        environment: ~
+        debug: ~

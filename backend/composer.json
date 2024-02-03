@@ -15,6 +15,8 @@
         "symfony/yaml": "7.0.*"
     },
     "require-dev": {
+        "behat/behat": "^3.14",
+        "friends-of-behat/symfony-extension": "^2.5"
     },
     "config": {
         "allow-plugins": {
