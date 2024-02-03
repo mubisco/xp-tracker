@@ -45,4 +45,15 @@ final class DemoContext implements Context
             throw new \RuntimeException('No response received');
         }
     }
+
+     /**
+     * @Then a :expectedStatusCode status code should ve received
+     */
+    public function aStatusCodeShouldVeReceived(int $expectedStatusCode): void
+    {
+        $statusCode = $this->response->getStatusCode();
+        if ($statusCode !== $expectedStatusCode) {
+            throw new \RuntimeException("Status codes does not match!!!");
+        }
+    }
 }

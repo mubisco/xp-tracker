@@ -4,7 +4,7 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
-  XpTracket\:
+  XpTracker\:
     resource: '../src/'
     exclude:
       - '../src/DependencyInjection/'
