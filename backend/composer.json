@@ -16,7 +16,11 @@
     },
     "require-dev": {
         "behat/behat": "^3.14",
-        "friends-of-behat/symfony-extension": "^2.5"
+        "friends-of-behat/symfony-extension": "^2.5",
+        "phpunit/phpunit": "^9.5",
+        "symfony/browser-kit": "7.0.*",
+        "symfony/css-selector": "7.0.*",
+        "symfony/phpunit-bridge": "^7.0"
     },
     "config": {
         "allow-plugins": {
