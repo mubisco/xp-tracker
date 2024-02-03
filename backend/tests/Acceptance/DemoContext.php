@@ -51,7 +51,7 @@ final class DemoContext implements Context
      */
     public function aStatusCodeShouldVeReceived(int $expectedStatusCode): void
     {
-        $statusCode = $this->response->getStatusCode();
+        $statusCode = $this->response?->getStatusCode();
         if ($statusCode !== $expectedStatusCode) {
             throw new \RuntimeException("Status codes does not match!!!");
         }

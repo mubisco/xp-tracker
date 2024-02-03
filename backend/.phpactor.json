@@ -7,5 +7,7 @@
         "/var/cache/**/*",
         "/vendor/composer/**/*"
     ],
-    "behat.enabled": true
+    "behat.enabled": true,
+    "language_server_phpstan.enabled": false,
+    "php_code_sniffer.enabled": true
 }
