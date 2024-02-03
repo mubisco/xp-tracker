@@ -8,3 +8,5 @@ parameters:
         - tests/
     symfony:
         container_xml_path: var/cache/dev/XpTracker_KernelDevDebugContainer.xml
+    doctrine:
+        objectManagerLoader: tests/object-manager.php
