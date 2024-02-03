@@ -6,3 +6,5 @@ parameters:
         - public/
         - src/
         - tests/
+    symfony:
+        container_xml_path: var/cache/dev/XpTracker_KernelDevDebugContainer.xml
