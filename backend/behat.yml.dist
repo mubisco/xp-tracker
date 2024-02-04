@@ -8,7 +8,7 @@ default:
         - 'tests/Acceptance/features'
   extensions:
     FriendsOfBehat\SymfonyExtension:
-      bootstrap: ~
+      bootstrap: tests/bootstrap.php
       kernel:
         class: XpTracker\Kernel
         path: ~
