@@ -16,25 +16,25 @@ services:
     # command: tail -f /dev/null
     networks:
       - xp_tracker
-  # database:
-  #   container_name: database
-  #   image: mariadb:11.2.2
-  #   command:
-  #     - '--character-set-server=utf8mb4'
-  #     - '--collation-server=utf8mb4_unicode_ci'
-  #     - '--default-authentication-plugin=mysql_native_password'
-  #   environment:
-  #     MYSQL_DATABASE: develop_db
-  #     MYSQL_USER: developer
-  #     MYSQL_PASSWORD: password
-  #     MYSQL_ROOT_PASSWORD: root
-  #   volumes:
-  #     - .docker/mysql/init:/docker-entrypoint-initdb.d
-  #     - .docker/mysql/data:/var/lib/mysql
-  #   ports:
-  #     - 3500:3306
-  #   networks:
-  #     - xp_tracker
+  database:
+    container_name: xp-track-db
+    image: mariadb:11.2.2
+    command:
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+      - '--default-authentication-plugin=mysql_native_password'
+    environment:
+      MYSQL_DATABASE: develop_db
+      MYSQL_USER: developer
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - .docker/mysql/init:/docker-entrypoint-initdb.d
+      - .docker/mysql/data:/var/lib/mysql
+    ports:
+      - 3500:3306
+    networks:
+      - xp_tracker
   frontend:
     container_name: xp-track-front
     build:
