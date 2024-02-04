@@ -5,5 +5,4 @@ Feature:
 
     Scenario: It receives proper response from health endpoint
         When a demo scenario sends a request to "/api/public/health"
-        Then a "200" status code should ve received
-
+        Then a "200" status code should be received

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace XpTracker\Tests\Acceptance;
 
+use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Context\Context;
+use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -47,13 +49,23 @@ final class DemoContext implements Context
     }
 
      /**
-     * @Then a :expectedStatusCode status code should ve received
+     * @Then a :expectedStatusCode status code should be received
      */
-    public function aStatusCodeShouldVeReceived(int $expectedStatusCode): void
+    public function aStatusCodeShouldBeReceived(int $expectedStatusCode): void
     {
         $statusCode = $this->response?->getStatusCode();
-        if ($statusCode !== $expectedStatusCode) {
-            throw new \RuntimeException("Status codes does not match!!!");
-        }
+        Assert::assertEquals($expectedStatusCode, $statusCode);
+    }
+
+    /**
+     * @When a post request is sent to :url with data
+     */
+    public function aPostRequestIsSentToWithData(string $url, TableNode $table): void
+    {
+        $dataArray = $table->getRowsHash();
+        $content = json_encode($dataArray, JSON_THROW_ON_ERROR);
+        $this->response = $this->kernel->handle(
+            Request::create($url, 'POST', [], [], [], [], $content)
+        );
     }
 }
