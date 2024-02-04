@@ -1,23 +1,4 @@
-FROM node:21.4.0-alpine
-
-ARG USER_ID=1000
-ARG PORT=3000
-
-RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
-RUN apk --update upgrade \
-  && apk add sudo shadow bash zsh curl neovim git
-RUN npm i -g vite
-
-EXPOSE ${PORT}
-ENV PORT=${PORT}
-
-USER node
-RUN sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-RUN mkdir -p /home/node/app
-
-
-ENV HOME /home/node
-WORKDIR /home/node/app
+FROM xbellon/alpine-node21:0.0.1
 
 COPY --chown=node package.json /home/node/app
 COPY --chown=node package-lock.json /home/node/app
