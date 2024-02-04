@@ -4,3 +4,7 @@ controllers:
     path: ../src/Controller/
     namespace: XpTracker\Controller
   type: attribute
+
+api_add_character:
+  path: /api/character
+  controller: XpTracker\Character\Infrastructure\Entrypoint\Api\AddCharacterController
