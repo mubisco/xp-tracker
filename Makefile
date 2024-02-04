@@ -39,6 +39,10 @@ sh-root: ##  Access to backend shell as root
 logs: ##  Access to backend shell
 	@$(DOCKER_COMPOSE) logs -f $(BACK_IMAGE)
 
-# .PHONY: test-back
-# test-back:
-# 	@$(DOCKER_COMPOSE) exec $(BACK_IMAGE) go test ./...
+.PHONY: but
+but: ## Run Backend Unit Tests
+	@$(DOCKER_COMPOSE) exec $(BACK_IMAGE) composer unit
+
+.PHONY: bat
+bat: ## Run Backend Acceptance (Behat) Tests
+	@$(DOCKER_COMPOSE) exec $(BACK_IMAGE) composer behat

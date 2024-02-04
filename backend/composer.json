@@ -70,6 +70,12 @@
     ],
     "post-update-cmd": [
       "@auto-scripts"
+    ],
+    "unit": [
+      "bin/phpunit --testsuite Unit"
+    ],
+    "behat": [
+      "vendor/bin/behat"
     ]
   },
   "conflict": {
