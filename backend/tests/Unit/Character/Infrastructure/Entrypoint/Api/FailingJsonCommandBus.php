@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 
-final class FailingCommandBus implements JsonCommandBus
+final class FailingJsonCommandBus implements JsonCommandBus
 {
     public function process($message, array $expectedExceptions): JsonResponse
     {

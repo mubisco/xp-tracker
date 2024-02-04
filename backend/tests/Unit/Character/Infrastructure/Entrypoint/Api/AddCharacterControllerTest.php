@@ -12,7 +12,7 @@ class AddCharacterControllerTest extends TestCase
 {
     public function testShouldThrowErrorOnBadRequestContent(): void
     {
-        $sut = new AddCharacterController(new FailingCommandBus());
+        $sut = new AddCharacterController(new FailingJsonCommandBus());
         $content = 'asd';
         $request = Request::create('/some/url', 'POST', [], [], [], [], $content);
         $response = ($sut)($request);
@@ -21,7 +21,7 @@ class AddCharacterControllerTest extends TestCase
 
     public function testShouldReturnBadParamsOnBadContents(): void
     {
-        $sut = new AddCharacterController(new FailingCommandBus());
+        $sut = new AddCharacterController(new FailingJsonCommandBus());
         $content = '{}';
         $request = Request::create('/some/url', 'POST', [], [], [], [], $content);
         $response = ($sut)($request);
