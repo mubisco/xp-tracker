@@ -45,4 +45,4 @@ but: ## Run Backend Unit Tests
 
 .PHONY: bat
 bat: ## Run Backend Acceptance (Behat) Tests
-	@$(DOCKER_COMPOSE) exec $(BACK_IMAGE) composer behat
+	@$(DOCKER_COMPOSE) exec $(BACK_IMAGE) composer behat -- --append-snippets
