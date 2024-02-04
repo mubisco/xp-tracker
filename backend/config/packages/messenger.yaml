@@ -1,0 +1,24 @@
+---
+framework:
+  messenger:
+    default_bus: command.bus
+    failure_transport: failed
+    buses:
+      command.bus:
+        middleware:
+          - doctrine_transaction
+          - doctrine_ping_connection
+      event.async.bus:
+        default_middleware: allow_no_handlers
+        middleware:
+          - doctrine_transaction
+          - doctrine_ping_connection
+    transports:
+      event.async:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN)%/events'
+        retry_strategy:
+          max_retries: 0
+      failed:
+        dsn: 'doctrine://default?queue_name=failed'
+    routing:
+      'XpTracker\Shared\Domain\Event\DomainEvent': event.async
