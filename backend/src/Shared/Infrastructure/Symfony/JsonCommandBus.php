@@ -1,6 +1,6 @@
 <?php
 
-namespace XpTracker\Character\Infrastructure\Entrypoint\Api;
+namespace XpTracker\Shared\Infrastructure\Symfony;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 

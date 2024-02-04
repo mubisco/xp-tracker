@@ -6,7 +6,7 @@ namespace XpTracker\Tests\Unit\Character\Infrastructure\Entrypoint\Api;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use XpTracker\Character\Infrastructure\Entrypoint\Api\JsonCommandBus;
+use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 
 final class SpyJsonCommandBus implements JsonCommandBus
 {

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 use XpTracker\Character\Application\Command\AddCharacterCommand;
+use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 
 #[AsController]
 #[Route("/api/character", name: "api_add_character", methods: "POST")]
