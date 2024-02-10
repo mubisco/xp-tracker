@@ -9,13 +9,18 @@ use Symfony\Component\Uid\Ulid;
 
 final class SharedUlid
 {
+    public static function fromString(string $value): static
+    {
+        return new static($value);
+    }
+
     public static function fromEmpty(): static
     {
         $ulid = new Ulid();
         return new static($ulid->__toString());
     }
 
-    public function __construct(private readonly string $ulid)
+    private function __construct(private readonly string $ulid)
     {
         if (!Ulid::isValid($this->ulid)) {
             throw new InvalidArgumentException("{$ulid} is not a valid ULID");
