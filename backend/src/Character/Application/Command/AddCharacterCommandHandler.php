@@ -12,7 +12,7 @@ class AddCharacterCommandHandler
 {
     public function __construct(
         private readonly AddCharacterWriteModel $writeModel,
-        private readonly EventBus $asyncEventBus
+        private readonly EventBus $eventBus
     ) {
     }
 
@@ -24,6 +24,6 @@ class AddCharacterCommandHandler
             $command->experiencePoints
         );
         $this->writeModel->add($character);
-        $this->asyncEventBus->publish($character->pullEvents());
+        $this->eventBus->publish($character->pullEvents());
     }
 }
