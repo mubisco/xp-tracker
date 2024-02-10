@@ -13,9 +13,7 @@ final class CharacterWasCreated implements DomainEvent
     public function __construct(
         public readonly string $id,
         public readonly string $name,
-        public readonly string $playerName,
         public readonly int $experiencePoints,
-        public readonly int $maxHitpoints
     ) {
         $this->occurredOn = new DateTimeImmutable();
     }
