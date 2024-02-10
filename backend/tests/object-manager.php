@@ -1,5 +1,7 @@
 <?php
 
+namespace XpTracker\Tests;
+
 use XpTracker\Kernel;
 
 require __DIR__ . '/../config/bootstrap.php';
