@@ -42,9 +42,7 @@ final class AddCharacterController
         return new AddCharacterCommand(
             $parsedRequest->ulid ?? '',
             $parsedRequest->characterName ?? '',
-            $parsedRequest->playerName ?? '',
             (int) $parsedRequest->experiencePoints ?? 0,
-            (int) $parsedRequest->maxHitpoints ?? 0
         );
     }
 }

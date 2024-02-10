@@ -25,7 +25,7 @@ class AddCharacterControllerTest extends TestCase
     {
         $spy = new SpyJsonCommandBus();
         $sut = new AddCharacterController($spy);
-        $content = '{"ulid":"ulid","characterName":"Chindasvinto","playerName":"Pousa","experiencePoints":0,"maxHitpoints":25}';
+        $content = '{"ulid":"ulid","characterName":"Chindasvinto","experiencePoints":0}';
         $request = Request::create('/some/url', 'POST', [], [], [], [], $content);
         $response = ($sut)($request);
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -34,8 +34,6 @@ class AddCharacterControllerTest extends TestCase
         $command = $spy->message;
         $this->assertEquals('ulid', $command->ulid);
         $this->assertEquals('Chindasvinto', $command->characterName);
-        $this->assertEquals('Pousa', $command->playerName);
         $this->assertEquals(0, $command->experiencePoints);
-        $this->assertEquals(25, $command->maxHitpoints);
     }
 }
