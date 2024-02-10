@@ -11,6 +11,7 @@ services:
     XpTracker\Shared\Application\CommandHandlerInterface:
       tags:
         - {name: messenger.message_handler, bus: command.bus}
+
     XpTracker\Shared\Application\EventHandlerInterface:
       tags:
         - {name: messenger.message_handler, bus: event.async.bus}

@@ -6,9 +6,10 @@ namespace XpTracker\Character\Application\Command;
 
 use XpTracker\Character\Application\Domain\AddCharacterWriteModel;
 use XpTracker\Character\Application\Domain\BasicCharacter;
+use XpTracker\Shared\Application\CommandHandlerInterface;
 use XpTracker\Shared\Domain\Event\EventBus;
 
-class AddCharacterCommandHandler
+class AddCharacterCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private readonly AddCharacterWriteModel $writeModel,
