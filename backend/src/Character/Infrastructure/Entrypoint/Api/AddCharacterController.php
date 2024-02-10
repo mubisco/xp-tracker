@@ -21,7 +21,7 @@ final class AddCharacterController
         'InvalidArgumentException' => Response::HTTP_BAD_REQUEST
     ];
 
-    public function __construct(private readonly JsonCommandBus $commandBus)
+    public function __construct(private readonly JsonCommandBus $jsonCommandBus)
     {
     }
 
@@ -29,7 +29,7 @@ final class AddCharacterController
     {
         try {
             $command = $this->parseRequest($request);
-            return $this->commandBus->process($command, self::ALLOWED_EXCEPTIONS);
+            return $this->jsonCommandBus->process($command, self::ALLOWED_EXCEPTIONS);
         } catch (JsonException) {
             return new JsonResponse(['message' => 'Malformed JSON body'], Response::HTTP_BAD_REQUEST);
         }
@@ -40,10 +40,11 @@ final class AddCharacterController
         $rawContent = $request->getContent();
         $parsedRequest = json_decode($rawContent, false, 512, JSON_THROW_ON_ERROR);
         return new AddCharacterCommand(
+            $parsedRequest->ulid ?? '',
             $parsedRequest->characterName ?? '',
             $parsedRequest->playerName ?? '',
-            $parsedRequest->experiencePoints ?? 0,
-            $parsedRequest->maxHitpoints ?? 0
+            (int) $parsedRequest->experiencePoints ?? 0,
+            (int) $parsedRequest->maxHitpoints ?? 0
         );
     }
 }

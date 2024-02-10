@@ -32,7 +32,7 @@ class SymfonyJsonCommandBusTest extends TestCase
             $this->spyLoggerInterface
         );
         $result = $sut->process(
-            new AddCharacterCommand('asd', 'asd', 1, 1),
+            new AddCharacterCommand('ulid', 'asd', 'asd', 1, 1),
             self::ALLOWED_EXCEPTIONS
         );
         $this->assertEquals(400, $result->getStatusCode());
@@ -47,7 +47,7 @@ class SymfonyJsonCommandBusTest extends TestCase
             $this->spyLoggerInterface
         );
         $result = $sut->process(
-            new AddCharacterCommand('asd', 'asd', 1, 1),
+            new AddCharacterCommand('ulid', 'asd', 'asd', 1, 1),
             self::ALLOWED_EXCEPTIONS
         );
         $this->assertEquals(500, $result->getStatusCode());
@@ -63,7 +63,7 @@ class SymfonyJsonCommandBusTest extends TestCase
             $this->spyLoggerInterface
         );
         $result = $sut->process(
-            new AddCharacterCommand('asd', 'asd', 1, 1),
+            new AddCharacterCommand('ulid', 'asd', 'asd', 1, 1),
             self::ALLOWED_EXCEPTIONS
         );
         $this->assertInstanceOf(JsonResponse::class, $result);

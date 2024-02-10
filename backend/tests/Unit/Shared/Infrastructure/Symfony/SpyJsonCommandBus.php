@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XpTracker\Tests\Unit\Character\Infrastructure\Entrypoint\Api;
+namespace XpTracker\Tests\Unit\Shared\Infrastructure\Symfony;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
