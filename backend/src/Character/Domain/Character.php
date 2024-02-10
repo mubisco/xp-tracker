@@ -1,6 +1,6 @@
 <?php
 
-namespace XpTracker\Character\Application\Domain;
+namespace XpTracker\Character\Domain;
 
 use XpTracker\Shared\Domain\Event\Eventable;
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace XpTracker\Character\Application\Command;
 
-use XpTracker\Character\Application\Domain\AddCharacterWriteModel;
-use XpTracker\Character\Application\Domain\BasicCharacter;
+use XpTracker\Character\Domain\AddCharacterWriteModel;
+use XpTracker\Character\Domain\BasicCharacter;
 use XpTracker\Shared\Application\CommandHandlerInterface;
 use XpTracker\Shared\Domain\Event\EventBus;
 

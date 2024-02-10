@@ -4,8 +4,8 @@ namespace XpTracker\Tests\Unit\Character\Domain;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use XpTracker\Character\Application\Domain\BasicCharacter;
-use XpTracker\Character\Application\Domain\CharacterWasCreated;
+use XpTracker\Character\Domain\BasicCharacter;
+use XpTracker\Character\Domain\CharacterWasCreated;
 
 class BasicCharacterTest extends TestCase
 {

@@ -4,7 +4,7 @@ namespace XpTracker\Tests\Unit\Character\Domain;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use XpTracker\Character\Application\Domain\Experience;
+use XpTracker\Character\Domain\Experience;
 
 class ExperienceTest extends TestCase
 {

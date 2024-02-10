@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use XpTracker\Character\Application\Command\AddCharacterCommand;
 use XpTracker\Character\Application\Command\AddCharacterCommandHandler;
-use XpTracker\Character\Application\Domain\AddCharacterWriteModelException;
+use XpTracker\Character\Domain\AddCharacterWriteModelException;
 use XpTracker\Tests\Unit\Character\Domain\AddCharacterWriteModelStub;
 use XpTracker\Tests\Unit\Character\Domain\FailingAddCharacterWriteModelStub;
 use XpTracker\Tests\Unit\Shared\Domain\Event\EventBusSpy;

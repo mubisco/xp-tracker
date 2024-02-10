@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XpTracker\Character\Application\Domain;
+namespace XpTracker\Character\Domain;
 
 use DateTimeImmutable;
 use XpTracker\Shared\Domain\Event\DomainEvent;
