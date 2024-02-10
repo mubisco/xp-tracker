@@ -6,6 +6,7 @@ services:
     autoconfigure: true
     bind:
       $commandBus: '@command.bus'
+      # $eventBus: '@event.async.bus'
   _instanceof:
     XpTracker\Shared\Application\CommandHandlerInterface:
       tags:
