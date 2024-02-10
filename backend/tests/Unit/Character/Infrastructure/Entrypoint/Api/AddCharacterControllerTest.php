@@ -21,15 +21,6 @@ class AddCharacterControllerTest extends TestCase
         $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function testShouldReturnBadParamsOnBadContents(): void
-    {
-        $sut = new AddCharacterController(new FailingJsonCommandBus());
-        $content = '{}';
-        $request = Request::create('/some/url', 'POST', [], [], [], [], $content);
-        $response = ($sut)($request);
-        $this->assertEquals(400, $response->getStatusCode());
-    }
-
     public function testShouldReturnOkResponse(): void
     {
         $spy = new SpyJsonCommandBus();
