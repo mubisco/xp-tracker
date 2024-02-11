@@ -33,6 +33,17 @@ final class BasicCharacter implements Character
         return $this->ulid->ulid();
     }
 
+    public function toJson(): string
+    {
+        $data = [
+            'name' => $this->characterName->name(),
+            'xp' => $this->experience->points(),
+            'level' => $this->experience->level(),
+            'next' => $this->experience->nextLevel(),
+        ];
+        return json_encode($data);
+    }
+
     private function apply(CharacterWasCreated $event): void
     {
         if ($event->id !== $this->id()) {
