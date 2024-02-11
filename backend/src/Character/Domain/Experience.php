@@ -65,4 +65,10 @@ final class Experience
         }
         return self::XP_TRESHOLDS[$level - 1];
     }
+
+    public function add(Experience $another): Experience
+    {
+        $total = $this->points() + $another->points();
+        return Experience::fromInt($total);
+    }
 }

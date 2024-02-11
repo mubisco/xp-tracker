@@ -85,8 +85,8 @@ final class BasicCharacter implements Character
 
     private function applyExperienceWasAdded(ExperienceWasAdded $event): void
     {
-        $total = $this->experience->points() + $event->points;
-        $this->experience = Experience::fromInt($total);
+        $anotherExperience = Experience::fromInt($event->points);
+        $this->experience = $this->experience->add($anotherExperience);
         $this->events[] = $event;
 
     }

@@ -75,4 +75,14 @@ class ExperienceTest extends TestCase
             [355000, 20, 355000]
         ];
     }
+
+    public function testShouldAddOtherExperience(): void
+    {
+        $sut = Experience::fromInt(800);
+        $another = Experience::fromInt(101);
+        $result = $sut->add($another);
+        $this->assertInstanceOf(Experience::class, $result);
+        $this->assertNotSame($sut, $result);
+        $this->assertEquals(901, $result->points());
+    }
 }
