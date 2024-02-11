@@ -14,6 +14,7 @@ final class BasicCharacter implements Character
     private CharacterName $characterName;
     private Experience $experience;
 
+    /** @var array<int, DomainEvent> $events */
     private array $events = [];
 
     public static function create(string $ulid, string $name, int $experiencePoints): static
@@ -23,9 +24,8 @@ final class BasicCharacter implements Character
         $character->apply($createEvent);
         return $character;
     }
-    /**
-     * @param DomainEvent[];
-     */
+
+    /** @param array<int, DomainEvent> $events */
     public static function fromEvents(SharedUlid $ulid, array $events): BasicCharacter
     {
         $character = new self($ulid->ulid());
@@ -53,21 +53,42 @@ final class BasicCharacter implements Character
             'level' => $this->experience->level(),
             'next' => $this->experience->nextLevel(),
         ];
-        return json_encode($data);
+        $parsedData = json_encode($data);
+        return $parsedData ? $parsedData : '';
     }
 
-    private function apply(CharacterWasCreated $event): void
+    private function apply(DomainEvent $event): void
     {
-        if ($event->id !== $this->id()) {
+        $this->validateEvent($event);
+        $reflect = new \ReflectionClass($event);
+        $method = "apply{$reflect->getShortName()}";
+        $this->$method($event);
+    }
+
+    private function validateEvent(DomainEvent $event): void
+    {
+        if ($event->id() !== $this->id()) {
             throw new DomainException(sprintf(
                 'Event id (%s) and Aggregate Id (%s) mismatch',
-                $event->id,
+                $event->id(),
                 $this->id()
             ));
         }
+    }
+
+    private function applyCharacterWasCreated(CharacterWasCreated $event): void
+    {
         $this->characterName = CharacterName::fromString($event->name);
         $this->experience = Experience::fromInt($event->experiencePoints);
         $this->events[] = $event;
+    }
+
+    private function applyExperienceWasAdded(ExperienceWasAdded $event): void
+    {
+        $total = $this->experience->points() + $event->points;
+        $this->experience = Experience::fromInt($total);
+        $this->events[] = $event;
+
     }
 
     public function pullEvents(): array
