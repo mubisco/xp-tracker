@@ -20,6 +20,7 @@ final class Version20240211002300 extends AbstractMigration
             id INT AUTO_INCREMENT PRIMARY KEY,
             event_class VARCHAR(256) NOT NULL,
             aggregate_id CHAR(26) NOT NULL,
+            created_at DATETIME NOT NULL,
             body JSON NOT NULL
         )";
         $this->addSql($sql);

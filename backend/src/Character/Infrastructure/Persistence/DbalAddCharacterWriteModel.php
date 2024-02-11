@@ -26,6 +26,7 @@ final class DbalAddCharacterWriteModel implements AddCharacterWriteModel
             $eventType = get_class($event);
             $data = [
                 'aggregate_id' => $id,
+                'created_at' => $event->occurredOn()->format('Y-m-d H:i:s'),
                 'body' => $serializedEvent,
                 'event_class' => $eventType,
             ];
