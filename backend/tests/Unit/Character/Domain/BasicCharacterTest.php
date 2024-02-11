@@ -60,6 +60,7 @@ class BasicCharacterTest extends TestCase
         $this->assertEquals($ulid->ulid(), $sut->id());
         $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700}';
         $this->assertEquals($expectedValues, $sut->toJson());
+        $this->assertCount(0, $sut->pullEvents());
     }
 
     public function testShouldThrowErrorWhenEventsDoesNotMatchUlid(): void

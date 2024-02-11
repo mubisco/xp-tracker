@@ -30,7 +30,7 @@ final class BasicCharacter implements Character
     {
         $character = new self($ulid->ulid());
         foreach ($events as $event) {
-            $character->apply($event);
+            $character->applyWithoutStore($event);
         }
         return $character;
     }
@@ -57,12 +57,18 @@ final class BasicCharacter implements Character
         return $parsedData ? $parsedData : '';
     }
 
-    private function apply(DomainEvent $event): void
+    private function applyWithoutStore(DomainEvent $event): void
     {
         $this->validateEvent($event);
         $reflect = new \ReflectionClass($event);
         $method = "apply{$reflect->getShortName()}";
         $this->$method($event);
+    }
+
+    private function apply(DomainEvent $event): void
+    {
+        $this->applyWithoutStore($event);
+        $this->events[] = $event;
     }
 
     private function validateEvent(DomainEvent $event): void
@@ -80,15 +86,12 @@ final class BasicCharacter implements Character
     {
         $this->characterName = CharacterName::fromString($event->name);
         $this->experience = Experience::fromInt($event->experiencePoints);
-        $this->events[] = $event;
     }
 
     private function applyExperienceWasAdded(ExperienceWasAdded $event): void
     {
         $anotherExperience = Experience::fromInt($event->points);
         $this->experience = $this->experience->add($anotherExperience);
-        $this->events[] = $event;
-
     }
 
     public function pullEvents(): array
