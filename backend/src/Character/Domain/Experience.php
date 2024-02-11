@@ -56,4 +56,13 @@ final class Experience
         }
         return 20;
     }
+
+    public function nextLevel(): int
+    {
+        $level = $this->level();
+        if ($level === 20) {
+            return self::XP_TRESHOLDS[array_key_last(self::XP_TRESHOLDS)];
+        }
+        return self::XP_TRESHOLDS[$level - 1];
+    }
 }
