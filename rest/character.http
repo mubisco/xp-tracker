@@ -6,3 +6,11 @@ Content-Type: application/json
   "characterName": "Darling",
   "experiencePoints": 300
 }
+
+POST http://localhost:5000/api/character
+Content-Type: application/json
+
+{
+  "characterName": "Darling",
+  "experiencePoints": 300
+}
