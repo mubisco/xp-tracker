@@ -2,7 +2,7 @@ POST http://localhost:5000/api/character
 Content-Type: application/json
 
 {
-  "id": "01HJCGHACDM5XTZVCECF88N2KZ",
+  "ulid": "01HJCGHACDM5XTZVCECF88N2KZ",
   "characterName": "Darling",
   "experiencePoints": 300
 }

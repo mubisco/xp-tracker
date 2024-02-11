@@ -28,7 +28,7 @@ final class SymfonyJsonCommandBus implements JsonCommandBus
             $unwrappedException = $this->unwrapException($e);
             $this->loggerInterface->critical($unwrappedException);
             $errorCode = $this->errorCode($unwrappedException, $expectedExceptions);
-            return new JsonResponse([], $errorCode);
+            return new JsonResponse(['msg' => $unwrappedException->getMessage()], $errorCode);
         }
     }
 
