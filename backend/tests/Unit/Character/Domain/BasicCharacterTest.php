@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use XpTracker\Character\Domain\BasicCharacter;
 use XpTracker\Character\Domain\CharacterWasCreated;
+use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 class BasicCharacterTest extends TestCase
 {
@@ -58,5 +59,16 @@ class BasicCharacterTest extends TestCase
             ['01HP9BFM98404KRE15AKWG6YBB', '', 300],
             ['01HP9BFM98404KRE15AKWG6YBB', 'Darling', -1]
         ];
+    }
+
+    public function testShouldHydrateCharacterFromEvents(): void
+    {
+        $ulid = SharedUlid::fromEmpty();
+        $event = new CharacterWasCreated(id: $ulid->ulid(), name: 'Chindas', experiencePoints: 901);
+        $sut = BasicCharacter::fromEvents($ulid, [$event]);
+        $this->assertInstanceOf(BasicCharacter::class, $sut);
+        $this->assertEquals($ulid->ulid(), $sut->id());
+        $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700}';
+        $this->assertEquals($expectedValues, $sut->toJson());
     }
 }

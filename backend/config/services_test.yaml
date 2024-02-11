@@ -5,3 +5,5 @@ services:
     autoconfigure: true
   XpTracker\Tests\Acceptance\:
     resource: '../tests/Acceptance/*'
+  XpTracker\Character\Infrastructure\Persistence\DbalAddCharacterWriteModel:
+    public: true
