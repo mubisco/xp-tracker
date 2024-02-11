@@ -4,7 +4,7 @@ namespace XpTracker\Tests;
 
 use XpTracker\Kernel;
 
-require __DIR__ . '/../config/bootstrap.php';
+require __DIR__ . '/bootstrap.php';
 
 $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
 $kernel->boot();

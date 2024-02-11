@@ -11,7 +11,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class SymfonyEventBusTest extends TestCase
 {
-    private MessageBusInterface|MockObject $mockEventAsyncBus;
+    private MessageBusInterface&MockObject $mockEventAsyncBus;
     private SymfonyEventBus $sut;
 
     protected function setUp(): void

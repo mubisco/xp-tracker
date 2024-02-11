@@ -10,7 +10,7 @@ use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 
 final class FailingJsonCommandBus implements JsonCommandBus
 {
-    public function process($message, array $expectedExceptions): JsonResponse
+    public function process(object $message, array $expectedExceptions): JsonResponse
     {
         return new JsonResponse([], Response::HTTP_BAD_REQUEST);
     }

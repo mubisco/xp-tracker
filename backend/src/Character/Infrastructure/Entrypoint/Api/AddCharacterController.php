@@ -42,7 +42,7 @@ final class AddCharacterController
         return new AddCharacterCommand(
             $parsedRequest->ulid ?? '',
             $parsedRequest->characterName ?? '',
-            (int) $parsedRequest->experiencePoints ?? 0,
+            (int) $parsedRequest->experiencePoints
         );
     }
 }

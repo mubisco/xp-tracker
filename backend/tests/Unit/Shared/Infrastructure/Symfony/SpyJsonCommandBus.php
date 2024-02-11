@@ -12,7 +12,7 @@ final class SpyJsonCommandBus implements JsonCommandBus
 {
     public ?object $message = null;
 
-    public function process($message, array $expectedExceptions): JsonResponse
+    public function process(object $message, array $expectedExceptions): JsonResponse
     {
         $this->message = $message;
         return new JsonResponse([], Response::HTTP_OK);
