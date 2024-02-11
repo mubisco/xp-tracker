@@ -88,7 +88,7 @@ final class BasicCharacter implements Character
         $this->experience = Experience::fromInt($event->experiencePoints);
     }
 
-    private function applyExperienceWasAdded(ExperienceWasAdded $event): void
+    private function applyExperienceWasUpdated(ExperienceWasUpdated $event): void
     {
         $anotherExperience = Experience::fromInt($event->points);
         $this->experience = $this->experience->add($anotherExperience);
@@ -97,5 +97,11 @@ final class BasicCharacter implements Character
     public function pullEvents(): array
     {
         return $this->events;
+    }
+
+    public function updateExperience(Experience $experience): void
+    {
+        $event = new ExperienceWasUpdated(id: $this->id(), points: $experience->points());
+        $this->apply($event);
     }
 }

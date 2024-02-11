@@ -8,4 +8,5 @@ interface Character extends Eventable
 {
     public function id(): string;
     public function toJson(): string;
+    public function updateExperience(Experience $experience): void;
 }

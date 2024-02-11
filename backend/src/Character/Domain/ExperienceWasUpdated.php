@@ -7,7 +7,7 @@ namespace XpTracker\Character\Domain;
 use DateTimeImmutable;
 use XpTracker\Shared\Domain\Event\DomainEvent;
 
-final class ExperienceWasAdded implements DomainEvent
+final class ExperienceWasUpdated implements DomainEvent
 {
     private readonly DateTimeImmutable $occurredOn;
 

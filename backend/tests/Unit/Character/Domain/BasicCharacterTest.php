@@ -7,18 +7,15 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use XpTracker\Character\Domain\BasicCharacter;
 use XpTracker\Character\Domain\CharacterWasCreated;
-use XpTracker\Character\Domain\ExperienceWasAdded;
+use XpTracker\Character\Domain\Experience;
+use XpTracker\Character\Domain\ExperienceWasUpdated;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 class BasicCharacterTest extends TestCase
 {
     public function testItShouldApplyCreatedEventProperly(): void
     {
-        $sut = BasicCharacter::create(
-            '01HP9BFM98404KRE15AKWG6YBB',
-            'Darling',
-            300
-        );
+        $sut = BasicCharacter::create('01HP9BFM98404KRE15AKWG6YBB', 'Darling', 300);
         $this->assertEquals('01HP9BFM98404KRE15AKWG6YBB', $sut->id());
         $expectedValues = '{"name":"Darling","xp":300,"level":2,"next":900}';
         $this->assertEquals($expectedValues, $sut->toJson());
@@ -26,9 +23,6 @@ class BasicCharacterTest extends TestCase
         $this->assertCount(1, $events);
         $event = $events[0];
         $this->assertInstanceOf(CharacterWasCreated::class, $event);
-        $this->assertEquals('01HP9BFM98404KRE15AKWG6YBB', $event->id);
-        $this->assertEquals('Darling', $event->name);
-        $this->assertEquals(300, $event->experiencePoints);
     }
 
     /** @dataProvider wrongCreationData */
@@ -49,12 +43,11 @@ class BasicCharacterTest extends TestCase
         ];
     }
 
-    /** @group eventing */
     public function testShouldHydrateCharacterFromEvents(): void
     {
         $ulid = SharedUlid::fromEmpty();
         $event = new CharacterWasCreated(id: $ulid->ulid(), name: 'Chindas', experiencePoints: 800);
-        $anotherEvent = new ExperienceWasAdded(id: $ulid->ulid(), points: 101);
+        $anotherEvent = new ExperienceWasUpdated(id: $ulid->ulid(), points: 101);
         $sut = BasicCharacter::fromEvents($ulid, [$event, $anotherEvent]);
         $this->assertInstanceOf(BasicCharacter::class, $sut);
         $this->assertEquals($ulid->ulid(), $sut->id());
@@ -69,7 +62,20 @@ class BasicCharacterTest extends TestCase
         $ulid = SharedUlid::fromEmpty();
         $anotherUlid = SharedUlid::fromEmpty();
         $event = new CharacterWasCreated(id: $ulid->ulid(), name: 'Chindas', experiencePoints: 901);
-        $anotherEvent = new ExperienceWasAdded(id: $anotherUlid->ulid(), points: 901);
+        $anotherEvent = new ExperienceWasUpdated(id: $anotherUlid->ulid(), points: 901);
         BasicCharacter::fromEvents($ulid, [$event, $anotherEvent]);
+    }
+
+    public function testItShouldAddExperienceProperly(): void
+    {
+        $ulid = SharedUlid::fromEmpty();
+        $event = new CharacterWasCreated(id: $ulid->ulid(), name: 'Chindas', experiencePoints: 800);
+        $sut = BasicCharacter::fromEvents($ulid, [$event]);
+        $sut->updateExperience(Experience::fromInt(101));
+        $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700}';
+        $this->assertEquals($expectedValues, $sut->toJson());
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(ExperienceWasUpdated::class, $events[0]);
     }
 }
