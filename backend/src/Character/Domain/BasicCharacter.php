@@ -67,8 +67,8 @@ final class BasicCharacter implements Character
 
     private function apply(DomainEvent $event): void
     {
-        $this->applyWithoutStore($event);
         $this->events[] = $event;
+        $this->applyWithoutStore($event);
     }
 
     private function validateEvent(DomainEvent $event): void
@@ -94,14 +94,22 @@ final class BasicCharacter implements Character
         $this->experience = $this->experience->add($anotherExperience);
     }
 
+    private function applyLevelWasIncreased(LevelWasIncreased $event): void
+    {
+    }
+
     public function pullEvents(): array
     {
         return $this->events;
     }
 
-    public function updateExperience(Experience $experience): void
+    public function addExperience(Experience $experience): void
     {
+        $previousLevel = $this->experience->level();
         $event = new ExperienceWasUpdated(id: $this->id(), points: $experience->points());
         $this->apply($event);
+        if ($this->experience->level() > $previousLevel) {
+            $this->events[] = new LevelWasIncreased($this->id(), $this->experience->level());
+        }
     }
 }
