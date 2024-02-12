@@ -11,7 +11,7 @@ class SharedUlidTest extends TestCase
 {
     public function testItShouldBeOfProperClass(): void
     {
-        $sut = SharedUlid::fromString('01HP9BFM98404KRE15AKWG6YBB');
+        $sut = SharedUlid::fromString('01HJCGHACDM5XTZVCECF88N2KZ');
         $this->assertInstanceOf(SharedUlid::class, $sut);
     }
 

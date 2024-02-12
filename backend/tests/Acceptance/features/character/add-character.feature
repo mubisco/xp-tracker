@@ -12,6 +12,6 @@ Feature:
 
     Scenario: It should return error when characterName is missing
         When a post request is sent to "/api/character" with data
-        | characterName    | Chindasvinto |
-        | experiencePoints |            0 |
+        | ulid             | 01HJCGHACDM5XTZVCECF88N2KZ |
+        | experiencePoints |                          0 |
       Then a "400" status code should be received

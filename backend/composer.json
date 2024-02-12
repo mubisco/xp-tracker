@@ -79,6 +79,8 @@
       "bin/phpunit --testsuite Unit"
     ],
     "behat": [
+      "php bin/console doctrine:migrations:migrate first --env=test -n",
+      "php bin/console doctrine:migrations:migrate --env=test -n",
       "vendor/bin/behat"
     ]
   },
