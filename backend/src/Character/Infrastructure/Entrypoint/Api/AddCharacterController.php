@@ -18,7 +18,8 @@ use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 final class AddCharacterController
 {
     private const ALLOWED_EXCEPTIONS = [
-        'InvalidArgumentException' => Response::HTTP_BAD_REQUEST
+        'InvalidArgumentException' => Response::HTTP_BAD_REQUEST,
+        'CharacterAlreadyExistsException' => Response::HTTP_UNPROCESSABLE_ENTITY
     ];
 
     public function __construct(private readonly JsonCommandBus $jsonCommandBus)

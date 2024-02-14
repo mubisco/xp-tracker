@@ -9,6 +9,7 @@ use JMS\Serializer\SerializerInterface;
 use XpTracker\Character\Domain\AddCharacterWriteModel;
 use XpTracker\Character\Domain\BasicCharacter;
 use XpTracker\Character\Domain\Character;
+use XpTracker\Character\Domain\CharacterAlreadyExistsException;
 use XpTracker\Character\Domain\CharacterNotFoundException;
 use XpTracker\Character\Domain\CharacterRepository;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
@@ -23,6 +24,10 @@ final class DbalAddCharacterWriteModel implements AddCharacterWriteModel, Charac
 
     public function add(Character $character): void
     {
+        $results = $this->getEventsForUlid($character->id());
+        if (!empty($results)) {
+            throw new CharacterAlreadyExistsException("A character with {$character->id()} already exists");
+        }
         $events = $character->pullEvents();
         foreach ($events as $event) {
             $serializedEvent = $this->serializer->serialize($event, 'json');
@@ -40,9 +45,7 @@ final class DbalAddCharacterWriteModel implements AddCharacterWriteModel, Charac
 
     public function byId(SharedUlid $ulid): Character
     {
-        $sql = "SELECT * FROM events WHERE aggregate_id = :aggregateId ORDER BY created_at ASC";
-        $params = ['aggregateId' => $ulid->ulid()];
-        $results = $this->connection->fetchAllAssociative($sql, $params);
+        $results = $this->getEventsForUlid($ulid->ulid());
         if (empty($results)) {
             throw new CharacterNotFoundException("No character found with ulid {$ulid->ulid()}");
         }
@@ -54,5 +57,14 @@ final class DbalAddCharacterWriteModel implements AddCharacterWriteModel, Charac
             $hydratedEvents[] = $event;
         }
         return BasicCharacter::fromEvents($ulid, $hydratedEvents);
+    }
+    /**
+     * @return array<int,array<string,mixed>>
+     */
+    private function getEventsForUlid(string $ulid): array
+    {
+        $sql = "SELECT * FROM events WHERE aggregate_id = :aggregateId ORDER BY created_at ASC";
+        $params = ['aggregateId' => $ulid];
+        return $this->connection->fetchAllAssociative($sql, $params);
     }
 }

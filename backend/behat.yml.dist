@@ -12,5 +12,5 @@ default:
       kernel:
         class: XpTracker\Kernel
         path: ~
-        environment: ~
-        debug: ~
+        environment: test
+        debug: false
