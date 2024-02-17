@@ -82,7 +82,7 @@
     "behat": [
       "php bin/console doctrine:migrations:migrate first --env=test -n",
       "php bin/console doctrine:migrations:migrate --env=test -n",
-      "vendor/bin/behat"
+      "vendor/bin/behat --append-snippets"
     ]
   },
   "conflict": {
