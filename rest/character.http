@@ -11,7 +11,15 @@ POST http://localhost:5000/api/character
 Content-Type: application/json
 
 {
-  "ulid": "01HJCGHACDM5XTZVCECF88N2KZ",
+  "ulid": "01HPWKNYSWVH0WGFVA4DQZHZ93",
   "characterName": "Darling",
   "experiencePoints": 300
+}
+
+POST http://localhost:5000/api/party
+Content-Type: application/json
+
+{
+  "ulid": "01HPWKNNAGWGDNH1ZM93ADB04M",
+  "name": "Comando G"
 }
