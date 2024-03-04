@@ -19,7 +19,7 @@ final class PostCreatePartyController
 {
     private const ALLOWED_EXCEPTIONS = [
         'InvalidArgumentException' => Response::HTTP_BAD_REQUEST,
-        'CharacterAlreadyExistsException' => Response::HTTP_UNPROCESSABLE_ENTITY
+        'PartyAlreadyExistsException' => Response::HTTP_UNPROCESSABLE_ENTITY
     ];
 
     public function __construct(private readonly JsonCommandBus $jsonCommandBus)
