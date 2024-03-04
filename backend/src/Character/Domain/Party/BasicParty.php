@@ -18,10 +18,9 @@ final class BasicParty extends AggregateRoot implements Party
         return $instance;
     }
 
-    public function toJson(): string
+    protected function collect(): array
     {
-        $data = ['name' => $this->name];
-        return json_encode($data);
+        return ['name' => $this->name];
     }
 
     protected function applyPartyWasCreated(PartyWasCreated $event): void

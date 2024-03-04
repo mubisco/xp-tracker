@@ -61,6 +61,15 @@ abstract class AggregateRoot implements Eventable
     {
         return $this->ulid->ulid();
     }
+    /**
+     * @return array<string,mixed>
+     */
+    abstract protected function collect(): array;
 
-    abstract public function toJson(): string;
+    public function toJson(): string
+    {
+        $data = $this->collect();
+        $parsedData = json_encode($data);
+        return $parsedData ? $parsedData : '';
+    }
 }

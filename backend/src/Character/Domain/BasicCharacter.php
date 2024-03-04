@@ -31,16 +31,14 @@ final class BasicCharacter extends AggregateRoot implements Character
         return $character;
     }
 
-    public function toJson(): string
+    protected function collect(): array
     {
-        $data = [
+        return [
             'name' => $this->characterName->name(),
             'xp' => $this->experience->points(),
             'level' => $this->experience->level(),
             'next' => $this->experience->nextLevel(),
         ];
-        $parsedData = json_encode($data);
-        return $parsedData ? $parsedData : '';
     }
 
     protected function applyCharacterWasCreated(CharacterWasCreated $event): void
