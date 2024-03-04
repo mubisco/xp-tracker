@@ -22,10 +22,11 @@ final class DbalAddCharacterWriteModel implements AddCharacterWriteModel, Charac
 
     public function add(Character $character): void
     {
-        $collection = EventCollection::fromValues($character->id(), $character->pullEvents());
-        if (!empty($collection->events())) {
+        $results = $this->eventStore->getEventsForUlid($character->id());
+        if (!empty($results)) {
             throw new CharacterAlreadyExistsException("A character with {$character->id()} already exists");
         }
+        $collection = EventCollection::fromValues($character->id(), $character->pullEvents());
         $this->eventStore->appendEvents($collection);
     }
 

@@ -18,10 +18,11 @@ final class EventStorePartyRepository implements CreatePartyWriteModel
 
     public function createParty(Party $party): void
     {
-        $collection = EventCollection::fromValues($party->id(), $party->pullEvents());
-        if (!empty($collection->events())) {
+        $results = $this->eventStore->getEventsForUlid($party->id());
+        if (!empty($results)) {
             throw new PartyAlreadyExistsException("A party with {$party->id()} already exists");
         }
+        $collection = EventCollection::fromValues($party->id(), $party->pullEvents());
         $this->eventStore->appendEvents($collection);
     }
 }

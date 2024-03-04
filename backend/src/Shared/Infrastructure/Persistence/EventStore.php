@@ -36,7 +36,7 @@ final class EventStore
     /**
      * @return array<int,array<string,mixed>>
      */
-    private function getEventsForUlid(string $ulid): array
+    public function getEventsForUlid(string $ulid): array
     {
         $sql = "SELECT * FROM events WHERE aggregate_id = :aggregateId ORDER BY created_at ASC";
         $params = ['aggregateId' => $ulid];
