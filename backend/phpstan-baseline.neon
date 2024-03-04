@@ -1,0 +1,16 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Service \"XpTracker\\\\Character\\\\Infrastructure\\\\Persistence\\\\DbalAddCharacterWriteModel\" is private\\.$#"
+			count: 1
+			path: tests/Integration/Character/Infrastructure/Persistence/DbalAddCharacterWriteModelIntegrationTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$events of static method XpTracker\\\\Shared\\\\Domain\\\\Event\\\\EventCollection\\:\\:fromValues\\(\\) expects array\\<int, XpTracker\\\\Shared\\\\Domain\\\\Event\\\\DomainEvent\\>, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: tests/Unit/Shared/Domain/Event/EventCollectionTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$events of method XpTracker\\\\Shared\\\\Infrastructure\\\\Symfony\\\\SymfonyEventBus\\:\\:publish\\(\\) expects array\\<XpTracker\\\\Shared\\\\Domain\\\\Event\\\\DomainEvent\\>, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: tests/Unit/Shared/Infrastructure/Symfony/SymfonyEventBusTest.php
