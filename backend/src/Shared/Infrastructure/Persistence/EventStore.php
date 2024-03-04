@@ -36,7 +36,7 @@ final class EventStore
     /**
      * @return array<int,array<string,mixed>>
      */
-    public function getEventsForUlid(string $ulid): array
+    private function getEventsForUlid(string $ulid): array
     {
         $sql = "SELECT * FROM events WHERE aggregate_id = :aggregateId ORDER BY created_at ASC";
         $params = ['aggregateId' => $ulid];
@@ -53,6 +53,6 @@ final class EventStore
             $event = $this->serializer->deserialize($body, $eventClass, 'json');
             $hydratedEvents[] = $event;
         }
-        return new EventCollection($ulid->ulid(), $hydratedEvents);
+        return EventCollection::fromValues($ulid->ulid(), $hydratedEvents);
     }
 }

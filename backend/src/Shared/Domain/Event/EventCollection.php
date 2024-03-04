@@ -10,11 +10,20 @@ use XpTracker\Shared\Domain\Identity\SharedUlid;
 final class EventCollection
 {
     private readonly SharedUlid $ulid;
+    /** @var array<int, DomainEvent> $events */
     private readonly array $events;
+
     /**
      * @param array<int,DomainEvent> $events
      */
-    public function __construct(string $ulid, array $events)
+    public static function fromValues(string $ulid, array $events): static
+    {
+        return new static($ulid, $events);
+    }
+    /**
+     * @param array<int,DomainEvent> $events
+     */
+    private function __construct(string $ulid, array $events)
     {
         $this->ulid = SharedUlid::fromString($ulid);
         $this->validateEvents($events);
@@ -26,6 +35,7 @@ final class EventCollection
         return $this->ulid->ulid();
     }
 
+    /** @return array<int, DomainEvent> */
     public function events(): array
     {
         return $this->events;
