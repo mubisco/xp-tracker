@@ -14,7 +14,7 @@ use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 use XpTracker\Shared\Infrastructure\Persistence\EventStore;
 
-final class DbalAddCharacterWriteModel implements AddCharacterWriteModel, CharacterRepository
+final class EventStoreCharacterRepository implements AddCharacterWriteModel, CharacterRepository
 {
     public function __construct(private readonly EventStore $eventStore)
     {

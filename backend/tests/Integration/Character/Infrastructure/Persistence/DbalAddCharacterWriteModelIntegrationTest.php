@@ -5,18 +5,18 @@ namespace XpTracker\Tests\Integration\Character\Infrastructure\Persistence;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use XpTracker\Character\Domain\BasicCharacter;
 use XpTracker\Character\Domain\CharacterNotFoundException;
-use XpTracker\Character\Infrastructure\Persistence\DbalAddCharacterWriteModel;
+use XpTracker\Character\Infrastructure\Persistence\EventStoreCharacterRepository;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 class DbalAddCharacterWriteModelIntegrationTest extends KernelTestCase
 {
-    private DbalAddCharacterWriteModel $sut;
+    private EventStoreCharacterRepository $sut;
 
     protected function setUp(): void
     {
         $kernel = self::bootKernel();
         $container = $kernel->getContainer();
-        $this->sut = $container->get(DbalAddCharacterWriteModel::class);
+        $this->sut = $container->get(EventStoreCharacterRepository::class);
     }
 
     public function testItShouldThrowExceptionWhenNoCharacterFound(): void
