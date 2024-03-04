@@ -8,7 +8,7 @@ use XpTracker\Character\Domain\CharacterNotFoundException;
 use XpTracker\Character\Infrastructure\Persistence\EventStoreCharacterRepository;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 
-class DbalAddCharacterWriteModelIntegrationTest extends KernelTestCase
+class EventStoreCharacterRepositoryIntegrationTest extends KernelTestCase
 {
     private EventStoreCharacterRepository $sut;
 
