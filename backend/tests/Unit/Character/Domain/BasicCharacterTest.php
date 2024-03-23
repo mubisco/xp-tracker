@@ -7,10 +7,13 @@ use DomainException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use XpTracker\Character\Domain\BasicCharacter;
+use XpTracker\Character\Domain\CharacterAlreadyInPartyException;
+use XpTracker\Character\Domain\CharacterJoined;
 use XpTracker\Character\Domain\CharacterWasCreated;
 use XpTracker\Character\Domain\Experience;
 use XpTracker\Character\Domain\ExperienceWasUpdated;
 use XpTracker\Character\Domain\LevelWasIncreased;
+use XpTracker\Character\Domain\Party\BasicParty;
 use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 
@@ -110,5 +113,40 @@ class BasicCharacterTest extends TestCase
         $this->assertInstanceOf(DateTimeImmutable::class, $events[1]->occurredOn());
         $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700}';
         $this->assertEquals($expectedValues, $sut->toJson());
+    }
+
+    public function testItShouldJoinToParty(): void
+    {
+        $events = [
+            new CharacterWasCreated(id: $this->randomUlid->ulid(), name: 'Chindas', experiencePoints: 800),
+            new ExperienceWasUpdated(id: $this->randomUlid->ulid(), points: 99)
+        ];
+        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), $events);
+        $sut = BasicCharacter::fromEvents($eventCollection);
+        $party = BasicParty::create('01HSPCYKE8HAA363XY0KWBGDNY', 'Comando G');
+        $sut->join($party);
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $event = $events[0];
+        $this->assertInstanceOf(CharacterJoined::class, $event);
+        $now = new DateTimeImmutable();
+        $eventDate = $event->occurredOn();
+        $delta = abs($eventDate->getTimestamp() - $now->getTimestamp());
+        $this->assertTrue($delta < 5);
+        $this->assertEquals($event->partyId, $party->id());
+    }
+
+    public function testItShouldThrowExceptionWhenCharacterAlreadyInParty(): void
+    {
+        $this->expectException(CharacterAlreadyInPartyException::class);
+        $events = [
+            new CharacterWasCreated(id: $this->randomUlid->ulid(), name: 'Chindas', experiencePoints: 800),
+            new ExperienceWasUpdated(id: $this->randomUlid->ulid(), points: 99),
+            new CharacterJoined(characterId: $this->randomUlid->ulid(), partyId: '01HSPDCXEGPMSPHQGGTV1QZEAZ')
+        ];
+        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), $events);
+        $sut = BasicCharacter::fromEvents($eventCollection);
+        $party = BasicParty::create('01HSPCYKE8HAA363XY0KWBGDNY', 'Comando G');
+        $sut->join($party);
     }
 }

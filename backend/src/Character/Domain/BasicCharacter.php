@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace XpTracker\Character\Domain;
 
+use XpTracker\Character\Domain\Party\Party;
 use XpTracker\Shared\Domain\AggregateRoot;
+use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 final class BasicCharacter extends AggregateRoot implements Character
 {
     private CharacterName $characterName;
     private Experience $experience;
+    private ?SharedUlid $partyId;
 
     public static function create(string $ulid, string $name, int $experiencePoints): static
     {
@@ -33,12 +36,21 @@ final class BasicCharacter extends AggregateRoot implements Character
     {
         $this->characterName = CharacterName::fromString($event->name);
         $this->experience = Experience::fromInt($event->experiencePoints);
+        $this->partyId = null;
     }
 
     protected function applyExperienceWasUpdated(ExperienceWasUpdated $event): void
     {
         $anotherExperience = Experience::fromInt($event->points);
         $this->experience = $this->experience->add($anotherExperience);
+    }
+
+    protected function applyCharacterJoined(CharacterJoined $characterJoined): void
+    {
+        if (null !== $this->partyId) {
+            throw new CharacterAlreadyInPartyException();
+        }
+        $this->partyId = SharedUlid::fromString($characterJoined->partyId);
     }
 
     public function addExperience(Experience $experience): void
@@ -49,5 +61,10 @@ final class BasicCharacter extends AggregateRoot implements Character
         if ($this->experience->level() > $previousLevel) {
             $this->apply(new LevelWasIncreased($this->id(), $this->experience->level()));
         }
+    }
+
+    public function join(Party $party): void
+    {
+        $this->apply(new CharacterJoined($this->id(), $party->id()));
     }
 }
