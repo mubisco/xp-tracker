@@ -10,6 +10,7 @@ use XpTracker\Character\Domain\Character;
 use XpTracker\Character\Domain\CharacterAlreadyExistsException;
 use XpTracker\Character\Domain\CharacterNotFoundException;
 use XpTracker\Character\Domain\CharacterRepository;
+use XpTracker\Shared\Domain\Event\EmptyEventsForCollectionException;
 use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 use XpTracker\Shared\Infrastructure\Persistence\EventStore;
@@ -32,10 +33,11 @@ final class EventStoreCharacterRepository implements AddCharacterWriteModel, Cha
 
     public function byId(SharedUlid $ulid): Character
     {
-        $results = $this->eventStore->eventCollection($ulid);
-        if (empty($results->events())) {
+        try {
+            $eventCollection = $this->eventStore->eventCollection($ulid);
+            return BasicCharacter::fromEvents($eventCollection);
+        } catch (EmptyEventsForCollectionException) {
             throw new CharacterNotFoundException("No character found with ulid {$ulid->ulid()}");
         }
-        return BasicCharacter::fromEvents($ulid, $results->events());
     }
 }
