@@ -7,6 +7,7 @@ use XpTracker\Character\Application\Command\AddCharacterToPartyCommand;
 use XpTracker\Character\Application\Command\AddCharacterToPartyCommandHandler;
 use XpTracker\Character\Domain\CharacterNotFoundException;
 use XpTracker\Character\Domain\InvalidCharacterUlidValueException;
+use XpTracker\Character\Domain\Party\CharacterInAnotherPartyException;
 use XpTracker\Character\Domain\Party\InvalidPartyUlidValueException;
 use XpTracker\Character\Domain\Party\Party;
 use XpTracker\Character\Domain\Party\PartyNotFoundException;
@@ -58,18 +59,6 @@ class AddCharacterToPartyCommandHandlerTest extends TestCase
         ($sut)($command);
     }
 
-    // public function testItShouldThrowExceptionWhenCharacterInAnotherParty(): void
-    // {
-    //     $this->expectException(CharacterInAnotherPartyException::class);
-    //     $sut = new AddCharacterToPartyCommandHandler(
-    //         new PartyRepositoryStub(),
-    //         new CharacterRepositoryStub(),
-    //         new FailingAddCharacterWriteModelStub()
-    //     );
-    //     $command = new AddCharacterToPartyCommand('01HSNSXBB8XX6565KHKGFF9J9D', '01HSNSXD9RCRWQ21NTP74DXE8R');
-    //     ($sut)($command);
-    // }
-
     public function testItShouldThrowExceptionWhenPartyCannotbeUpdated(): void
     {
         $this->expectException(PartyWriteModelException::class);
@@ -109,7 +98,7 @@ class AddCharacterToPartyCommandHandlerTest extends TestCase
         $command = new AddCharacterToPartyCommand('01HSNSXBB8XX6565KHKGFF9J9D', '01HSNSXD9RCRWQ21NTP74DXE8R');
         ($sut)($command);
         $events = $spy->publishedEvents;
-        $this->assertCount(1, $events);
+        $this->assertCount(2, $events);
     }
 
     private function withAllFailingSut(): AddCharacterToPartyCommandHandler

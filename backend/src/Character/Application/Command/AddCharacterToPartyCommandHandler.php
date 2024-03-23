@@ -42,7 +42,6 @@ final class AddCharacterToPartyCommandHandler implements CommandHandlerInterface
         } catch (InvalidArgumentException) {
             throw new InvalidPartyUlidValueException("PartyUlid provided of {$rawUlid} is not valid!!!");
         }
-
     }
 
     private function parseCharacterUlid(string $rawUlid): SharedUlid
