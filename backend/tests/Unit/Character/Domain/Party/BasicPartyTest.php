@@ -30,7 +30,7 @@ class BasicPartyTest extends TestCase
         $this->assertInstanceOf(DateTimeImmutable::class, $event->occurredOn());
         $this->assertEquals('01HPWV7N1NEJK77X40JZCHBRMH', $event->id());
         $this->assertEquals('Equipo A', $event->partyName);
-        $expectedJson = '{"name":"Equipo A"}';
+        $expectedJson = '{"name":"Equipo A","characters":[]}';
         $this->assertEquals($expectedJson, $sut->toJson());
     }
 
@@ -49,6 +49,8 @@ class BasicPartyTest extends TestCase
         $this->assertTrue($delta < 5);
         $this->assertEquals($event->addedCharacterId, $character->id());
         $this->assertEquals(1, $sut->characterCount());
+        $expectedJson = '{"name":"Equipo A","characters":["' . $character->id() . '"]}';
+        $this->assertEquals($expectedJson, $sut->toJson());
     }
 
     public function testItShouldRehidrateProperlyFromEvents(): void
@@ -60,7 +62,7 @@ class BasicPartyTest extends TestCase
         $eventCollection = EventCollection::fromValues('01HSNY23CRKKWFJ9H78AFK9C49', $events);
         $sut = BasicParty::fromEvents($eventCollection);
         $this->assertEquals('01HSNY23CRKKWFJ9H78AFK9C49', $sut->id());
-        $expectedJson = '{"name":"Comando G"}';
+        $expectedJson = '{"name":"Comando G","characters":["01HSNY2NYGJPAC499JEMY7BXGV"]}';
         $this->assertEquals($expectedJson, $sut->toJson());
     }
 }

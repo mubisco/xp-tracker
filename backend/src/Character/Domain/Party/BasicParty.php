@@ -22,7 +22,7 @@ final class BasicParty extends AggregateRoot implements Party
 
     protected function collect(): array
     {
-        return ['name' => $this->name];
+        return ['name' => $this->name, 'characters' => $this->characters];
     }
 
     protected function applyPartyWasCreated(PartyWasCreated $event): void
