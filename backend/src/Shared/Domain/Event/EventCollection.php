@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace XpTracker\Shared\Domain\Event;
 
+use DomainException;
 use InvalidArgumentException;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 
@@ -25,9 +26,14 @@ final class EventCollection
      */
     private function __construct(string $ulid, array $events)
     {
-        $this->ulid = SharedUlid::fromString($ulid);
-        $this->validateEvents($events);
-        $this->events = $events;
+        try {
+            $this->ulid = SharedUlid::fromString($ulid);
+            $this->validateEvents($events);
+            $this->events = $events;
+
+        } catch (DomainException) {
+            throw new EmptyEventsForCollectionException("Aggregate {$ulid} has no events attached!!!");
+        }
     }
 
     public function ulid(): string
@@ -45,6 +51,9 @@ final class EventCollection
      */
     private function validateEvents(array $events): void
     {
+        if (empty($events)) {
+            throw new \DomainException();
+        }
         foreach ($events as $event) {
             if (!is_a($event, DomainEvent::class)) {
                 throw new InvalidArgumentException('Only DomainEvents allowed!!!');

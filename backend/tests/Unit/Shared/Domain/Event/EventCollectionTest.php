@@ -5,6 +5,7 @@ namespace XpTracker\Tests\Unit\Shared\Domain\Event;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use XpTracker\Character\Domain\Party\PartyWasCreated;
+use XpTracker\Shared\Domain\Event\EmptyEventsForCollectionException;
 use XpTracker\Shared\Domain\Event\EventCollection;
 
 class EventCollectionTest extends TestCase
@@ -19,6 +20,13 @@ class EventCollectionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         EventCollection::fromValues('01HR5GJ3Q5HN07S9APSVZSYXRX', ['asd', 'asd']);
+    }
+
+    public function testItShouldThrowExceptionWhenEmptyEvents(): void
+    {
+        $this->expectException(EmptyEventsForCollectionException::class);
+        $sut = EventCollection::fromValues('01HR5GJ3Q5HN07S9APSVZSYXRX', []);
+
     }
 
     public function testItShouldReturnProperValues(): void
