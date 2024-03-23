@@ -7,6 +7,7 @@ namespace XpTracker\Shared\Domain;
 use DomainException;
 use XpTracker\Shared\Domain\Event\DomainEvent;
 use XpTracker\Shared\Domain\Event\Eventable;
+use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 abstract class AggregateRoot implements Eventable
@@ -15,7 +16,16 @@ abstract class AggregateRoot implements Eventable
     /** @var array<int, DomainEvent> $events */
     private array $events = [];
 
-    public function __construct(string $id)
+    public static function fromEvents(EventCollection $eventCollection): static
+    {
+        $instance = new static($eventCollection->ulid());
+        foreach ($eventCollection->events() as $event) {
+            $instance->applyWithoutStore($event);
+        }
+        return $instance;
+    }
+
+    final public function __construct(string $id)
     {
         $this->ulid = SharedUlid::fromString($id);
     }

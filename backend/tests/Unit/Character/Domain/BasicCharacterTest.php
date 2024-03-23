@@ -11,6 +11,7 @@ use XpTracker\Character\Domain\CharacterWasCreated;
 use XpTracker\Character\Domain\Experience;
 use XpTracker\Character\Domain\ExperienceWasUpdated;
 use XpTracker\Character\Domain\LevelWasIncreased;
+use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 class BasicCharacterTest extends TestCase
@@ -58,7 +59,8 @@ class BasicCharacterTest extends TestCase
             new ExperienceWasUpdated(id: $this->randomUlid->ulid(), points: 101),
             new LevelWasIncreased(id: $this->randomUlid->ulid(), currentLevel: 2),
         ];
-        $sut = BasicCharacter::fromEvents($this->randomUlid, $events);
+        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), $events);
+        $sut = BasicCharacter::fromEvents($eventCollection);
         $this->assertInstanceOf(BasicCharacter::class, $sut);
         $this->assertEquals($this->randomUlid->ulid(), $sut->id());
         $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700}';
@@ -74,13 +76,15 @@ class BasicCharacterTest extends TestCase
             new CharacterWasCreated(id: $this->randomUlid->ulid(), name: 'Chindas', experiencePoints: 901),
             new ExperienceWasUpdated(id: $anotherUlid->ulid(), points: 901)
         ];
-        BasicCharacter::fromEvents($this->randomUlid, $events);
+        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), $events);
+        BasicCharacter::fromEvents($eventCollection);
     }
 
     public function testItShouldAddExperienceProperly(): void
     {
         $event = new CharacterWasCreated(id: $this->randomUlid->ulid(), name: 'Chindas', experiencePoints: 800);
-        $sut = BasicCharacter::fromEvents($this->randomUlid, [$event]);
+        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), [$event]);
+        $sut = BasicCharacter::fromEvents($eventCollection);
         $sut->addExperience(Experience::fromInt(99));
         $expectedValues = '{"name":"Chindas","xp":899,"level":2,"next":900}';
         $this->assertEquals($expectedValues, $sut->toJson());
@@ -95,7 +99,8 @@ class BasicCharacterTest extends TestCase
             new CharacterWasCreated(id: $this->randomUlid->ulid(), name: 'Chindas', experiencePoints: 800),
             new ExperienceWasUpdated(id: $this->randomUlid->ulid(), points: 99)
         ];
-        $sut = BasicCharacter::fromEvents($this->randomUlid, $events);
+        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), $events);
+        $sut = BasicCharacter::fromEvents($eventCollection);
         $sut->addExperience(Experience::fromInt(2));
         $events = $sut->pullEvents();
         $this->assertCount(2, $events);

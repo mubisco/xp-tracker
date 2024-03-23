@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace XpTracker\Character\Domain;
 
 use XpTracker\Shared\Domain\AggregateRoot;
-use XpTracker\Shared\Domain\Event\DomainEvent;
-use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 final class BasicCharacter extends AggregateRoot implements Character
 {
@@ -18,16 +16,6 @@ final class BasicCharacter extends AggregateRoot implements Character
         $character = new self($ulid);
         $createEvent = new CharacterWasCreated($ulid, $name, $experiencePoints);
         $character->apply($createEvent);
-        return $character;
-    }
-
-    /** @param array<int, DomainEvent> $events */
-    public static function fromEvents(SharedUlid $ulid, array $events): BasicCharacter
-    {
-        $character = new self($ulid->ulid());
-        foreach ($events as $event) {
-            $character->applyWithoutStore($event);
-        }
         return $character;
     }
 
