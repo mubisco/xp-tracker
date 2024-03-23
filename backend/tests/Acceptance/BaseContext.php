@@ -55,10 +55,23 @@ final class BaseContext implements Context
      */
     public function aPostRequestIsSentToWithData(string $url, TableNode $table): void
     {
+        $request = $this->buildRequest($url, 'POST', $table);
+        $this->response = $this->kernel->handle($request);
+    }
+
+    /**
+     * @When a put request is sent to :url with data
+     */
+    public function aPutRequestIsSentToWithData(string $url, TableNode $table): void
+    {
+        $request = $this->buildRequest($url, 'PUT', $table);
+        $this->response = $this->kernel->handle($request);
+    }
+
+    private function buildRequest(string $url, string $method, TableNode $table): Request
+    {
         $dataArray = $table->getRowsHash();
         $content = json_encode($dataArray, JSON_THROW_ON_ERROR);
-        $this->response = $this->kernel->handle(
-            Request::create($url, 'POST', [], [], [], [], $content)
-        );
+        return Request::create($url, $method, [], [], [], [], $content);
     }
 }
