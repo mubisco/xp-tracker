@@ -28,6 +28,12 @@ final class CharacterOM
         $this->baseExperience = 0;
     }
 
+    public function withExperience(int $xpPoints): self
+    {
+        $this->baseExperience = $xpPoints;
+        return $this;
+    }
+
     public function build(): Character
     {
         $events = [

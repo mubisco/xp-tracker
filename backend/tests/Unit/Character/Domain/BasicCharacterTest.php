@@ -3,6 +3,7 @@
 namespace XpTracker\Tests\Unit\Character\Domain;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use DomainException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -16,14 +17,18 @@ use XpTracker\Character\Domain\LevelWasIncreased;
 use XpTracker\Character\Domain\Party\BasicParty;
 use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
+use XpTracker\Tests\Unit\Character\Domain\Party\PartyOM;
+use XpTracker\Tests\Unit\Custom\IsImmediateDate;
 
 class BasicCharacterTest extends TestCase
 {
     private SharedUlid $randomUlid;
+    private IsImmediateDate $assertion;
 
     protected function setUp(): void
     {
         $this->randomUlid = SharedUlid::fromEmpty();
+        $this->assertion = new IsImmediateDate();
     }
 
     public function testItShouldCreateCharacter(): void
@@ -36,7 +41,7 @@ class BasicCharacterTest extends TestCase
         $this->assertCount(1, $events);
         $event = $events[0];
         $this->assertInstanceOf(CharacterWasCreated::class, $event);
-        $this->assertInstanceOf(DateTimeImmutable::class, $event->occurredOn());
+        $this->assertThat($event->occurredOn(), $this->assertion);
     }
 
     /** @dataProvider wrongCreationData */
@@ -85,9 +90,7 @@ class BasicCharacterTest extends TestCase
 
     public function testItShouldAddExperienceProperly(): void
     {
-        $event = new CharacterWasCreated(id: $this->randomUlid->ulid(), name: 'Chindas', experiencePoints: 800);
-        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), [$event]);
-        $sut = BasicCharacter::fromEvents($eventCollection);
+        $sut = CharacterOM::aBuilder()->withExperience(800)->build();
         $sut->addExperience(Experience::fromInt(99));
         $expectedValues = '{"name":"Chindas","xp":899,"level":2,"next":900}';
         $this->assertEquals($expectedValues, $sut->toJson());
@@ -98,55 +101,38 @@ class BasicCharacterTest extends TestCase
 
     public function testItShouldCreateLevelEventWhenLevelIncreased(): void
     {
-        $events = [
-            new CharacterWasCreated(id: $this->randomUlid->ulid(), name: 'Chindas', experiencePoints: 800),
-            new ExperienceWasUpdated(id: $this->randomUlid->ulid(), points: 99)
-        ];
-        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), $events);
-        $sut = BasicCharacter::fromEvents($eventCollection);
+        $sut = CharacterOM::aBuilder()->withExperience(899)->build();
         $sut->addExperience(Experience::fromInt(2));
         $events = $sut->pullEvents();
         $this->assertCount(2, $events);
         $this->assertInstanceOf(ExperienceWasUpdated::class, $events[0]);
-        $this->assertInstanceOf(DateTimeImmutable::class, $events[0]->occurredOn());
         $this->assertInstanceOf(LevelWasIncreased::class, $events[1]);
-        $this->assertInstanceOf(DateTimeImmutable::class, $events[1]->occurredOn());
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
+        $this->assertThat($events[1]->occurredOn(), $this->assertion);
         $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700}';
         $this->assertEquals($expectedValues, $sut->toJson());
     }
 
     public function testItShouldJoinToParty(): void
     {
-        $events = [
-            new CharacterWasCreated(id: $this->randomUlid->ulid(), name: 'Chindas', experiencePoints: 800),
-            new ExperienceWasUpdated(id: $this->randomUlid->ulid(), points: 99)
-        ];
-        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), $events);
-        $sut = BasicCharacter::fromEvents($eventCollection);
+        $sut = CharacterOM::aBuilder()->withExperience(899)->build();
         $party = BasicParty::create('01HSPCYKE8HAA363XY0KWBGDNY', 'Comando G');
         $sut->join($party);
         $events = $sut->pullEvents();
         $this->assertCount(1, $events);
         $event = $events[0];
         $this->assertInstanceOf(CharacterJoined::class, $event);
-        $now = new DateTimeImmutable();
-        $eventDate = $event->occurredOn();
-        $delta = abs($eventDate->getTimestamp() - $now->getTimestamp());
-        $this->assertTrue($delta < 5);
+        $this->assertThat($event->occurredOn(), $this->assertion);
         $this->assertEquals($event->partyId, $party->id());
     }
 
     public function testItShouldThrowExceptionWhenCharacterAlreadyInParty(): void
     {
         $this->expectException(CharacterAlreadyInPartyException::class);
-        $events = [
-            new CharacterWasCreated(id: $this->randomUlid->ulid(), name: 'Chindas', experiencePoints: 800),
-            new ExperienceWasUpdated(id: $this->randomUlid->ulid(), points: 99),
-            new CharacterJoined(characterId: $this->randomUlid->ulid(), partyId: '01HSPDCXEGPMSPHQGGTV1QZEAZ')
-        ];
-        $eventCollection = EventCollection::fromValues($this->randomUlid->ulid(), $events);
-        $sut = BasicCharacter::fromEvents($eventCollection);
-        $party = BasicParty::create('01HSPCYKE8HAA363XY0KWBGDNY', 'Comando G');
-        $sut->join($party);
+        $party = PartyOM::aBuilder()->build();
+        $anotherParty = PartyOM::aBuilder()->build();
+        $character = CharacterOM::aBuilder()->build();
+        $character->join($party);
+        $character->join($anotherParty);
     }
 }

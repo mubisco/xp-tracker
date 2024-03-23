@@ -5,15 +5,13 @@ namespace XpTracker\Tests\Unit\Character\Domain\Party;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use XpTracker\Character\Domain\BasicCharacter;
 use XpTracker\Character\Domain\CharacterAlreadyInPartyException;
 use XpTracker\Character\Domain\CharacterJoined;
-use XpTracker\Character\Domain\CharacterWasCreated;
-use XpTracker\Character\Domain\ExperienceWasUpdated;
 use XpTracker\Character\Domain\Party\BasicParty;
 use XpTracker\Character\Domain\Party\CharacterWasAdded;
 use XpTracker\Character\Domain\Party\PartyWasCreated;
 use XpTracker\Shared\Domain\Event\EventCollection;
+use XpTracker\Tests\Unit\Character\Domain\CharacterOM;
 
 class BasicPartyTest extends TestCase
 {
@@ -43,12 +41,7 @@ class BasicPartyTest extends TestCase
     {
         $now = new DateTimeImmutable();
         $sut = BasicParty::create('01HPWV7N1NEJK77X40JZCHBRMH', 'Equipo A');
-        $events = [
-            new CharacterWasCreated(id: '01HSPDYNT0GPS8Q7GMRB8XVPWX', name: 'Chindas', experiencePoints: 800),
-            new ExperienceWasUpdated(id: '01HSPDYNT0GPS8Q7GMRB8XVPWX', points: 99)
-        ];
-        $eventCollection = EventCollection::fromValues('01HSPDYNT0GPS8Q7GMRB8XVPWX', $events);
-        $character = BasicCharacter::fromEvents($eventCollection);
+        $character = CharacterOM::aBuilder()->build();
         $sut->add($character);
         $events = $sut->pullEvents();
         $this->assertCount(3, $events);
@@ -81,19 +74,10 @@ class BasicPartyTest extends TestCase
     public function testItShouldThrowExceptionAddCharacterInAnotherParty(): void
     {
         $this->expectException(CharacterAlreadyInPartyException::class);
-        $events = [
-            new PartyWasCreated('01HSNY23CRKKWFJ9H78AFK9C49', 'Comando G'),
-            new CharacterWasAdded('01HSNY23CRKKWFJ9H78AFK9C49', '01HSNY2NYGJPAC499JEMY7BXGV')
-        ];
-        $eventCollection = EventCollection::fromValues('01HSNY23CRKKWFJ9H78AFK9C49', $events);
-        $sut = BasicParty::fromEvents($eventCollection);
-        $events = [
-            new CharacterWasCreated(id: '01HSPDYNT0GPS8Q7GMRB8XVPWX', name: 'Chindas', experiencePoints: 800),
-            new ExperienceWasUpdated(id: '01HSPDYNT0GPS8Q7GMRB8XVPWX', points: 99),
-            new CharacterJoined(characterId: '01HSPDYNT0GPS8Q7GMRB8XVPWX', partyId: '01HSPDCXEGPMSPHQGGTV1QZEAZ')
-        ];
-        $eventCollection = EventCollection::fromValues('01HSPDYNT0GPS8Q7GMRB8XVPWX', $events);
-        $character = BasicCharacter::fromEvents($eventCollection);
-        $sut->add($character);
+        $party = PartyOM::aBuilder()->build();
+        $anotherParty = PartyOM::aBuilder()->build();
+        $character = CharacterOM::aBuilder()->build();
+        $party->add($character);
+        $anotherParty->add($character);
     }
 }
