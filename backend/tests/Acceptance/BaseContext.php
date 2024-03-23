@@ -11,19 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-/**
- * This context class contains the definitions of the steps used by the demo
- * feature file. Learn how to get started with Behat and BDD on Behat's website.
- *
- * @see http://behat.org/en/latest/quick_start.html
- */
-final class DemoContext implements Context
+final class BaseContext implements Context
 {
-    /** @var KernelInterface */
-    private $kernel;
+    private KernelInterface $kernel;
 
-    /** @var Response|null */
-    private $response;
+    private ?Response $response;
 
     public function __construct(KernelInterface $kernel)
     {
@@ -54,7 +46,8 @@ final class DemoContext implements Context
     public function aStatusCodeShouldBeReceived(int $expectedStatusCode): void
     {
         $statusCode = $this->response?->getStatusCode();
-        Assert::assertEquals($expectedStatusCode, $statusCode);
+        $message = $this->response?->getContent() ?? '';
+        Assert::assertEquals($expectedStatusCode, $statusCode, $message);
     }
 
     /**

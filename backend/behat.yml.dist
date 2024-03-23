@@ -3,7 +3,7 @@ default:
   suites:
     default:
       contexts:
-        - XpTracker\Tests\Acceptance\DemoContext
+        - XpTracker\Tests\Acceptance\BaseContext
       paths:
         - 'tests/Acceptance/features'
   extensions:
