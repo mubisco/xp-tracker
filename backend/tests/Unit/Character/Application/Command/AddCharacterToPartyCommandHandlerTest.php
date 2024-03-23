@@ -17,6 +17,7 @@ use XpTracker\Tests\Unit\Character\Domain\FailingAddCharacterToPartyWriteModelSt
 use XpTracker\Tests\Unit\Character\Domain\NotFoundCharacterRepositoryStub;
 use XpTracker\Tests\Unit\Character\Domain\Party\FailingPartyRepositoryStub;
 use XpTracker\Tests\Unit\Character\Domain\Party\PartyRepositoryStub;
+use XpTracker\Tests\Unit\Shared\Domain\Event\EventBusSpy;
 
 class AddCharacterToPartyCommandHandlerTest extends TestCase
 {
@@ -50,7 +51,8 @@ class AddCharacterToPartyCommandHandlerTest extends TestCase
         $sut = new AddCharacterToPartyCommandHandler(
             new PartyRepositoryStub(),
             new NotFoundCharacterRepositoryStub(),
-            new FailingAddCharacterToPartyWriteModelStub()
+            new FailingAddCharacterToPartyWriteModelStub(),
+            new EventBusSpy()
         );
         $command = new AddCharacterToPartyCommand('01HSNSXBB8XX6565KHKGFF9J9D', '01HSNSXD9RCRWQ21NTP74DXE8R');
         ($sut)($command);
@@ -74,7 +76,8 @@ class AddCharacterToPartyCommandHandlerTest extends TestCase
         $sut = new AddCharacterToPartyCommandHandler(
             new PartyRepositoryStub(),
             new CharacterRepositoryStub(),
-            new FailingAddCharacterToPartyWriteModelStub()
+            new FailingAddCharacterToPartyWriteModelStub(),
+            new EventBusSpy()
         );
         $command = new AddCharacterToPartyCommand('01HSNSXBB8XX6565KHKGFF9J9D', '01HSNSXD9RCRWQ21NTP74DXE8R');
         ($sut)($command);
@@ -86,11 +89,27 @@ class AddCharacterToPartyCommandHandlerTest extends TestCase
         $sut = new AddCharacterToPartyCommandHandler(
             new PartyRepositoryStub(),
             new CharacterRepositoryStub(),
-            $spy
+            $spy,
+            new EventBusSpy()
         );
         $command = new AddCharacterToPartyCommand('01HSNSXBB8XX6565KHKGFF9J9D', '01HSNSXD9RCRWQ21NTP74DXE8R');
         ($sut)($command);
         $this->assertInstanceOf(Party::class, $spy->party);
+    }
+
+    public function testItShouldPublishProperEvents(): void
+    {
+        $spy = new EventBusSpy();
+        $sut = new AddCharacterToPartyCommandHandler(
+            new PartyRepositoryStub(),
+            new CharacterRepositoryStub(),
+            new AddCharacterToPartyWriteModelSpy(),
+            $spy
+        );
+        $command = new AddCharacterToPartyCommand('01HSNSXBB8XX6565KHKGFF9J9D', '01HSNSXD9RCRWQ21NTP74DXE8R');
+        ($sut)($command);
+        $events = $spy->publishedEvents;
+        $this->assertCount(1, $events);
     }
 
     private function withAllFailingSut(): AddCharacterToPartyCommandHandler
@@ -98,7 +117,8 @@ class AddCharacterToPartyCommandHandlerTest extends TestCase
         return new AddCharacterToPartyCommandHandler(
             new FailingPartyRepositoryStub(),
             new NotFoundCharacterRepositoryStub(),
-            new FailingAddCharacterToPartyWriteModelStub()
+            new FailingAddCharacterToPartyWriteModelStub(),
+            new EventBusSpy()
         );
     }
 }
