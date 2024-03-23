@@ -7,7 +7,7 @@ controllers:
 
 api_add_character:
   path: /api/character
-  controller: XpTracker\Character\Infrastructure\Entrypoint\Api\AddCharacterController
+  controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PostAddCharacterController
 
 api_create_party:
   path: /api/party
