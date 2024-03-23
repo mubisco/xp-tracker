@@ -14,7 +14,7 @@ use XpTracker\Character\Application\Command\CreatePartyCommand;
 use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 
 #[AsController]
-#[Route("/api/party", name: "api_create_party", methods: "POST")]
+#[Route("/api/party", name: "api_party_create", methods: "POST")]
 final class PostCreatePartyController
 {
     private const ALLOWED_EXCEPTIONS = [

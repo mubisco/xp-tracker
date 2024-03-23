@@ -5,10 +5,10 @@ controllers:
     namespace: XpTracker\Controller
   type: attribute
 
-api_add_character:
+api_character_create:
   path: /api/character
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PostAddCharacterController
 
-api_create_party:
+api_party_create:
   path: /api/party
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PostCreatePartyController

@@ -14,7 +14,7 @@ use XpTracker\Character\Application\Command\AddCharacterCommand;
 use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 
 #[AsController]
-#[Route("/api/character", name: "api_add_character", methods: "POST")]
+#[Route("/api/character", name: "api_character_create", methods: "POST")]
 final class PostAddCharacterController
 {
     private const ALLOWED_EXCEPTIONS = [
