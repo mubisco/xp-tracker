@@ -6,15 +6,15 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use XpTracker\Character\Application\Command\AddCharacterCommand;
-use XpTracker\Character\Infrastructure\Entrypoint\Api\AddCharacterController;
+use XpTracker\Character\Infrastructure\Entrypoint\Api\PostAddCharacterController;
 use XpTracker\Tests\Unit\Shared\Infrastructure\Symfony\FailingJsonCommandBus;
 use XpTracker\Tests\Unit\Shared\Infrastructure\Symfony\SpyJsonCommandBus;
 
-class AddCharacterControllerTest extends TestCase
+class PostAddCharacterControllerTest extends TestCase
 {
     public function testShouldThrowErrorOnBadRequestContent(): void
     {
-        $sut = new AddCharacterController(new FailingJsonCommandBus());
+        $sut = new PostAddCharacterController(new FailingJsonCommandBus());
         $content = 'asd';
         $request = Request::create('/some/url', 'POST', [], [], [], [], $content);
         $response = ($sut)($request);
@@ -24,7 +24,7 @@ class AddCharacterControllerTest extends TestCase
     public function testShouldReturnOkResponse(): void
     {
         $spy = new SpyJsonCommandBus();
-        $sut = new AddCharacterController($spy);
+        $sut = new PostAddCharacterController($spy);
         $content = '{"ulid":"ulid","characterName":"Chindasvinto","experiencePoints":0}';
         $request = Request::create('/some/url', 'POST', [], [], [], [], $content);
         $response = ($sut)($request);

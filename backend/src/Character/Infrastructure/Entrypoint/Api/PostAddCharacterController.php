@@ -15,7 +15,7 @@ use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 
 #[AsController]
 #[Route("/api/character", name: "api_add_character", methods: "POST")]
-final class AddCharacterController
+final class PostAddCharacterController
 {
     private const ALLOWED_EXCEPTIONS = [
         'InvalidArgumentException' => Response::HTTP_BAD_REQUEST,
