@@ -18,7 +18,8 @@ use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 final class PutAddCharacterToPartyController
 {
     private const ALLOWED_EXCEPTIONS = [
-        'InvalidArgumentException' => Response::HTTP_BAD_REQUEST,
+        'InvalidPartyUlidValueException' => Response::HTTP_BAD_REQUEST,
+        'InvalidCharacterUlidValueException' => Response::HTTP_BAD_REQUEST,
         'PartyNotFoundException' => Response::HTTP_NOT_FOUND,
         'CharacterNotFoundException' => Response::HTTP_NOT_FOUND,
         'CharacterAlreadyInPartyException' => Response::HTTP_CONFLICT,
