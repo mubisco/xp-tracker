@@ -40,10 +40,6 @@ final class BasicParty extends AggregateRoot implements Party
     {
         $character->join($this);
         $this->apply(new CharacterWasAdded($this->id(), $character->id()));
-        $characterEvents = $character->pullEvents();
-        foreach ($characterEvents as $event) {
-            $this->addEvent($event);
-        }
     }
 
     public function characterCount(): int

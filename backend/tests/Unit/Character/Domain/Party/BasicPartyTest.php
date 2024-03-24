@@ -12,6 +12,7 @@ use XpTracker\Character\Domain\Party\CharacterWasAdded;
 use XpTracker\Character\Domain\Party\PartyWasCreated;
 use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Tests\Unit\Character\Domain\CharacterOM;
+use XpTracker\Tests\Unit\Custom\IsImmediateDate;
 
 class BasicPartyTest extends TestCase
 {
@@ -39,22 +40,18 @@ class BasicPartyTest extends TestCase
     /** @group asd */
     public function testItShouldAddCharacterProperly(): void
     {
-        $now = new DateTimeImmutable();
-        $sut = BasicParty::create('01HPWV7N1NEJK77X40JZCHBRMH', 'Equipo A');
+        /** @var BasicParty */
+        $sut = PartyOM::aBuilder()->build();
         $character = CharacterOM::aBuilder()->build();
         $sut->add($character);
         $events = $sut->pullEvents();
-        $this->assertCount(3, $events);
-        $event = $events[1];
+        $this->assertCount(1, $events);
+        $event = $events[0];
         $this->assertInstanceOf(CharacterWasAdded::class, $event);
-        $characterEvent = $events[2];
-        $this->assertInstanceOf(CharacterJoined::class, $characterEvent);
-        $eventDate = $event->occurredOn();
-        $delta = abs($eventDate->getTimestamp() - $now->getTimestamp());
-        $this->assertTrue($delta < 5);
+        $this->assertThat($event->occurredOn(), new IsImmediateDate());
         $this->assertEquals($event->addedCharacterId, $character->id());
         $this->assertEquals(1, $sut->characterCount());
-        $expectedJson = '{"name":"Equipo A","characters":["' . $character->id() . '"]}';
+        $expectedJson = '{"name":"Comando G","characters":["' . $character->id() . '"]}';
         $this->assertEquals($expectedJson, $sut->toJson());
     }
 
