@@ -98,7 +98,7 @@ class AddCharacterToPartyCommandHandlerTest extends TestCase
         $command = new AddCharacterToPartyCommand('01HSNSXBB8XX6565KHKGFF9J9D', '01HSNSXD9RCRWQ21NTP74DXE8R');
         ($sut)($command);
         $events = $spy->publishedEvents;
-        $this->assertCount(2, $events);
+        $this->assertCount(1, $events);
     }
 
     private function withAllFailingSut(): AddCharacterToPartyCommandHandler

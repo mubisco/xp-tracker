@@ -6,7 +6,6 @@ use DateTimeImmutable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use XpTracker\Character\Domain\CharacterAlreadyInPartyException;
-use XpTracker\Character\Domain\CharacterJoined;
 use XpTracker\Character\Domain\Party\BasicParty;
 use XpTracker\Character\Domain\Party\CharacterWasAdded;
 use XpTracker\Character\Domain\Party\PartyWasCreated;
