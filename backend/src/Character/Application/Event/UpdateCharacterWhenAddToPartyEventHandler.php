@@ -12,6 +12,7 @@ use XpTracker\Character\Domain\Party\InvalidPartyUlidValueException;
 use XpTracker\Character\Domain\Party\PartyRepository;
 use XpTracker\Character\Domain\UpdateCharacterPartyWriteModel;
 use XpTracker\Shared\Application\EventHandlerInterface;
+use XpTracker\Shared\Domain\Event\EventBus;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 final class UpdateCharacterWhenAddToPartyEventHandler implements EventHandlerInterface
@@ -19,7 +20,8 @@ final class UpdateCharacterWhenAddToPartyEventHandler implements EventHandlerInt
     public function __construct(
         private readonly PartyRepository $partyRepository,
         private readonly CharacterRepository $characterRepository,
-        private readonly UpdateCharacterPartyWriteModel $writeModel
+        private readonly UpdateCharacterPartyWriteModel $writeModel,
+        private readonly EventBus $domainEventBus
     ) {
     }
     public function __invoke(CharacterWasAdded $event): void
@@ -30,6 +32,7 @@ final class UpdateCharacterWhenAddToPartyEventHandler implements EventHandlerInt
         $character = $this->characterRepository->byId($characterId);
         $character->join($party);
         $this->writeModel->updateCharacterParty($character);
+        $this->domainEventBus->publish($character->pullEvents());
     }
 
     private function extractPartyId(string $rawId): SharedUlid

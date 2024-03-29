@@ -19,6 +19,7 @@ use XpTracker\Tests\Unit\Character\Domain\NotFoundCharacterRepositoryStub;
 use XpTracker\Tests\Unit\Character\Domain\Party\FailingPartyRepositoryStub;
 use XpTracker\Tests\Unit\Character\Domain\Party\PartyRepositoryStub;
 use XpTracker\Tests\Unit\Character\Domain\UpdateCharacterPartyWriteModelSpy;
+use XpTracker\Tests\Unit\Shared\Domain\Event\EventBusSpy;
 
 class UpdateCharacterWhenAddToPartyEventHandlerTest extends TestCase
 {
@@ -70,7 +71,8 @@ class UpdateCharacterWhenAddToPartyEventHandlerTest extends TestCase
         $sut = new UpdateCharacterWhenAddToPartyEventHandler(
             new PartyRepositoryStub(),
             new NotFoundCharacterRepositoryStub(),
-            new FailingUpdateCharacterPartyWriteModelStub()
+            new FailingUpdateCharacterPartyWriteModelStub(),
+            new EventBusSpy()
         );
         ($sut)($this->event);
     }
@@ -83,7 +85,8 @@ class UpdateCharacterWhenAddToPartyEventHandlerTest extends TestCase
         $sut = new UpdateCharacterWhenAddToPartyEventHandler(
             new PartyRepositoryStub(),
             new CharacterRepositoryStub($character),
-            new FailingUpdateCharacterPartyWriteModelStub()
+            new FailingUpdateCharacterPartyWriteModelStub(),
+            new EventBusSpy()
         );
         ($sut)($this->event);
     }
@@ -95,7 +98,8 @@ class UpdateCharacterWhenAddToPartyEventHandlerTest extends TestCase
         $sut = new UpdateCharacterWhenAddToPartyEventHandler(
             new PartyRepositoryStub(),
             new CharacterRepositoryStub(),
-            new FailingUpdateCharacterPartyWriteModelStub()
+            new FailingUpdateCharacterPartyWriteModelStub(),
+            new EventBusSpy()
         );
         ($sut)($this->event);
     }
@@ -107,11 +111,29 @@ class UpdateCharacterWhenAddToPartyEventHandlerTest extends TestCase
         $sut = new UpdateCharacterWhenAddToPartyEventHandler(
             new PartyRepositoryStub(),
             new CharacterRepositoryStub(),
-            $spy
+            $spy,
+            new EventBusSpy()
         );
         ($sut)($this->event);
         $this->assertNotNull($spy->updatedCharacter);
         $events = $spy->updatedCharacter->pullEvents();
+        $this->assertCount(1, $events);
+        $event = $events[0];
+        $this->assertInstanceOf(CharacterJoined::class, $event);
+    }
+
+    /** @test */
+    public function itShouldPublishProperEvents(): void
+    {
+        $spy = new EventBusSpy();
+        $sut = new UpdateCharacterWhenAddToPartyEventHandler(
+            new PartyRepositoryStub(),
+            new CharacterRepositoryStub(),
+            new UpdateCharacterPartyWriteModelSpy(),
+            $spy
+        );
+        ($sut)($this->event);
+        $events = $spy->publishedEvents;
         $this->assertCount(1, $events);
         $event = $events[0];
         $this->assertInstanceOf(CharacterJoined::class, $event);
@@ -122,7 +144,8 @@ class UpdateCharacterWhenAddToPartyEventHandlerTest extends TestCase
         $sut = new UpdateCharacterWhenAddToPartyEventHandler(
             new FailingPartyRepositoryStub(),
             new NotFoundCharacterRepositoryStub(),
-            new FailingUpdateCharacterPartyWriteModelStub()
+            new FailingUpdateCharacterPartyWriteModelStub(),
+            new EventBusSpy()
         );
         return $sut;
     }
