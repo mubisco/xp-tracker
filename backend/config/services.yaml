@@ -21,3 +21,11 @@ services:
       - '../src/DependencyInjection/'
       - '../src/Entity/'
       - '../src/Kernel.php'
+
+  XpTracker\Character\Application\Event\ProjectPartyWhenCharacterAddedEventHandler:
+    arguments:
+      $projection: '@XpTracker\Character\Infrastructure\Persistence\DbalUpdateWhenCharacterAddedPartyProjection'
+
+  XpTracker\Character\Application\Event\ProjectPartyWhenCreatedEventHandler:
+    arguments:
+      $projection: '@XpTracker\Character\Infrastructure\Persistence\DbalCreatePartyProjection'

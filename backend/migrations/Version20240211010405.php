@@ -25,7 +25,7 @@ final class Version20240211010405 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $sql = "DROP TABLE characters";
+        $sql = "DROP TABLE IF EXISTS characters";
         $this->addSql($sql);
     }
 }
