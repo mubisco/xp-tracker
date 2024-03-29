@@ -10,12 +10,16 @@ use XpTracker\Character\Domain\Character;
 use XpTracker\Character\Domain\CharacterAlreadyExistsException;
 use XpTracker\Character\Domain\CharacterNotFoundException;
 use XpTracker\Character\Domain\CharacterRepository;
+use XpTracker\Character\Domain\UpdateCharacterPartyWriteModel;
 use XpTracker\Shared\Domain\Event\EmptyEventsForCollectionException;
 use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 use XpTracker\Shared\Infrastructure\Persistence\EventStore;
 
-final class EventStoreCharacterRepository implements AddCharacterWriteModel, CharacterRepository
+final class EventStoreCharacterRepository implements
+    AddCharacterWriteModel,
+    CharacterRepository,
+    UpdateCharacterPartyWriteModel
 {
     public function __construct(private readonly EventStore $eventStore)
     {
@@ -39,5 +43,15 @@ final class EventStoreCharacterRepository implements AddCharacterWriteModel, Cha
         } catch (EmptyEventsForCollectionException) {
             throw new CharacterNotFoundException("No character found with ulid {$ulid->ulid()}");
         }
+    }
+
+    public function updateCharacterParty(Character $character): void
+    {
+        $results = $this->eventStore->getEventsForUlid($character->id());
+        if (empty($results)) {
+            throw new CharacterNotFoundException("Character with {$character->id()} does not exists");
+        }
+        $collection = EventCollection::fromValues($character->id(), $character->pullEvents());
+        $this->eventStore->appendEvents($collection);
     }
 }

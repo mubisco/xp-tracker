@@ -7,7 +7,6 @@ use XpTracker\Character\Application\Command\AddCharacterToPartyCommand;
 use XpTracker\Character\Application\Command\AddCharacterToPartyCommandHandler;
 use XpTracker\Character\Domain\CharacterNotFoundException;
 use XpTracker\Character\Domain\InvalidCharacterUlidValueException;
-use XpTracker\Character\Domain\Party\CharacterInAnotherPartyException;
 use XpTracker\Character\Domain\Party\InvalidPartyUlidValueException;
 use XpTracker\Character\Domain\Party\Party;
 use XpTracker\Character\Domain\Party\PartyNotFoundException;
