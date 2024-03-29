@@ -53,6 +53,28 @@ Feature:
       | characterUlid    | 01HJCGHACDM5XTZVCECF88N2KZ |
     Then a "404" status code should be received
 
+  # Scenario: It should recover party data properly
+  #   When a post request is sent to "/api/party" with data
+  #     | ulid             | 01HT4SR0YRJE5HFT5NE4V0GHB9 |
+  #     | name             |                  Comando G |
+  #   And a post request is sent to "/api/character" with data
+  #     | ulid             | 01HT4SR4VR5Q6D4QCDE65AA3RE |
+  #     | characterName    |               Chindasvinto |
+  #     | experiencePoints |                          0 |
+  #   And a post request is sent to "/api/character" with data
+  #     | ulid             | 01HT4SRHJ0CDHX7CQVDZJ17NA9 |
+  #     | characterName    |                    Darling |
+  #     | experiencePoints |                        800 |
+  #   And a put request is sent to "/api/party/character/add" with data
+  #     | partyUlid        | 01HT4SR0YRJE5HFT5NE4V0GHB9 |
+  #     | characterUlid    | 01HT4SR4VR5Q6D4QCDE65AA3RE |
+  #   And a put request is sent to "/api/party/character/add" with data
+  #     | partyUlid        | 01HT4SR0YRJE5HFT5NE4V0GHB9 |
+  #     | characterUlid    | 01HT4SRHJ0CDHX7CQVDZJ17NA9 |
+  #   Then I should be able to recover party data
+  #     | partyUlid        | 01HT4SR0YRJE5HFT5NE4V0GHB9 |
+  #     | name             |                  Comando G |
+
   # Disabled until we know how to raise event consumer in behat tests
   # Scenario: It should fail when character already in party
   #   When a post request is sent to "/api/party" with data

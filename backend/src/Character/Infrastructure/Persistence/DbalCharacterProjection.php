@@ -18,13 +18,35 @@ final class DbalCharacterProjection implements CharacterProjection
 
     public function __invoke(Character $character): void
     {
+        $sql = "SELECT character_id FROM characters WHERE character_id = :characterId";
+        $params = ['characterId' => $character->id()];
+        $result = $this->connection->fetchOne($sql, $params);
+        if (false === $result) {
+            $this->insertCharacter($character);
+            return;
+        }
+        $this->updateCharacter($character);
+    }
+
+    private function insertCharacter(Character $character): void
+    {
         try {
             $data = [
                 'character_id' => $character->id(),
                 'character_data' => $character->toJson()
             ];
-            // TODO: comprobación previo si existe o tal vez tener 2 projections, la de create y la de update
             $this->connection->insert('characters', $data);
+        } catch (Exception $e) {
+            throw new CharacterProjectionException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    private function updateCharacter(Character $character): void
+    {
+        try {
+            $data = ['character_data' => $character->toJson()];
+            $criteria = ['character_id' => $character->id()];
+            $this->connection->update(table: 'characters', data: $data, criteria: $criteria);
         } catch (Exception $e) {
             throw new CharacterProjectionException($e->getMessage(), $e->getCode(), $e);
         }

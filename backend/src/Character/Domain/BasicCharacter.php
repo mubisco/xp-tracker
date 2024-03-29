@@ -29,6 +29,7 @@ final class BasicCharacter extends AggregateRoot implements Character
             'xp' => $this->experience->points(),
             'level' => $this->experience->level(),
             'next' => $this->experience->nextLevel(),
+            'partyId' => $this->partyId?->ulid() ?? ''
         ];
     }
 

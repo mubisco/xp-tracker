@@ -35,7 +35,7 @@ class BasicCharacterTest extends TestCase
     {
         $sut = BasicCharacter::create($this->randomUlid->ulid(), 'Darling', 300);
         $this->assertEquals($this->randomUlid->ulid(), $sut->id());
-        $expectedValues = '{"name":"Darling","xp":300,"level":2,"next":900}';
+        $expectedValues = '{"name":"Darling","xp":300,"level":2,"next":900,"partyId":""}';
         $this->assertEquals($expectedValues, $sut->toJson());
         $events = $sut->pullEvents();
         $this->assertCount(1, $events);
@@ -71,7 +71,7 @@ class BasicCharacterTest extends TestCase
         $sut = BasicCharacter::fromEvents($eventCollection);
         $this->assertInstanceOf(BasicCharacter::class, $sut);
         $this->assertEquals($this->randomUlid->ulid(), $sut->id());
-        $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700}';
+        $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700,"partyId":""}';
         $this->assertEquals($expectedValues, $sut->toJson());
         $this->assertCount(0, $sut->pullEvents());
     }
@@ -92,7 +92,7 @@ class BasicCharacterTest extends TestCase
     {
         $sut = CharacterOM::aBuilder()->withExperience(800)->build();
         $sut->addExperience(Experience::fromInt(99));
-        $expectedValues = '{"name":"Chindas","xp":899,"level":2,"next":900}';
+        $expectedValues = '{"name":"Chindas","xp":899,"level":2,"next":900,"partyId":""}';
         $this->assertEquals($expectedValues, $sut->toJson());
         $events = $sut->pullEvents();
         $this->assertCount(1, $events);
@@ -109,7 +109,7 @@ class BasicCharacterTest extends TestCase
         $this->assertInstanceOf(LevelWasIncreased::class, $events[1]);
         $this->assertThat($events[0]->occurredOn(), $this->assertion);
         $this->assertThat($events[1]->occurredOn(), $this->assertion);
-        $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700}';
+        $expectedValues = '{"name":"Chindas","xp":901,"level":3,"next":2700,"partyId":""}';
         $this->assertEquals($expectedValues, $sut->toJson());
     }
 
@@ -124,6 +124,8 @@ class BasicCharacterTest extends TestCase
         $this->assertInstanceOf(CharacterJoined::class, $event);
         $this->assertThat($event->occurredOn(), $this->assertion);
         $this->assertEquals($event->partyId, $party->id());
+        $expectedValues = '{"name":"Chindas","xp":899,"level":2,"next":900,"partyId":"' . $party->id() . '"}';
+        $this->assertEquals($expectedValues, $sut->toJson());
     }
 
     public function testItShouldThrowExceptionWhenCharacterAlreadyInParty(): void
