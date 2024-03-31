@@ -9,6 +9,10 @@ api_character_create:
   path: /api/character
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PostAddCharacterController
 
+api_party_get:
+  path: /api/party/{partyId}
+  controller: XpTracker\Character\Infrastructure\Entrypoint\Api\GetPartyController
+
 api_party_create:
   path: /api/party
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PostCreatePartyController
@@ -16,7 +20,3 @@ api_party_create:
 api_party_character_add:
   path: /api/party/character/add
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PutAddCharacterToPartyController
-
-api_party_get:
-  path: /api/party
-  controller: XpTracker\Character\Infrastructure\Entrypoint\Api\GetPartyController
