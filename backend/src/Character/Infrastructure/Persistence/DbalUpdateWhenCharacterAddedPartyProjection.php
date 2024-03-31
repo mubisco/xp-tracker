@@ -33,7 +33,7 @@ final class DbalUpdateWhenCharacterAddedPartyProjection implements PartyProjecti
 
     private function updatePartyCharacters(Party $party): void
     {
-        $partyData = $party->toJson();
+        $partyData = json_decode($party->toJson(), true);
         $characters = isset($partyData['characters']) ? $partyData['characters'] : [];
         foreach ($characters as $characterId) {
             $this->insertRelation($party->id(), $characterId);
@@ -43,7 +43,7 @@ final class DbalUpdateWhenCharacterAddedPartyProjection implements PartyProjecti
     private function insertRelation(string $partyId, string $characterId): void
     {
         $characterIdAlreadyExists = $this->checkCharacterRelationAlreadyExists($characterId);
-        if (!$characterIdAlreadyExists) {
+        if ($characterIdAlreadyExists) {
             return;
         }
         $this->insertCharacterId($partyId, $characterId);
