@@ -3,6 +3,7 @@ DOCKER_COMPOSE:=USER_ID=${shell id -u} docker compose
 BACK_IMAGE=backend
 FRONT_IMAGE=frontend
 DOCKER_FRONT_EXEC=$(DOCKER_COMPOSE) exec xp-track-front
+DOCKER_BACK_EXEC=$(DOCKER_COMPOSE) exec backend
 
 .PHONY: default
 default: info
@@ -46,3 +47,9 @@ but: ## Run Backend Unit Tests
 .PHONY: bat
 bat: ## Run Backend Acceptance (Behat) Tests
 	@$(DOCKER_COMPOSE) exec $(BACK_IMAGE) composer behat
+
+.PHONY: events-up
+events-up: ## Cleans previous messages and raises messenger consumer
+	@$(DOCKER_BACK_EXEC) php ./bin/console dbal:run-sql 'TRUNCATE TABLE messenger_messages'
+	@$(DOCKER_BACK_EXEC) php ./bin/console messenger:setup-transports
+	@$(DOCKER_BACK_EXEC) php ./bin/console messenger:consume event.async -vv
