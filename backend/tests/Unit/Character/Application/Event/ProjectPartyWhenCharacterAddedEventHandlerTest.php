@@ -18,7 +18,7 @@ class ProjectPartyWhenCharacterAddedEventHandlerTest extends TestCase
     public function testItShouldThrowExceptionWhenWrongUlid(): void
     {
         $this->expectException(InvalidPartyUlidValueException::class);
-        $event = new CharacterJoined('wrongUlid', '01HT4W11W0TT617BM1MZ87EC91');
+        $event = new CharacterJoined('01HT4W11W0TT617BM1MZ87EC91', 'wrongUlid');
         $sut = new ProjectPartyWhenCharacterAddedEventHandler(
             new FailingPartyRepositoryStub(),
             new FailingPartyProjectionStub()

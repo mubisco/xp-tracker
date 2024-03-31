@@ -22,7 +22,7 @@ final class ProjectPartyWhenCharacterAddedEventHandler implements EventHandlerIn
 
     public function __invoke(CharacterJoined $event): void
     {
-        $partyId = $this->parsePartyId($event->id());
+        $partyId = $this->parsePartyId($event->partyId);
         $party = $this->repository->byUlid($partyId);
         ($this->projection)($party);
     }
