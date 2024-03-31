@@ -34,7 +34,11 @@ final class DbalCreatePartyProjection implements PartyProjection
     private function insertParty(Party $party): void
     {
         try {
-            $partyData = $party->toJson();
+            $partyData = json_decode($party->toJson(), true);
+            $name = isset($partyData['name']) ? $partyData['name'] : '';
+            if (empty($name)) {
+                throw new PartyProjectionException("Party name is not set!!!: " . $party->toJson());
+            }
             $data = [
                 'party_id' => $party->id(),
                 'name' => isset($partyData['name']) ? $partyData['name'] : ''
