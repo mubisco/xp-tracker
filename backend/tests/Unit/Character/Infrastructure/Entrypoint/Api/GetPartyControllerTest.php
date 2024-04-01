@@ -2,7 +2,7 @@
 
 namespace XpTracker\Tests\Unit\Character\Infrastructure\Entrypoint\Api;
 
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +14,7 @@ use XpTracker\Character\Infrastructure\Entrypoint\Api\GetPartyController;
 class GetPartyControllerTest extends TestCase
 {
     private GetPartyController $sut;
-    private FindPartyByIdQueryHandler&MockObject $useCase;
+    private FindPartyByIdQueryHandler&Stub $useCase;
 
     protected function setUp(): void
     {

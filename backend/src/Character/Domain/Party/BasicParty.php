@@ -10,6 +10,7 @@ use XpTracker\Shared\Domain\AggregateRoot;
 final class BasicParty extends AggregateRoot implements Party
 {
     private string $name;
+    /** @var array<int,string> $characters */
     private array $characters;
 
     public static function create(string $id, string $name): static

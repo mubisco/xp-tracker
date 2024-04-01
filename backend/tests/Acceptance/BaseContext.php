@@ -47,7 +47,7 @@ final class BaseContext implements Context
     {
         $statusCode = $this->response?->getStatusCode();
         $message = $this->response?->getContent() ?? '';
-        Assert::assertEquals($expectedStatusCode, $statusCode, $message);
+        Assert::assertEquals($expectedStatusCode, $statusCode, $message ? $message : '');
     }
 
     /**

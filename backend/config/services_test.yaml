@@ -7,3 +7,5 @@ services:
     resource: '../tests/Acceptance/*'
   XpTracker\Character\Infrastructure\Persistence\DbalAddCharacterWriteModel:
     public: true
+  XpTracker\Character\Infrastructure\Persistence\EventStoreCharacterRepository:
+    public: true

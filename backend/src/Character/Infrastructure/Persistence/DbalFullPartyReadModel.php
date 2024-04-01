@@ -37,7 +37,7 @@ final class DbalFullPartyReadModel implements FullPartyReadModel
         return $results[0];
     }
     /**
-     * @return array<string,array<string,mixed>
+     * @return array<string,array<string,mixed>>
      */
     private function charactersFromParty(SharedUlid $ulid): array
     {
@@ -55,7 +55,7 @@ final class DbalFullPartyReadModel implements FullPartyReadModel
     }
 
     /**
-     * @param array<int,mixed> $singleRow
+     * @param array<string,mixed> $singleRow
      */
     private function parseCharacterId(array $singleRow): string
     {
@@ -67,7 +67,7 @@ final class DbalFullPartyReadModel implements FullPartyReadModel
 
     /**
      * @return array<string,mixed>
-     * @param array<int,mixed> $singleRow
+     * @param array<string,mixed> $singleRow
      */
     private function parseSingleRow(string $characterId, array $singleRow): array
     {
