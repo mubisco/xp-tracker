@@ -19,7 +19,7 @@ final class PostCreateEncounterController
 {
     private const ALLOWED_EXCEPTIONS = [
         'WrongEncounterUlidException' => Response::HTTP_BAD_REQUEST,
-        'EncounterAlreadyExistsException' => Response::HTTP_UNPROCESSABLE_ENTITY
+        'EncounterAlreadyExistsException' => Response::HTTP_CONFLICT
     ];
 
     public function __construct(private readonly JsonCommandBus $jsonCommandBus)
