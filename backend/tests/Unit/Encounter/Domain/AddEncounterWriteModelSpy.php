@@ -9,7 +9,10 @@ use XpTracker\Encounter\Domain\Encounter;
 
 final class AddEncounterWriteModelSpy implements AddEncounterWriteModel
 {
+    public ?Encounter $addedEncounter = null;
+
     public function store(Encounter $encounter): void
     {
+        $this->addedEncounter = $encounter;
     }
 }

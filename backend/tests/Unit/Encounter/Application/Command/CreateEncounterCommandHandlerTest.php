@@ -64,6 +64,8 @@ class CreateEncounterCommandHandlerTest extends TestCase
         $sut = new CreateEncounterCommandHandler($writeModelSpy, $eventBusSpy);
         $command = new CreateEncounterCommand('01HTTRXEVGQW6BCCTZPKZRWQT7', 'Chindasvinto');
         ($sut)($command);
+        $this->assertNotNull($writeModelSpy->addedEncounter);
+        $this->assertEquals('01HTTRXEVGQW6BCCTZPKZRWQT7', $writeModelSpy->addedEncounter->id());
         $this->assertCount(1, $eventBusSpy->publishedEvents);
     }
 }
