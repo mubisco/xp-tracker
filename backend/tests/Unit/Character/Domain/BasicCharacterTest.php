@@ -2,8 +2,6 @@
 
 namespace XpTracker\Tests\Unit\Character\Domain;
 
-use DateTimeImmutable;
-use DateTimeInterface;
 use DomainException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
