@@ -18,7 +18,7 @@ use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 final class PostCreateEncounterController
 {
     private const ALLOWED_EXCEPTIONS = [
-        'InvalidArgumentException' => Response::HTTP_BAD_REQUEST,
+        'WrongEncounterUlidException' => Response::HTTP_BAD_REQUEST,
         'EncounterAlreadyExistsException' => Response::HTTP_UNPROCESSABLE_ENTITY
     ];
 
