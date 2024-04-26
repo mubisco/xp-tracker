@@ -23,7 +23,7 @@ final class SharedUlid
     private function __construct(private readonly string $ulid)
     {
         if (!Ulid::isValid($this->ulid)) {
-            throw new InvalidArgumentException("{$ulid} is not a valid ULID");
+            throw new WrongUlidValueException("{$ulid} is not a valid ULID");
         }
     }
 
