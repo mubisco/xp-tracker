@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace XpTracker\Shared\Domain\Identity;
 
-use InvalidArgumentException;
 use Symfony\Component\Uid\Ulid;
 
 final class SharedUlid
