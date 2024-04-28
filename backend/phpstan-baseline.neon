@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Service \"XpTracker\\\\Character\\\\Infrastructure\\\\Persistence\\\\EventStoreCharacterRepository\" is private\\.$#"
+			count: 1
+			path: tests/Integration/Character/Infrastructure/Persistence/EventStoreCharacterRepositoryIntegrationTest.php
+
+		-
 			message: "#^Parameter \\#2 \\$events of static method XpTracker\\\\Shared\\\\Domain\\\\Event\\\\EventCollection\\:\\:fromValues\\(\\) expects array\\<int, XpTracker\\\\Shared\\\\Domain\\\\Event\\\\DomainEvent\\>, array\\<int, string\\> given\\.$#"
 			count: 1
 			path: tests/Unit/Shared/Domain/Event/EventCollectionTest.php
