@@ -14,7 +14,7 @@ class ChallengeRatingTest extends TestCase
      * */
     public function itShouldThrowExceptionWhenNoValidValueProvided(string $wrongChallengeRating): void
     {
-        $this->expectException(InvalidChallengeRatingValueException::class, 'Value: ' . $wrongChallengeRating);
+        $this->expectException(InvalidChallengeRatingValueException::class);
         ChallengeRating::fromString($wrongChallengeRating);
     }
     /**
