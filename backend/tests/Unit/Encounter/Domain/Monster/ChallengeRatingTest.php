@@ -15,19 +15,14 @@ class ChallengeRatingTest extends TestCase
     public function itShouldThrowExceptionWhenNoValidValueProvided(string $wrongChallengeRating): void
     {
         $this->expectException(InvalidChallengeRatingValueException::class, 'Value: ' . $wrongChallengeRating);
-        new ChallengeRating($wrongChallengeRating);
+        ChallengeRating::fromString($wrongChallengeRating);
     }
     /**
      * @return array<int,mixed>
      */
     public function wrongChallengerRatingValues(): array
     {
-        return [
-            ['1/3'],
-            ['-1'],
-            ['27'],
-            ['31']
-        ];
+        return [['1/3'], ['-1'], ['27'], ['31']];
     }
 
     /**
@@ -37,7 +32,7 @@ class ChallengeRatingTest extends TestCase
      */
     public function itShouldReturnProperValue(string $challengerRating, int $experiencePoints): void
     {
-        $sut = new ChallengeRating($challengerRating);
+        $sut = ChallengeRating::fromString($challengerRating);
         $this->assertEquals($challengerRating, $sut->rating());
         $this->assertEquals($experiencePoints, $sut->xp());
     }

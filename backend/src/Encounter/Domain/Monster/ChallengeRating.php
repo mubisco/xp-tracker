@@ -40,7 +40,12 @@ final class ChallengeRating
         '30'  => 155_000
     ];
 
-    public function __construct(private readonly string $value)
+    public static function fromString(string $challengeRating): static
+    {
+        return new static($challengeRating);
+    }
+
+    private function __construct(private readonly string $value)
     {
         $keys = array_keys(self::ALLOWED_VALUES);
         if (!in_array($value, $keys)) {
