@@ -9,7 +9,6 @@ final class AddMonsterToEncounterCommand
     public function __construct(
         public readonly string $encounterUlid,
         public readonly string $monsterName,
-        public readonly int $experiencePoints,
         public readonly string $challengeRating,
     ) {
     }
