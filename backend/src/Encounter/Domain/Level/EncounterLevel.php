@@ -25,9 +25,6 @@ final class EncounterLevel
         return new static(PartyTresholds::fromIntValues($levels), MonstersXp::fromIntValues($monstersXp));
     }
 
-    /**
-     * @param array<int,int> $levels
-     */
     private function __construct(
         private readonly PartyTresholds $partyTresholds,
         private readonly MonstersXp $monstersXp
