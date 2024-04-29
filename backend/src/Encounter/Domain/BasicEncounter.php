@@ -7,6 +7,7 @@ namespace XpTracker\Encounter\Domain;
 use XpTracker\Encounter\Domain\Monster\EncounterMonster;
 use XpTracker\Encounter\Domain\Monster\MonsterWasAdded;
 use XpTracker\Encounter\Domain\Monster\MonsterWasRemoved;
+use XpTracker\Encounter\Domain\Party\EncounterParty;
 use XpTracker\Shared\Domain\AggregateRoot;
 use XpTracker\Shared\Domain\Identity\WrongUlidValueException;
 
@@ -95,5 +96,9 @@ final class BasicEncounter extends AggregateRoot implements Encounter
             challengeRating: $monster->challengeRating()
         );
         $this->apply($event);
+    }
+
+    public function assignToParty(EncounterParty $party): void
+    {
     }
 }
