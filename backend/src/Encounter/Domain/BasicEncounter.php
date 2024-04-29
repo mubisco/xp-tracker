@@ -6,6 +6,7 @@ namespace XpTracker\Encounter\Domain;
 
 use XpTracker\Encounter\Domain\Monster\EncounterMonster;
 use XpTracker\Encounter\Domain\Monster\MonsterWasAdded;
+use XpTracker\Encounter\Domain\Monster\MonsterWasRemoved;
 use XpTracker\Shared\Domain\AggregateRoot;
 use XpTracker\Shared\Domain\Identity\WrongUlidValueException;
 
@@ -64,10 +65,31 @@ final class BasicEncounter extends AggregateRoot implements Encounter
         $monster = EncounterMonster::fromStringValues($event->monsterName, $event->challengeRating);
         $this->monsters[] = $monster;
     }
+    protected function applyMonsterWasRemoved(MonsterWasRemoved $event): void
+    {
+        $monster = EncounterMonster::fromStringValues($event->monsterName, $event->challengeRating);
+        $updatedMonsters = [];
+        foreach ($this->monsters as $singleMonster) {
+            if (!$singleMonster->equals($monster)) {
+                $updatedMonsters[] = $singleMonster;
+            }
+        }
+        $this->monsters = $updatedMonsters;
+    }
 
     public function addMonster(EncounterMonster $monster): void
     {
         $event = new MonsterWasAdded(
+            encounterUlid: $this->id(),
+            monsterName: $monster->name(),
+            challengeRating: $monster->challengeRating()
+        );
+        $this->apply($event);
+    }
+
+    public function removeMonster(EncounterMonster $monster): void
+    {
+        $event = new MonsterWasRemoved(
             encounterUlid: $this->id(),
             monsterName: $monster->name(),
             challengeRating: $monster->challengeRating()

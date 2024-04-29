@@ -10,16 +10,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
-use XpTracker\Encounter\Application\Command\AddMonsterToEncounterCommand;
+use XpTracker\Encounter\Application\Command\RemoveMonsterFromEncounterCommand;
 use XpTracker\Shared\Infrastructure\Symfony\JsonCommandBus;
 
 #[AsController]
-#[Route("/api/encounter/monster/add", name: "api_encounter_add_monster", methods: "PUT")]
-final class PutAddMonsterToEncounterController
+#[Route("/api/encounter/monster/remove", name: "api_encounter_remove_monster", methods: "PUT")]
+final class PutRemoveMonsterFromEncounterController
 {
     private const ALLOWED_EXCEPTIONS = [
         'WrongEncounterUlidException' => Response::HTTP_BAD_REQUEST,
-        'WrongMonsterValueException' => Response::HTTP_BAD_REQUEST,
         'EncounterNotFoundException' => Response::HTTP_NOT_FOUND
     ];
 
@@ -37,11 +36,11 @@ final class PutAddMonsterToEncounterController
         }
     }
 
-    private function parseRequest(Request $request): AddMonsterToEncounterCommand
+    private function parseRequest(Request $request): RemoveMonsterFromEncounterCommand
     {
         $rawContent = $request->getContent();
         $parsedRequest = json_decode($rawContent, false, 512, JSON_THROW_ON_ERROR);
-        return new AddMonsterToEncounterCommand(
+        return new RemoveMonsterFromEncounterCommand(
             encounterUlid: $parsedRequest->encounterUlid ?? '',
             monsterName: $parsedRequest->monsterName ?? '',
             challengeRating: $parsedRequest->challengeRating ?? '',

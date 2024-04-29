@@ -43,4 +43,9 @@ final class EncounterMonster
     {
         return $this->challengeRating->xp();
     }
+
+    public function equals(EncounterMonster $another): bool
+    {
+        return $this->name() === $another->name() && $this->challengeRating() === $another->challengeRating();
+    }
 }

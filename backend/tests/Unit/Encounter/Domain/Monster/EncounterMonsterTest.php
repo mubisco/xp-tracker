@@ -30,4 +30,20 @@ class EncounterMonsterTest extends TestCase
         $this->assertEquals('1', $sut->challengeRating());
         $this->assertEquals(200, $sut->xp());
     }
+
+    /** @test */
+    public function itShouldReturnFalseWhenMonsterNotEquals(): void
+    {
+        $sut = EncounterMonster::fromStringValues('Orc', '1');
+        $anotherSut = EncounterMonster::fromStringValues('Kobold', '1');
+        $this->assertFalse($sut->equals($anotherSut));
+    }
+
+    /** @test */
+    public function itShouldReturnTrueWhenMonsterAreTheSame(): void
+    {
+        $sut = EncounterMonster::fromStringValues('Orc', '1');
+        $anotherSut = EncounterMonster::fromStringValues('Orc', '1');
+        $this->assertTrue($sut->equals($anotherSut));
+    }
 }

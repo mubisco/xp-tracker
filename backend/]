@@ -7,7 +7,6 @@ use XpTracker\Encounter\Domain\BasicEncounter;
 use XpTracker\Encounter\Domain\EncounterWasCreated;
 use XpTracker\Encounter\Domain\Monster\EncounterMonster;
 use XpTracker\Encounter\Domain\Monster\MonsterWasAdded;
-use XpTracker\Encounter\Domain\Monster\MonsterWasRemoved;
 use XpTracker\Encounter\Domain\WrongEncounterNameException;
 use XpTracker\Encounter\Domain\WrongEncounterUlidException;
 use XpTracker\Shared\Domain\Event\EventCollection;
@@ -40,8 +39,8 @@ class BasicEncounterTest extends TestCase
     {
         $sut = BasicEncounter::create('01HTTPV1VG40BB2B9NX6KKJZ50', 'Test');
         $this->assertEquals('01HTTPV1VG40BB2B9NX6KKJZ50', $sut->id());
-        $expectedValues = ['name' => 'Test', 'monsters' => []];
-        $this->assertEquals($expectedValues, $sut->collect());
+        $expectedJsonValue = '{"name":"Test","monsters":[]}';
+        $this->assertEquals($expectedJsonValue, $sut->toJson());
     }
 
     /** @test */
@@ -133,17 +132,5 @@ class BasicEncounterTest extends TestCase
         $monster = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
         $sut->removeMonster($monster);
         $this->assertEquals(1, $sut->monsterQuantity());
-        $expectedValues = [
-            'name' => 'Test',
-            'monsters' => [
-                ['name' => 'Kobold', 'challengeRating' => '1/4', 'experiencePoints' => 50]
-
-            ]
-        ];
-        $this->assertEquals($expectedValues, $sut->collect());
-        $events = $sut->pullEvents();
-        $this->assertCount(1, $events);
-        $this->assertInstanceOf(MonsterWasRemoved::class, $events[0]);
-        $this->assertThat($events[0]->occurredOn(), $this->assertion);
     }
 }

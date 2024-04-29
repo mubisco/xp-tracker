@@ -10,8 +10,15 @@ use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 final class EncounterRepositoryStub implements EncounterRepository
 {
+    public function __construct(private readonly ?Encounter $encounter = null)
+    {
+    }
+
     public function byEncounterId(SharedUlid $encounterId): Encounter
     {
-        return EncounterOM::random();
+        if (null === $this->encounter) {
+            return EncounterOM::random();
+        }
+        return $this->encounter;
     }
 }
