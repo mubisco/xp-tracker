@@ -34,6 +34,8 @@ final class BasicEncounter extends AggregateRoot implements Encounter
         $monsters = $this->collectMonstersData();
         return [
             'name' => $this->name->value(),
+            'party' => '',
+            'level' => 'UNASSIGNED',
             'monsters' => $monsters
         ];
     }

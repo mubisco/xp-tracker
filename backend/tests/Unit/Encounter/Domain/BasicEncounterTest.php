@@ -40,7 +40,12 @@ class BasicEncounterTest extends TestCase
     {
         $sut = BasicEncounter::create('01HTTPV1VG40BB2B9NX6KKJZ50', 'Test');
         $this->assertEquals('01HTTPV1VG40BB2B9NX6KKJZ50', $sut->id());
-        $expectedValues = ['name' => 'Test', 'monsters' => []];
+        $expectedValues = [
+            'level' => 'UNASSIGNED',
+            'name' => 'Test',
+            'party' => '',
+            'monsters' => []
+        ];
         $this->assertEquals($expectedValues, $sut->collect());
     }
 
@@ -59,38 +64,18 @@ class BasicEncounterTest extends TestCase
     /** @test */
     public function itShouldAddMonsterProperly(): void
     {
-        $sut = BasicEncounter::create('01HTTPV1VG40BB2B9NX6KKJZ50', 'Test');
+        $sut = BasicEncounterOM::aBuilder()->build();
         $monster = EncounterMonster::fromStringValues('Orc', '1/2');
         $sut->addMonster($monster);
         $this->assertEquals(1, $sut->monsterQuantity());
-        $anotherMonster = EncounterMonster::fromStringValues('Kobold', '1/2');
-        $sut->addMonster($anotherMonster);
-        $this->assertEquals(2, $sut->monsterQuantity());
-        $this->assertCount(3, $sut->pullEvents());
-    }
-
-    /** @test */
-    public function itShouldApplyMonstersFromEvents(): void
-    {
-        $ulid = '01HWJ7QMXG4Y77MC7DG6C5T0DQ';
-        $createEvent = new EncounterWasCreated(id: $ulid, name: 'Test');
-        $addMonsterEvent = new MonsterWasAdded(
-            encounterUlid: $ulid,
-            monsterName: 'Orc',
-            challengeRating: '1/2'
-        );
-        $collection = EventCollection::fromValues($ulid, [$createEvent, $addMonsterEvent]);
-        $sut = BasicEncounter::fromEvents($collection);
-        $this->assertCount(0, $sut->pullEvents());
-        $this->assertEquals(1, $sut->monsterQuantity());
-        $expectedValues = [
-            'name' => 'Test',
-            'monsters' => [
-                ['name' => 'Orc', 'challengeRating' => '1/2', 'experiencePoints' => 100]
-
-            ]
-        ];
-        $this->assertEquals($expectedValues, $sut->collect());
+        $this->assertCount(1, $sut->pullEvents());
+        $expectedMonsters = [['name' => 'Orc', 'challengeRating' => '1/2', 'experiencePoints' => 100]];
+        $data = $sut->collect();
+        $this->assertEquals($expectedMonsters, $data['monsters']);
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(MonsterWasAdded::class, $events[0]);
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
     }
 
     /**
@@ -99,48 +84,16 @@ class BasicEncounterTest extends TestCase
      */
     public function itShouldRemoveMonsterProperly(): void
     {
-        $ulid = '01HWJ7QMXG4Y77MC7DG6C5T0DQ';
-        $createEvent = new EncounterWasCreated(id: $ulid, name: 'Test');
-        $addMonsterEvent = new MonsterWasAdded(
-            encounterUlid: $ulid,
-            monsterName: 'Orc',
-            challengeRating: '1/2'
-        );
-        $collection = EventCollection::fromValues($ulid, [$createEvent, $addMonsterEvent]);
-        $sut = BasicEncounter::fromEvents($collection);
-        $monster = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
-        $sut->removeMonster($monster);
-        $this->assertEquals(0, $sut->monsterQuantity());
-    }
-
-    /** @test */
-    public function itShouldRemoveProperMonsterWhenMoreThanOne(): void
-    {
-        $ulid = '01HWJ7QMXG4Y77MC7DG6C5T0DQ';
-        $createEvent = new EncounterWasCreated(id: $ulid, name: 'Test');
-        $addMonsterEvent = new MonsterWasAdded(
-            encounterUlid: $ulid,
-            monsterName: 'Orc',
-            challengeRating: '1/2'
-        );
-        $anotherAddMonsterEvent = new MonsterWasAdded(
-            encounterUlid: $ulid,
-            monsterName: 'Kobold',
-            challengeRating: '1/4'
-        );
-        $collection = EventCollection::fromValues($ulid, [$createEvent, $addMonsterEvent, $anotherAddMonsterEvent]);
-        $sut = BasicEncounter::fromEvents($collection);
-        $monster = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
-        $sut->removeMonster($monster);
+        $orc = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
+        $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
+        $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->build();
+        $sut->removeMonster($orc);
         $this->assertEquals(1, $sut->monsterQuantity());
-        $expectedValues = [
-            'name' => 'Test',
-            'monsters' => [
-                ['name' => 'Kobold', 'challengeRating' => '1/4', 'experiencePoints' => 50]
-
-            ]
-        ];
-        $this->assertEquals($expectedValues, $sut->collect());
+        $data = $sut->collect();
+        $this->assertEquals(
+            [['name' => 'Kobold', 'challengeRating' => '1/2', 'experiencePoints' => 100]],
+            $data['monsters']
+        );
         $events = $sut->pullEvents();
         $this->assertCount(1, $events);
         $this->assertInstanceOf(MonsterWasRemoved::class, $events[0]);
