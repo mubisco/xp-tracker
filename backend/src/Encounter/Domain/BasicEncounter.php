@@ -25,6 +25,7 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     private EncounterLevel $level;
     /** @var array<int, EncounterMonster> */
     private array $monsters = [];
+    private bool $solved = false;
 
     public static function create(string $ulid, string $name): static
     {
@@ -42,10 +43,11 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     {
         $monsters = $this->collectMonstersData();
         $party = $this->party?->partyUlid ?? '';
+        $level = $this->solved ? 'RESOLVED' : $this->level->level()->value;
         return [
             'name' => $this->name->value(),
             'party' => $party,
-            'status' => $this->level->level()->value,
+            'level' => $level,
             'monsters' => $monsters
         ];
     }
@@ -133,6 +135,11 @@ final class BasicEncounter extends AggregateRoot implements Encounter
         $this->updateLevel();
     }
 
+    protected function applyEncounterWasSolved(EncounterWasSolved $event): void
+    {
+        $this->solved = true;
+    }
+
     private function monsterXpValues(): array
     {
         return array_map(function (EncounterMonster $monster) {
@@ -167,6 +174,16 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     public function updateAssignedParty(EncounterParty $party): void
     {
         $event = new PartyWasUpdated($this->id(), $party->partyUlid, $party->charactersLevel);
+        $this->apply($event);
+    }
+
+    public function resolve(): void
+    {
+        if (null === $this->party) {
+            throw new EncounterNotResolvableException("This encounter has no party assigned!!!");
+        }
+        $monsterXpValues = $this->monsterXpValues();
+        $event = new EncounterWasSolved($this->id(), $this->party->partyUlid, array_sum($monsterXpValues));
         $this->apply($event);
     }
 }

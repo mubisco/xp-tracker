@@ -4,7 +4,9 @@ namespace XpTracker\Tests\Unit\Encounter\Domain;
 
 use PHPUnit\Framework\TestCase;
 use XpTracker\Encounter\Domain\BasicEncounter;
+use XpTracker\Encounter\Domain\EncounterNotResolvableException;
 use XpTracker\Encounter\Domain\EncounterWasCreated;
+use XpTracker\Encounter\Domain\EncounterWasSolved;
 use XpTracker\Encounter\Domain\Monster\EncounterMonster;
 use XpTracker\Encounter\Domain\Monster\MonsterWasAdded;
 use XpTracker\Encounter\Domain\Monster\MonsterWasRemoved;
@@ -16,8 +18,6 @@ use XpTracker\Encounter\Domain\Party\PartyWasUnassigned;
 use XpTracker\Encounter\Domain\Party\PartyWasUpdated;
 use XpTracker\Encounter\Domain\WrongEncounterNameException;
 use XpTracker\Encounter\Domain\WrongEncounterUlidException;
-use XpTracker\Shared\Domain\Event\DomainEvent;
-use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 use XpTracker\Tests\Unit\Custom\IsImmediateDate;
 
@@ -49,7 +49,7 @@ class BasicEncounterTest extends TestCase
         $sut = BasicEncounter::create('01HTTPV1VG40BB2B9NX6KKJZ50', 'Test');
         $this->assertEquals('01HTTPV1VG40BB2B9NX6KKJZ50', $sut->id());
         $expectedValues = [
-            'status' => 'UNASSIGNED',
+            'level' => 'UNASSIGNED',
             'name' => 'Test',
             'party' => '',
             'monsters' => []
@@ -96,7 +96,7 @@ class BasicEncounterTest extends TestCase
         $sut->assignToParty($party);
         $data = $sut->collect();
         $this->assertEquals('01HWTEG560RMHQ52KC5SGGPCEJ', $data['party']);
-        $this->assertEquals('EMPTY', $data['status']);
+        $this->assertEquals('EMPTY', $data['level']);
         $this->checkSingleEvent($sut, PartyWasAssigned::class);
     }
 
@@ -109,7 +109,7 @@ class BasicEncounterTest extends TestCase
         $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
         $sut->assignToParty($party);
         $data = $sut->collect();
-        $this->assertEquals('DEADLY', $data['status']);
+        $this->assertEquals('DEADLY', $data['level']);
     }
 
     /** @test */
@@ -130,7 +130,7 @@ class BasicEncounterTest extends TestCase
         $sut = BasicEncounterOM::aBuilder()->withParty($party)->build();
         $sut->addMonster($kobold);
         $data = $sut->collect();
-        $this->assertEquals('EASY', $data['status']);
+        $this->assertEquals('EASY', $data['level']);
     }
 
     /** @test */
@@ -142,7 +142,7 @@ class BasicEncounterTest extends TestCase
         $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->withParty($party)->build();
         $sut->unassign(SharedUlid::fromString('01HWTEG560RMHQ52KC5SGGPCEJ'));
         $data = $sut->collect();
-        $this->assertEquals('UNASSIGNED', $data['status']);
+        $this->assertEquals('UNASSIGNED', $data['level']);
         $this->checkSingleEvent($sut, PartyWasUnassigned::class);
     }
 
@@ -196,8 +196,33 @@ class BasicEncounterTest extends TestCase
         $updatedParty = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [2,2]);
         $sut->updateAssignedParty($updatedParty);
         $data = $sut->collect();
-        $this->assertEquals('HARD', $data['status']);
+        $this->assertEquals('HARD', $data['level']);
         $this->checkSingleEvent($sut, PartyWasUpdated::class);
+    }
+
+    /** @test */
+    public function itShouldResolveAndEncounter(): void
+    {
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $orc = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
+        $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
+        $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->withParty($party)->build();
+        $sut->resolve();
+        $data = $sut->collect();
+        $this->assertEquals('RESOLVED', $data['level']);
+        $this->checkSingleEvent($sut, EncounterWasSolved::class);
+        $event = $sut->pullEvents()[0];
+        $this->assertEquals(200, $event->totalXp);
+    }
+
+    /** @test */
+    public function itShouldThrowExceptionWhenTryingToResolveAnEncounterWithoutParty(): void
+    {
+        $this->expectException(EncounterNotResolvableException::class);
+        $orc = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
+        $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
+        $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->build();
+        $sut->resolve();
     }
 
     private function checkSingleEvent(BasicEncounter $sut, string $expectedEventClass): void
