@@ -127,7 +127,7 @@ final class BasicEncounter extends AggregateRoot implements Encounter
             throw new PartyNotAssignedToEncounterException("This encounter has no assigned party to update!!!");
         }
         if ($this->party->partyUlid !== $event->partyUlid) {
-            throw new PartyNotAssignedToEncounterException();
+            throw new PartyNotAssignedToEncounterException("This encounter has a different party assigned!!!");
         }
         $this->party = new EncounterParty($event->partyUlid, $event->charactersLevel);
         $this->updateLevel();
