@@ -7,7 +7,7 @@ namespace XpTracker\Encounter\Domain\Level;
 enum LevelTag: string
 {
     case EMPTY = 'EMPTY';
-    case UNNASSIGNED = 'UNNASSIGNED';
+    case UNASSIGNED = 'UNASSIGNED';
     case EASY = 'EASY';
     case MEDIUM = 'MEDIUM';
     case HARD = 'HARD';

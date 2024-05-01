@@ -34,7 +34,7 @@ final class EncounterLevel
     public function level(): LevelTag
     {
         if ($this->partyTresholds->empty()) {
-            return LevelTag::UNNASSIGNED;
+            return LevelTag::UNASSIGNED;
         }
         if ($this->monstersXp->empty()) {
             return LevelTag::EMPTY;

@@ -14,7 +14,7 @@ class EncounterLevelTest extends TestCase
     public function itShouldBeCreatedFromEmpty(): void
     {
         $sut = EncounterLevel::empty();
-        $this->assertEquals(LevelTag::UNNASSIGNED, $sut->level());
+        $this->assertEquals(LevelTag::UNASSIGNED, $sut->level());
     }
 
     /**
@@ -46,7 +46,7 @@ class EncounterLevelTest extends TestCase
     public function levelDataProvider(): array
     {
         return [
-            [[], [], LevelTag::UNNASSIGNED],
+            [[], [], LevelTag::UNASSIGNED],
             [[1], [], LevelTag::EMPTY],
             [[1], [25], LevelTag::EASY],
             [[1], [50], LevelTag::MEDIUM],
