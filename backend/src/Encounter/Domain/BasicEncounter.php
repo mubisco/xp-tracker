@@ -39,14 +39,20 @@ final class BasicEncounter extends AggregateRoot implements Encounter
         }
     }
 
+    public function partyId(): string
+    {
+        return null === $this->party ? '' : $this->party->partyUlid;
+    }
+
     public function collect(): array
     {
         $monsters = $this->collectMonstersData();
         $party = $this->party?->partyUlid ?? '';
-        $level = $this->totalXpSolved > 0 ? 'RESOLVED' : $this->level->level()->value;
+        $level = $this->level->level()->value;
         return [
             'name' => $this->name->value(),
             'party' => $party,
+            'status' => $this->status(),
             'level' => $level,
             'monsters' => $monsters
         ];
@@ -195,5 +201,10 @@ final class BasicEncounter extends AggregateRoot implements Encounter
         $monsterXpValues = $this->monsterXpValues();
         $event = new EncounterWasSolved($this->id(), $this->party->partyUlid, array_sum($monsterXpValues));
         $this->apply($event);
+    }
+
+    public function status(): string
+    {
+        return $this->totalXpSolved > 0 ? 'RESOLVED' : 'OPEN';
     }
 }

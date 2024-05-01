@@ -52,10 +52,13 @@ class BasicEncounterTest extends TestCase
         $expectedValues = [
             'level' => 'UNASSIGNED',
             'name' => 'Test',
+            'status' => 'OPEN',
             'party' => '',
             'monsters' => []
         ];
         $this->assertEquals($expectedValues, $sut->collect());
+        $this->assertEquals('', $sut->partyId());
+        $this->assertEquals('OPEN', $sut->status());
         $events = $sut->pullEvents();
         $this->assertCount(1, $events);
         $this->assertInstanceOf(EncounterWasCreated::class, $events[0]);
@@ -108,8 +111,8 @@ class BasicEncounterTest extends TestCase
         $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
         $sut->assignToParty($party);
         $data = $sut->collect();
-        $this->assertEquals('01HWTEG560RMHQ52KC5SGGPCEJ', $data['party']);
         $this->assertEquals('EMPTY', $data['level']);
+        $this->assertEquals('01HWTEG560RMHQ52KC5SGGPCEJ', $sut->partyId());
         $events = $sut->pullEvents();
         $this->assertCount(2, $events);
         $this->assertInstanceOf(PartyWasAssigned::class, $events[0]);
@@ -161,6 +164,7 @@ class BasicEncounterTest extends TestCase
         $sut->unassign(SharedUlid::fromString('01HWTEG560RMHQ52KC5SGGPCEJ'));
         $data = $sut->collect();
         $this->assertEquals('UNASSIGNED', $data['level']);
+        $this->assertEquals('', $sut->partyId());
         $events = $sut->pullEvents();
         $this->assertCount(2, $events);
         $this->assertInstanceOf(PartyWasUnassigned::class, $events[0]);
@@ -236,8 +240,7 @@ class BasicEncounterTest extends TestCase
         $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
         $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->withParty($party)->build();
         $sut->resolve();
-        $data = $sut->collect();
-        $this->assertEquals('RESOLVED', $data['level']);
+        $this->assertEquals('RESOLVED', $sut->status());
         $events = $sut->pullEvents();
         $this->assertCount(1, $events);
         $this->assertInstanceOf(EncounterWasSolved::class, $events[0]);

@@ -10,6 +10,8 @@ use XpTracker\Shared\Domain\Identity\SharedUlid;
 interface Encounter extends Eventable
 {
     public function id(): string;
+    public function partyId(): string;
+    public function status(): string;
     public function toJson(): string;
     public function addMonster(EncounterMonster $monster): void;
     public function removeMonster(EncounterMonster $monster): void;

@@ -80,9 +80,7 @@ class ResolveEncounterCommandHandlerTest extends TestCase
             new EventBusSpy()
         );
         ($sut)(new ResolveEncounterCommand('01HWTTCB6GB9MHMBA4MN6QRBJT'));
-        $result = $spy->updatedEncounter->toJson();
-        $parsedResult = json_decode($result, true);
-        $this->assertEquals('RESOLVED', $parsedResult['level']);
+        $this->assertEquals('RESOLVED', $spy->updatedEncounter->status());
     }
 
     /** @test */
