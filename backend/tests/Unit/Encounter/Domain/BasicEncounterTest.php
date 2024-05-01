@@ -9,11 +9,15 @@ use XpTracker\Encounter\Domain\Monster\EncounterMonster;
 use XpTracker\Encounter\Domain\Monster\MonsterWasAdded;
 use XpTracker\Encounter\Domain\Monster\MonsterWasRemoved;
 use XpTracker\Encounter\Domain\Party\EncounterParty;
+use XpTracker\Encounter\Domain\Party\PartyAlreadyAssignedException;
+use XpTracker\Encounter\Domain\Party\PartyNotAssignedToEncounterException;
 use XpTracker\Encounter\Domain\Party\PartyWasAssigned;
+use XpTracker\Encounter\Domain\Party\PartyWasUnassigned;
 use XpTracker\Encounter\Domain\WrongEncounterNameException;
 use XpTracker\Encounter\Domain\WrongEncounterUlidException;
 use XpTracker\Shared\Domain\Event\DomainEvent;
 use XpTracker\Shared\Domain\Event\EventCollection;
+use XpTracker\Shared\Domain\Identity\SharedUlid;
 use XpTracker\Tests\Unit\Custom\IsImmediateDate;
 
 class BasicEncounterTest extends TestCase
@@ -105,6 +109,59 @@ class BasicEncounterTest extends TestCase
         $sut->assignToParty($party);
         $data = $sut->collect();
         $this->assertEquals('DEADLY', $data['status']);
+    }
+
+    /** @test */
+    public function itShouldThrowExceptionWhenApplyingAPartyOnAAlreadyApplyedEncounter(): void
+    {
+        $this->expectException(PartyAlreadyAssignedException::class);
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $sut = BasicEncounterOM::aBuilder()->withParty($party)->build();
+        $anotherParty = new EncounterParty('01HWTHEWE01T7BBSYE0331TR85', [1,2]);
+        $sut->assignToParty($anotherParty);
+    }
+
+    /** @test */
+    public function itShouldUpdateLevelWhenMonsterAddedAfterPartyAssigned(): void
+    {
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
+        $sut = BasicEncounterOM::aBuilder()->withParty($party)->build();
+        $sut->addMonster($kobold);
+        $data = $sut->collect();
+        $this->assertEquals('EASY', $data['status']);
+    }
+
+    /** @test */
+    public function itShouldUnassignPartyProperly(): void
+    {
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $orc = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
+        $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
+        $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->withParty($party)->build();
+        $sut->unassign(SharedUlid::fromString('01HWTEG560RMHQ52KC5SGGPCEJ'));
+        $data = $sut->collect();
+        $this->assertEquals('UNASSIGNED', $data['status']);
+        $this->checkSingleEvent($sut, PartyWasUnassigned::class);
+    }
+
+    /** @test */
+    public function itShouldThrowExceptionWhenTryingToUnassignAWrongParty(): void
+    {
+        $this->expectException(PartyNotAssignedToEncounterException::class);
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $sut = BasicEncounterOM::aBuilder()->withParty($party)->build();
+        $anotherPartyUlid = SharedUlid::fromString('01HWTHEWE01T7BBSYE0331TR85');
+        $sut->unassign($anotherPartyUlid);
+    }
+
+    /** @test */
+    public function itShouldThrowExceptionWhenTryingToUnassignAUnassignedEncounter(): void
+    {
+        $this->expectException(PartyNotAssignedToEncounterException::class);
+        $sut = BasicEncounterOM::aBuilder()->build();
+        $anotherPartyUlid = SharedUlid::fromString('01HWTHEWE01T7BBSYE0331TR85');
+        $sut->unassign($anotherPartyUlid);
     }
 
     private function checkSingleEvent(BasicEncounter $sut, string $expectedEventClass): void
