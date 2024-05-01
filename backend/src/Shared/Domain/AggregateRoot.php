@@ -57,11 +57,6 @@ abstract class AggregateRoot implements Eventable
         }
     }
 
-    protected function addEvent(DomainEvent $event): void
-    {
-        $this->events[] = $event;
-    }
-
     public function pullEvents(): array
     {
         return $this->events;
