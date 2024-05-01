@@ -7,6 +7,7 @@ use XpTracker\Encounter\Domain\BasicEncounter;
 use XpTracker\Encounter\Domain\EncounterNotResolvableException;
 use XpTracker\Encounter\Domain\EncounterWasCreated;
 use XpTracker\Encounter\Domain\EncounterWasSolved;
+use XpTracker\Encounter\Domain\EncounterWasUpdated;
 use XpTracker\Encounter\Domain\Monster\EncounterMonster;
 use XpTracker\Encounter\Domain\Monster\MonsterWasAdded;
 use XpTracker\Encounter\Domain\Monster\MonsterWasRemoved;
@@ -55,7 +56,10 @@ class BasicEncounterTest extends TestCase
             'monsters' => []
         ];
         $this->assertEquals($expectedValues, $sut->collect());
-        $this->checkSingleEvent($sut, EncounterWasCreated::class);
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(EncounterWasCreated::class, $events[0]);
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
     }
 
     /** @test */
@@ -69,7 +73,10 @@ class BasicEncounterTest extends TestCase
         $expectedMonsters = [['name' => 'Orc', 'challengeRating' => '1/2', 'experiencePoints' => 100]];
         $data = $sut->collect();
         $this->assertEquals($expectedMonsters, $data['monsters']);
-        $this->checkSingleEvent($sut, MonsterWasAdded::class);
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(MonsterWasAdded::class, $events[0]);
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
     }
 
     /** @test */
@@ -85,7 +92,10 @@ class BasicEncounterTest extends TestCase
             [['name' => 'Kobold', 'challengeRating' => '1/2', 'experiencePoints' => 100]],
             $data['monsters']
         );
-        $this->checkSingleEvent($sut, MonsterWasRemoved::class);
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(MonsterWasRemoved::class, $events[0]);
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
     }
 
     /** @test */
@@ -97,7 +107,10 @@ class BasicEncounterTest extends TestCase
         $data = $sut->collect();
         $this->assertEquals('01HWTEG560RMHQ52KC5SGGPCEJ', $data['party']);
         $this->assertEquals('EMPTY', $data['level']);
-        $this->checkSingleEvent($sut, PartyWasAssigned::class);
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(PartyWasAssigned::class, $events[0]);
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
     }
 
     /** @test */
@@ -143,7 +156,10 @@ class BasicEncounterTest extends TestCase
         $sut->unassign(SharedUlid::fromString('01HWTEG560RMHQ52KC5SGGPCEJ'));
         $data = $sut->collect();
         $this->assertEquals('UNASSIGNED', $data['level']);
-        $this->checkSingleEvent($sut, PartyWasUnassigned::class);
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(PartyWasUnassigned::class, $events[0]);
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
     }
 
     /** @test */
@@ -197,7 +213,12 @@ class BasicEncounterTest extends TestCase
         $sut->updateAssignedParty($updatedParty);
         $data = $sut->collect();
         $this->assertEquals('HARD', $data['level']);
-        $this->checkSingleEvent($sut, PartyWasUpdated::class);
+        $events = $sut->pullEvents();
+        $this->assertCount(2, $events);
+        $this->assertInstanceOf(PartyWasUpdated::class, $events[0]);
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
+        $this->assertInstanceOf(EncounterWasUpdated::class, $events[1]);
+        $this->assertThat($events[1]->occurredOn(), $this->assertion);
     }
 
     /** @test */
@@ -210,7 +231,10 @@ class BasicEncounterTest extends TestCase
         $sut->resolve();
         $data = $sut->collect();
         $this->assertEquals('RESOLVED', $data['level']);
-        $this->checkSingleEvent($sut, EncounterWasSolved::class);
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(EncounterWasSolved::class, $events[0]);
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
         $event = $sut->pullEvents()[0];
         $this->assertEquals(200, $event->totalXp);
     }
@@ -225,11 +249,11 @@ class BasicEncounterTest extends TestCase
         $sut->resolve();
     }
 
-    private function checkSingleEvent(BasicEncounter $sut, string $expectedEventClass): void
-    {
-        $events = $sut->pullEvents();
-        $this->assertCount(1, $events);
-        $this->assertInstanceOf($expectedEventClass, $events[0]);
-        $this->assertThat($events[0]->occurredOn(), $this->assertion);
-    }
+    // private function checkSingleEvent(BasicEncounter $sut, string $expectedEventClass): void
+    // {
+    //     $events = $sut->pullEvents();
+    //     $this->assertCount(1, $events);
+    //     $this->assertInstanceOf($expectedEventClass, $events[0]);
+    //     $this->assertThat($events[0]->occurredOn(), $this->assertion);
+    // }
 }

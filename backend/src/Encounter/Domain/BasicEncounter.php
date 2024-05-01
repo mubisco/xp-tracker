@@ -175,6 +175,8 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     {
         $event = new PartyWasUpdated($this->id(), $party->partyUlid, $party->charactersLevel);
         $this->apply($event);
+        $encounterEvent = new EncounterWasUpdated($this->id());
+        $this->apply($encounterEvent);
     }
 
     public function resolve(): void

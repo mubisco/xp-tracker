@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use XpTracker\Encounter\Application\Command\UpdateEncounterPartyCommand;
 use XpTracker\Encounter\Application\Command\UpdateEncounterPartyCommandHandler;
 use XpTracker\Encounter\Domain\EncounterNotFoundException;
+use XpTracker\Encounter\Domain\EncounterWasUpdated;
 use XpTracker\Encounter\Domain\EncounterWriteModelException;
 use XpTracker\Encounter\Domain\Party\EncounterParty;
 use XpTracker\Encounter\Domain\Party\EncounterPartyNotFoundException;
@@ -149,7 +150,8 @@ class UpdateEncounterPartyCommandHandlerTest extends TestCase
         );
         $command = new UpdateEncounterPartyCommand('01HWTX9KJGDASR5P8T7R7BCJ8E', $ulid);
         ($sut)($command);
-        $this->assertCount(1, $spy->publishedEvents);
+        $this->assertCount(2, $spy->publishedEvents);
         $this->assertInstanceOf(PartyWasUpdated::class, $spy->publishedEvents[0]);
+        $this->assertInstanceOf(EncounterWasUpdated::class, $spy->publishedEvents[1]);
     }
 }
