@@ -25,7 +25,7 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     private EncounterLevel $level;
     /** @var array<int, EncounterMonster> */
     private array $monsters = [];
-    private bool $solved = false;
+    private int $totalXpSolved = 0;
 
     public static function create(string $ulid, string $name): static
     {
@@ -43,7 +43,7 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     {
         $monsters = $this->collectMonstersData();
         $party = $this->party?->partyUlid ?? '';
-        $level = $this->solved ? 'RESOLVED' : $this->level->level()->value;
+        $level = $this->totalXpSolved > 0 ? 'RESOLVED' : $this->level->level()->value;
         return [
             'name' => $this->name->value(),
             'party' => $party,
@@ -137,7 +137,7 @@ final class BasicEncounter extends AggregateRoot implements Encounter
 
     protected function applyEncounterWasSolved(EncounterWasSolved $event): void
     {
-        $this->solved = true;
+        $this->totalXpSolved = $event->totalXp;
     }
 
     private function monsterXpValues(): array
