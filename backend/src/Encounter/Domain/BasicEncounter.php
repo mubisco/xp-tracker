@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace XpTracker\Encounter\Domain;
 
+use XpTracker\Encounter\Domain\Level\EncounterLevel;
 use XpTracker\Encounter\Domain\Monster\EncounterMonster;
 use XpTracker\Encounter\Domain\Monster\MonsterWasAdded;
 use XpTracker\Encounter\Domain\Monster\MonsterWasRemoved;
 use XpTracker\Encounter\Domain\Party\EncounterParty;
+use XpTracker\Encounter\Domain\Party\PartyWasAssigned;
 use XpTracker\Shared\Domain\AggregateRoot;
+use XpTracker\Shared\Domain\Identity\SharedUlid;
 use XpTracker\Shared\Domain\Identity\WrongUlidValueException;
 
 final class BasicEncounter extends AggregateRoot implements Encounter
 {
     private EncounterName $name;
+    private ?SharedUlid $partyUlid = null;
+    private EncounterLevel $level;
     /** @var array<int, EncounterMonster> */
     private array $monsters = [];
 
@@ -32,10 +37,11 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     public function collect(): array
     {
         $monsters = $this->collectMonstersData();
+        $party = $this->partyUlid?->ulid() ?? '';
         return [
             'name' => $this->name->value(),
-            'party' => '',
-            'level' => 'UNASSIGNED',
+            'party' => $party,
+            'status' => $this->level->level()->value,
             'monsters' => $monsters
         ];
     }
@@ -56,6 +62,7 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     protected function applyEncounterWasCreated(EncounterWasCreated $event): void
     {
         $this->name = EncounterName::fromString($event->name);
+        $this->level = EncounterLevel::empty();
     }
 
     public function monsterQuantity(): int
@@ -80,6 +87,19 @@ final class BasicEncounter extends AggregateRoot implements Encounter
         $this->monsters = $updatedMonsters;
     }
 
+    protected function applyPartyWasAssigned(PartyWasAssigned $event): void
+    {
+        $this->partyUlid = SharedUlid::fromString($event->partyUlid);
+        $this->level = EncounterLevel::fromValues($event->charactersLevel, $this->monsterXpValues());
+    }
+
+    private function monsterXpValues(): array
+    {
+        return array_map(function (EncounterMonster $monster) {
+            return $monster->xp();
+        }, $this->monsters);
+    }
+
     public function addMonster(EncounterMonster $monster): void
     {
         $event = new MonsterWasAdded(
@@ -102,5 +122,7 @@ final class BasicEncounter extends AggregateRoot implements Encounter
 
     public function assignToParty(EncounterParty $party): void
     {
+        $event = new PartyWasAssigned($this->id(), $party->partyUlid, $party->charactersLevel);
+        $this->apply($event);
     }
 }

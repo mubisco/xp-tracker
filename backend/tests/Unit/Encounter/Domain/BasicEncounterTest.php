@@ -8,8 +8,11 @@ use XpTracker\Encounter\Domain\EncounterWasCreated;
 use XpTracker\Encounter\Domain\Monster\EncounterMonster;
 use XpTracker\Encounter\Domain\Monster\MonsterWasAdded;
 use XpTracker\Encounter\Domain\Monster\MonsterWasRemoved;
+use XpTracker\Encounter\Domain\Party\EncounterParty;
+use XpTracker\Encounter\Domain\Party\PartyWasAssigned;
 use XpTracker\Encounter\Domain\WrongEncounterNameException;
 use XpTracker\Encounter\Domain\WrongEncounterUlidException;
+use XpTracker\Shared\Domain\Event\DomainEvent;
 use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Tests\Unit\Custom\IsImmediateDate;
 
@@ -41,24 +44,13 @@ class BasicEncounterTest extends TestCase
         $sut = BasicEncounter::create('01HTTPV1VG40BB2B9NX6KKJZ50', 'Test');
         $this->assertEquals('01HTTPV1VG40BB2B9NX6KKJZ50', $sut->id());
         $expectedValues = [
-            'level' => 'UNASSIGNED',
+            'status' => 'UNASSIGNED',
             'name' => 'Test',
             'party' => '',
             'monsters' => []
         ];
         $this->assertEquals($expectedValues, $sut->collect());
-    }
-
-    /** @test */
-    public function itShouldCreateProperEvents(): void
-    {
-        $sut = BasicEncounter::create('01HTTPV1VG40BB2B9NX6KKJZ50', 'Test');
-        $this->assertCount(1, $sut->pullEvents());
-        $event = $sut->pullEvents()[0];
-        $this->assertInstanceOf(EncounterWasCreated::class, $event);
-        $this->assertEquals('01HTTPV1VG40BB2B9NX6KKJZ50', $event->id());
-        $this->assertEquals('Test', $event->name);
-        $this->assertThat($event->occurredOn(), $this->assertion);
+        $this->checkSingleEvent($sut, EncounterWasCreated::class);
     }
 
     /** @test */
@@ -72,16 +64,10 @@ class BasicEncounterTest extends TestCase
         $expectedMonsters = [['name' => 'Orc', 'challengeRating' => '1/2', 'experiencePoints' => 100]];
         $data = $sut->collect();
         $this->assertEquals($expectedMonsters, $data['monsters']);
-        $events = $sut->pullEvents();
-        $this->assertCount(1, $events);
-        $this->assertInstanceOf(MonsterWasAdded::class, $events[0]);
-        $this->assertThat($events[0]->occurredOn(), $this->assertion);
+        $this->checkSingleEvent($sut, MonsterWasAdded::class);
     }
 
-    /**
-     * @test
-     * it_should_remove_monster_properly
-     */
+    /** @test */
     public function itShouldRemoveMonsterProperly(): void
     {
         $orc = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
@@ -94,9 +80,38 @@ class BasicEncounterTest extends TestCase
             [['name' => 'Kobold', 'challengeRating' => '1/2', 'experiencePoints' => 100]],
             $data['monsters']
         );
+        $this->checkSingleEvent($sut, MonsterWasRemoved::class);
+    }
+
+    /** @test */
+    public function itShouldApplyPartyProperly(): void
+    {
+        $sut = BasicEncounterOM::aBuilder()->build();
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $sut->assignToParty($party);
+        $data = $sut->collect();
+        $this->assertEquals('01HWTEG560RMHQ52KC5SGGPCEJ', $data['party']);
+        $this->assertEquals('EMPTY', $data['status']);
+        $this->checkSingleEvent($sut, PartyWasAssigned::class);
+    }
+
+    /** @test */
+    public function itShouldApplyPartyProperlyWhenMonstersAdded(): void
+    {
+        $orc = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
+        $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
+        $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->build();
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $sut->assignToParty($party);
+        $data = $sut->collect();
+        $this->assertEquals('DEADLY', $data['status']);
+    }
+
+    private function checkSingleEvent(BasicEncounter $sut, string $expectedEventClass): void
+    {
         $events = $sut->pullEvents();
         $this->assertCount(1, $events);
-        $this->assertInstanceOf(MonsterWasRemoved::class, $events[0]);
+        $this->assertInstanceOf($expectedEventClass, $events[0]);
         $this->assertThat($events[0]->occurredOn(), $this->assertion);
     }
 }
