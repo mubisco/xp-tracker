@@ -15,4 +15,5 @@ interface Encounter extends Eventable
     public function removeMonster(EncounterMonster $monster): void;
     public function assignToParty(EncounterParty $party): void;
     public function unassign(SharedUlid $partyUlid): void;
+    public function updateAssignedParty(EncounterParty $party): void;
 }

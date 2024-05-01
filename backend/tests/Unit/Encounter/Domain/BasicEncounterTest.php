@@ -13,6 +13,7 @@ use XpTracker\Encounter\Domain\Party\PartyAlreadyAssignedException;
 use XpTracker\Encounter\Domain\Party\PartyNotAssignedToEncounterException;
 use XpTracker\Encounter\Domain\Party\PartyWasAssigned;
 use XpTracker\Encounter\Domain\Party\PartyWasUnassigned;
+use XpTracker\Encounter\Domain\Party\PartyWasUpdated;
 use XpTracker\Encounter\Domain\WrongEncounterNameException;
 use XpTracker\Encounter\Domain\WrongEncounterUlidException;
 use XpTracker\Shared\Domain\Event\DomainEvent;
@@ -162,6 +163,41 @@ class BasicEncounterTest extends TestCase
         $sut = BasicEncounterOM::aBuilder()->build();
         $anotherPartyUlid = SharedUlid::fromString('01HWTHEWE01T7BBSYE0331TR85');
         $sut->unassign($anotherPartyUlid);
+    }
+
+    /** @test */
+    public function itShouldThrowExceptionTryingToUpdateAPartyOnAUnassignedEncounter(): void
+    {
+        $this->expectException(PartyNotAssignedToEncounterException::class);
+        $sut = BasicEncounterOM::aBuilder()->build();
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $sut->updateAssignedParty($party);
+    }
+
+    /** @test */
+    public function itShouldThrowExceptionWhenTryingToUpdateAPartyNotAssigned(): void
+    {
+        $this->expectException(PartyNotAssignedToEncounterException::class);
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $orc = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
+        $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
+        $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->withParty($party)->build();
+        $party = new EncounterParty('01HWTJBGEG031TP9XZKC8WHTT1', [2,2]);
+        $sut->updateAssignedParty($party);
+    }
+
+    /** @test */
+    public function itShouldUpdatePartyProperly(): void
+    {
+        $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
+        $orc = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
+        $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
+        $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->withParty($party)->build();
+        $updatedParty = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [2,2]);
+        $sut->updateAssignedParty($updatedParty);
+        $data = $sut->collect();
+        $this->assertEquals('HARD', $data['status']);
+        $this->checkSingleEvent($sut, PartyWasUpdated::class);
     }
 
     private function checkSingleEvent(BasicEncounter $sut, string $expectedEventClass): void

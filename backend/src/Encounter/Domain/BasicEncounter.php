@@ -13,6 +13,7 @@ use XpTracker\Encounter\Domain\Party\PartyAlreadyAssignedException;
 use XpTracker\Encounter\Domain\Party\PartyNotAssignedToEncounterException;
 use XpTracker\Encounter\Domain\Party\PartyWasAssigned;
 use XpTracker\Encounter\Domain\Party\PartyWasUnassigned;
+use XpTracker\Encounter\Domain\Party\PartyWasUpdated;
 use XpTracker\Shared\Domain\AggregateRoot;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 use XpTracker\Shared\Domain\Identity\WrongUlidValueException;
@@ -120,6 +121,18 @@ final class BasicEncounter extends AggregateRoot implements Encounter
         $this->updateLevel();
     }
 
+    protected function applyPartyWasUpdated(PartyWasUpdated $event): void
+    {
+        if (null === $this->party) {
+            throw new PartyNotAssignedToEncounterException("This encounter has no assigned party to update!!!");
+        }
+        if ($this->party->partyUlid !== $event->partyUlid) {
+            throw new PartyNotAssignedToEncounterException();
+        }
+        $this->party = new EncounterParty($event->partyUlid, $event->charactersLevel);
+        $this->updateLevel();
+    }
+
     private function monsterXpValues(): array
     {
         return array_map(function (EncounterMonster $monster) {
@@ -148,6 +161,12 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     public function unassign(SharedUlid $partyUlid): void
     {
         $event = new PartyWasUnassigned($this->id(), $partyUlid->ulid());
+        $this->apply($event);
+    }
+
+    public function updateAssignedParty(EncounterParty $party): void
+    {
+        $event = new PartyWasUpdated($this->id(), $party->partyUlid, $party->charactersLevel);
         $this->apply($event);
     }
 }
