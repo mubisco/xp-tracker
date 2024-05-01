@@ -43,9 +43,22 @@ final class BasicEncounterOM
         return $this;
     }
 
+    public function withRandomMonster(): BasicEncounterOM
+    {
+        $monster = EncounterMonster::fromStringValues(name: $this->faker->word(), challengeRating: '1/2');
+        $this->monsters[] = $monster;
+        return $this;
+    }
+
     public function withParty(EncounterParty $encounterParty): BasicEncounterOM
     {
         $this->party = $encounterParty;
+        return $this;
+    }
+
+    public function withRandomParty(): BasicEncounterOM
+    {
+        $this->party = new EncounterParty(partyUlid: '01HWTTPDF05PFN8YXDRSFM6GVD', charactersLevel: [1, 1]);
         return $this;
     }
 
