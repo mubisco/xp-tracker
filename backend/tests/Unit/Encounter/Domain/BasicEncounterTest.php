@@ -201,7 +201,7 @@ class BasicEncounterTest extends TestCase
     }
 
     /** @test */
-    public function itShouldResolveAndEncounter(): void
+    public function itShouldResolveAnEncounter(): void
     {
         $party = new EncounterParty('01HWTEG560RMHQ52KC5SGGPCEJ', [1,2]);
         $orc = EncounterMonster::fromStringValues(name: 'Orc', challengeRating: '1/2');
