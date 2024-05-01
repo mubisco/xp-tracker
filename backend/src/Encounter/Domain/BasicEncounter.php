@@ -151,24 +151,32 @@ final class BasicEncounter extends AggregateRoot implements Encounter
     {
         $event = new MonsterWasAdded($this->id(), $monster->name(), $monster->challengeRating());
         $this->apply($event);
+        $encounterEvent = new EncounterWasUpdated($this->id());
+        $this->apply($encounterEvent);
     }
 
     public function removeMonster(EncounterMonster $monster): void
     {
         $event = new MonsterWasRemoved($this->id(), $monster->name(), $monster->challengeRating());
         $this->apply($event);
+        $encounterEvent = new EncounterWasUpdated($this->id());
+        $this->apply($encounterEvent);
     }
 
     public function assignToParty(EncounterParty $party): void
     {
         $event = new PartyWasAssigned($this->id(), $party->partyUlid, $party->charactersLevel);
         $this->apply($event);
+        $encounterEvent = new EncounterWasUpdated($this->id());
+        $this->apply($encounterEvent);
     }
 
     public function unassign(SharedUlid $partyUlid): void
     {
         $event = new PartyWasUnassigned($this->id(), $partyUlid->ulid());
         $this->apply($event);
+        $encounterEvent = new EncounterWasUpdated($this->id());
+        $this->apply($encounterEvent);
     }
 
     public function updateAssignedParty(EncounterParty $party): void

@@ -7,6 +7,7 @@ use XpTracker\Encounter\Application\Command\RemoveMonsterFromEncounterCommand;
 use XpTracker\Encounter\Application\Command\RemoveMonsterFromEncounterCommandHandler;
 use XpTracker\Encounter\Domain\EncounterNotFoundException;
 use XpTracker\Encounter\Domain\EncounterRepository;
+use XpTracker\Encounter\Domain\EncounterWasUpdated;
 use XpTracker\Encounter\Domain\EncounterWriteModelException;
 use XpTracker\Encounter\Domain\Monster\EncounterMonster;
 use XpTracker\Encounter\Domain\Monster\MonsterWasRemoved;
@@ -99,9 +100,6 @@ class RemoveMonsterFromEncounterCommandHandlerTest extends TestCase
         );
         ($sut)($this->command);
         $this->assertNotNull($spy->updatedEncounter);
-        $events = $spy->updatedEncounter->pullEvents();
-        $this->assertCount(1, $events);
-        $this->assertInstanceOf(MonsterWasRemoved::class, $events[0]);
     }
 
     /**
@@ -118,8 +116,9 @@ class RemoveMonsterFromEncounterCommandHandlerTest extends TestCase
         );
         ($sut)($this->command);
         $events = $spy->publishedEvents;
-        $this->assertCount(1, $events);
+        $this->assertCount(2, $events);
         $this->assertInstanceOf(MonsterWasRemoved::class, $events[0]);
+        $this->assertInstanceOf(EncounterWasUpdated::class, $spy->publishedEvents[1]);
     }
 
     private function buildFailingSut(): RemoveMonsterFromEncounterCommandHandler

@@ -69,14 +69,15 @@ class BasicEncounterTest extends TestCase
         $monster = EncounterMonster::fromStringValues('Orc', '1/2');
         $sut->addMonster($monster);
         $this->assertEquals(1, $sut->monsterQuantity());
-        $this->assertCount(1, $sut->pullEvents());
         $expectedMonsters = [['name' => 'Orc', 'challengeRating' => '1/2', 'experiencePoints' => 100]];
         $data = $sut->collect();
         $this->assertEquals($expectedMonsters, $data['monsters']);
         $events = $sut->pullEvents();
-        $this->assertCount(1, $events);
+        $this->assertCount(2, $events);
         $this->assertInstanceOf(MonsterWasAdded::class, $events[0]);
         $this->assertThat($events[0]->occurredOn(), $this->assertion);
+        $this->assertInstanceOf(EncounterWasUpdated::class, $events[1]);
+        $this->assertThat($events[1]->occurredOn(), $this->assertion);
     }
 
     /** @test */
@@ -93,9 +94,11 @@ class BasicEncounterTest extends TestCase
             $data['monsters']
         );
         $events = $sut->pullEvents();
-        $this->assertCount(1, $events);
+        $this->assertCount(2, $events);
         $this->assertInstanceOf(MonsterWasRemoved::class, $events[0]);
         $this->assertThat($events[0]->occurredOn(), $this->assertion);
+        $this->assertInstanceOf(EncounterWasUpdated::class, $events[1]);
+        $this->assertThat($events[1]->occurredOn(), $this->assertion);
     }
 
     /** @test */
@@ -108,9 +111,11 @@ class BasicEncounterTest extends TestCase
         $this->assertEquals('01HWTEG560RMHQ52KC5SGGPCEJ', $data['party']);
         $this->assertEquals('EMPTY', $data['level']);
         $events = $sut->pullEvents();
-        $this->assertCount(1, $events);
+        $this->assertCount(2, $events);
         $this->assertInstanceOf(PartyWasAssigned::class, $events[0]);
         $this->assertThat($events[0]->occurredOn(), $this->assertion);
+        $this->assertInstanceOf(EncounterWasUpdated::class, $events[1]);
+        $this->assertThat($events[1]->occurredOn(), $this->assertion);
     }
 
     /** @test */
@@ -157,9 +162,11 @@ class BasicEncounterTest extends TestCase
         $data = $sut->collect();
         $this->assertEquals('UNASSIGNED', $data['level']);
         $events = $sut->pullEvents();
-        $this->assertCount(1, $events);
+        $this->assertCount(2, $events);
         $this->assertInstanceOf(PartyWasUnassigned::class, $events[0]);
         $this->assertThat($events[0]->occurredOn(), $this->assertion);
+        $this->assertInstanceOf(EncounterWasUpdated::class, $events[1]);
+        $this->assertThat($events[1]->occurredOn(), $this->assertion);
     }
 
     /** @test */

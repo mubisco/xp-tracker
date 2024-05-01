@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use XpTracker\Encounter\Application\Command\AddMonsterToEncounterCommand;
 use XpTracker\Encounter\Application\Command\AddMonsterToEncounterCommandHandler;
 use XpTracker\Encounter\Domain\EncounterNotFoundException;
+use XpTracker\Encounter\Domain\EncounterWasUpdated;
 use XpTracker\Encounter\Domain\EncounterWriteModelException;
 use XpTracker\Encounter\Domain\Monster\MonsterWasAdded;
 use XpTracker\Encounter\Domain\Monster\WrongMonsterValueException;
@@ -102,9 +103,6 @@ class AddMonsterToEncounterCommandHandlerTest extends TestCase
         );
         ($sut)($command);
         $this->assertNotNull($spy->updatedEncounter);
-        $events = $spy->updatedEncounter->pullEvents();
-        $this->assertCount(1, $events);
-        $this->assertInstanceOf(MonsterWasAdded::class, $events[0]);
     }
 
     /** @test */
@@ -123,7 +121,8 @@ class AddMonsterToEncounterCommandHandlerTest extends TestCase
         );
         ($sut)($command);
         $events = $spy->publishedEvents;
-        $this->assertCount(1, $events);
+        $this->assertCount(2, $events);
         $this->assertInstanceOf(MonsterWasAdded::class, $events[0]);
+        $this->assertInstanceOf(EncounterWasUpdated::class, $spy->publishedEvents[1]);
     }
 }

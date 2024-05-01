@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use XpTracker\Encounter\Application\Command\AssignPartyToEncounterCommand;
 use XpTracker\Encounter\Application\Command\AssignPartyToEncounterCommandHandler;
 use XpTracker\Encounter\Domain\EncounterNotFoundException;
+use XpTracker\Encounter\Domain\EncounterWasUpdated;
 use XpTracker\Encounter\Domain\EncounterWriteModelException;
 use XpTracker\Encounter\Domain\Party\EncounterPartyNotFoundException;
 use XpTracker\Encounter\Domain\Party\PartyAlreadyAssignedException;
@@ -143,7 +144,8 @@ class AssignPartyToEncounterCommandHandlerTest extends TestCase
         );
         $command = new AssignPartyToEncounterCommand('01HWTX9KJGDASR5P8T7R7BCJ8E', $ulid);
         ($sut)($command);
-        $this->assertCount(1, $spy->publishedEvents);
+        $this->assertCount(2, $spy->publishedEvents);
         $this->assertInstanceOf(PartyWasAssigned::class, $spy->publishedEvents[0]);
+        $this->assertInstanceOf(EncounterWasUpdated::class, $spy->publishedEvents[1]);
     }
 }
