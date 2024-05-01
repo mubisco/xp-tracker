@@ -30,6 +30,7 @@
   <exclude>
     <directory suffix=".php">src/Character/Infrastructure/Persistence</directory>
     <directory suffix=".php">src/Encounter/Infrastructure/Persistence</directory>
+    <directory suffix=".php">src/Shared/Infrastructure/Persistence</directory>
   </exclude>
 </coverage>
 
