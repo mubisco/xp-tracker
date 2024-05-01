@@ -29,7 +29,8 @@
   </include>
   <exclude>
     <directory suffix=".php">src/Character/Infrastructure/Persistence</directory>
-</exclude>
+    <directory suffix=".php">src/Encounter/Infrastructure/Persistence</directory>
+  </exclude>
 </coverage>
 
 <listeners>
