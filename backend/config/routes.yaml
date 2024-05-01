@@ -8,15 +8,39 @@ controllers:
 api_character_create:
   path: /api/character
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PostAddCharacterController
+  methods: ['POST']
 
 api_party_get:
   path: /api/party/{partyId}
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\GetPartyController
+  methods: ['GET']
 
 api_party_create:
   path: /api/party
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PostCreatePartyController
+  methods: ['POST']
 
 api_party_character_add:
   path: /api/party/character/add
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PutAddCharacterToPartyController
+  methods: ['PUT']
+
+api_encounter_create:
+  path: /api/encounter
+  controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\PostCreateEncounterController
+  methods: ['POST']
+
+api_encounter_create_add_monster:
+  path: /api/encounter/monster/add
+  controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\PutAddMonsterToEncounterController
+  methods: ['PUT']
+
+api_encounter_create_remove_monster:
+  path: /api/encounter/monster/remove
+  controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\PutRemoveMonsterFromEncounterController
+  methods: ['PUT']
+
+api_encounter_resolve:
+  path: /api/encounter/resolve
+  controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\PutResolveEncounterController
+  methods: ['PUT']
