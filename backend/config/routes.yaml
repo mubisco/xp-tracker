@@ -44,3 +44,8 @@ api_encounter_resolve:
   path: /api/encounter/resolve
   controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\PutResolveEncounterController
   methods: ['PUT']
+
+api_encounter_assign_party:
+  path: /api/encounter/{encounterUlid}/assign-party/{partyUlid}
+  controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\PutAssignPartyToEncounterController
+  methods: ['PUT']
