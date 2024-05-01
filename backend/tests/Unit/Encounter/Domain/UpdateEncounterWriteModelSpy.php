@@ -11,7 +11,7 @@ final class UpdateEncounterWriteModelSpy implements UpdateEncounterWriteModel
 {
     public ?Encounter $updatedEncounter = null;
 
-    public function updateMonsters(Encounter $update): void
+    public function update(Encounter $update): void
     {
         $this->updatedEncounter = $update;
     }

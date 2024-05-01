@@ -37,7 +37,7 @@ final class EventStoreEncounterRepository implements
         $this->eventStore->appendEvents($collection);
     }
 
-    public function updateMonsters(Encounter $update): void
+    public function update(Encounter $update): void
     {
         $results = $this->eventStore->getEventsForUlid($update->id());
         if (empty($results)) {

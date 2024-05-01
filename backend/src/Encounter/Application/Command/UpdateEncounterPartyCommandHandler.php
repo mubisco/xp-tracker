@@ -31,7 +31,7 @@ final class UpdateEncounterPartyCommandHandler implements CommandHandlerInterfac
         $encounter = $this->repository->byEncounterId($encounterUlid);
         $party = $this->readModel->byPartyId($partyUlid);
         $encounter->updateAssignedParty($party);
-        $this->writeModel->updateMonsters($encounter);
+        $this->writeModel->update($encounter);
         $this->eventBus->publish($encounter->pullEvents());
     }
 

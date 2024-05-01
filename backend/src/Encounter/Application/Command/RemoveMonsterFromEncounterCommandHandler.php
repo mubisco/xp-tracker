@@ -28,7 +28,7 @@ final class RemoveMonsterFromEncounterCommandHandler implements CommandHandlerIn
         $monster = EncounterMonster::fromStringValues($command->monsterName, $command->challengeRating);
         $encounter = $this->repository->byEncounterId($encounterId);
         $encounter->removeMonster($monster);
-        $this->writeModel->updateMonsters($encounter);
+        $this->writeModel->update($encounter);
         $this->eventBus->publish($encounter->pullEvents());
     }
 

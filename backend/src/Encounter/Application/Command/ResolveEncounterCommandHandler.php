@@ -26,7 +26,7 @@ final class ResolveEncounterCommandHandler implements CommandHandlerInterface
         $ulid = $this->parseUlid($command->encounterUlid);
         $encounter = $this->repository->byEncounterId($ulid);
         $encounter->resolve();
-        $this->writeModel->updateMonsters($encounter);
+        $this->writeModel->update($encounter);
         $this->eventBus->publish($encounter->pullEvents());
     }
 

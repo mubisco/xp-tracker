@@ -31,7 +31,7 @@ final class AssignPartyToEncounterCommandHandler implements CommandHandlerInterf
         $encounter = $this->repository->byEncounterId($encounterUlid);
         $party = $this->readModel->byPartyId($partyUlid);
         $encounter->assignToParty($party);
-        $this->writeModel->updateMonsters($encounter);
+        $this->writeModel->update($encounter);
         $this->eventBus->publish($encounter->pullEvents());
     }
 

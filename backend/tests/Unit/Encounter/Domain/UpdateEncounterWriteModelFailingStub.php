@@ -10,7 +10,7 @@ use XpTracker\Encounter\Domain\UpdateEncounterWriteModel;
 
 final class UpdateEncounterWriteModelFailingStub implements UpdateEncounterWriteModel
 {
-    public function updateMonsters(Encounter $update): void
+    public function update(Encounter $update): void
     {
         throw new EncounterWriteModelException();
     }

@@ -28,7 +28,7 @@ final class AddMonsterToEncounterCommandHandler implements CommandHandlerInterfa
         $monster = EncounterMonster::fromStringValues($command->monsterName, $command->challengeRating);
         $encounter = $this->repository->byEncounterId($encounterId);
         $encounter->addMonster($monster);
-        $this->writeModel->updateMonsters($encounter);
+        $this->writeModel->update($encounter);
         $this->eventBus->publish($encounter->pullEvents());
     }
 

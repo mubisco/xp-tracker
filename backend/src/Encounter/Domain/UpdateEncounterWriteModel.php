@@ -4,5 +4,5 @@ namespace XpTracker\Encounter\Domain;
 
 interface UpdateEncounterWriteModel
 {
-    public function updateMonsters(Encounter $update): void;
+    public function update(Encounter $update): void;
 }
