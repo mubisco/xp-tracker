@@ -4,9 +4,9 @@ import { PartyDto } from '@/Domain/Party/PartyDto'
 import { AllPartiesQueryHandler } from '@/Application/Party/Query/AllPartiesQueryHandler'
 import { AllPartiesQueryHandlerProvider } from '@/Infrastructure/Party/Provider/AllPartiesQueryHandlerProvider'
 
+const provider = new AllPartiesQueryHandlerProvider()
 const parties = ref<PartyDto[]>([])
 onMounted(async () => fetchParties())
-const provider = new AllPartiesQueryHandlerProvider()
 
 const fetchParties = async () => {
   const query = new AllPartiesQueryHandler()
@@ -54,7 +54,9 @@ const onCheckPartyButtonClicked = (partyUlid: string) => {
             :key="index"
           >
             <td>{{ party.partyName }}</td>
-            <td class="text-right">{{ party.partyCharacters }}</td>
+            <td class="text-right">
+              {{ party.partyCharacters }}
+            </td>
             <td class="text-right">
               <v-btn
                 icon="mdi-eye"
