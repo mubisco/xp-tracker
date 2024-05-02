@@ -1,7 +1,24 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { PartyDto } from '@/Domain/Party/PartyDto'
+import { AllPartiesQueryHandler } from '@/Application/Party/Query/AllPartiesQueryHandler'
+import { AllPartiesQueryHandlerProvider } from '@/Infrastructure/Party/Provider/AllPartiesQueryHandlerProvider'
 
-const parties = ref([])
+const parties = ref<PartyDto[]>([])
+onMounted(async () => fetchParties())
+const provider = new AllPartiesQueryHandlerProvider()
+
+const fetchParties = async () => {
+  const query = new AllPartiesQueryHandler()
+  const handler = provider.provide()
+  parties.value = await handler.handle(query)
+}
+
+const emit = defineEmits<{(e: 'party:selected', payload: String): void}>()
+
+const onCheckPartyButtonClicked = (partyUlid: string) => {
+  emit('party:selected', partyUlid)
+}
 
 </script>
 <template>
@@ -11,8 +28,8 @@ const parties = ref([])
     </template>
     <template #text>
       <v-alert
-        class="mb-6"
         v-if="parties.length === 0"
+        class="mb-6"
         text="Currently there are no parties available. If you want, you may create one, clicking on the button on the top right corner"
         title="No Parties"
         type="info"
@@ -36,18 +53,19 @@ const parties = ref([])
             v-for="(party, index) in parties"
             :key="index"
           >
-            <td>{{ party.name }}</td>
-            <td>{{ party.totalCharacters }}</td>
+            <td>{{ party.partyName }}</td>
+            <td class="text-right">{{ party.partyCharacters }}</td>
             <td class="text-right">
               <v-btn
                 icon="mdi-eye"
                 variant="plain"
+                @click="onCheckPartyButtonClicked(party.partyUlid)"
               />
-              <v-btn
-                icon="mdi-delete"
-                color="red"
-                variant="plain"
-              />
+              <!-- <v-btn -->
+              <!--   icon="mdi-delete" -->
+              <!--   color="red" -->
+              <!--   variant="plain" -->
+              <!-- /> -->
             </td>
           </tr>
         </tbody>
