@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import CharacterMainList from '@/UI/components/Players/CharacterMainList.vue'
+import PartyCharacterList from '@/UI/components/Party/PartyCharacterList.vue'
 import PartiesList from '@/UI/components/Party/PartiesList.vue'
 
 const selectedPartyUlid = ref('')
@@ -13,6 +13,9 @@ const onPartySelected = (partyUlid: string) => {
     <PartiesList
       @party:selected="onPartySelected"
     />
-    <h1>Current Party: {{ selectedPartyUlid }}</h1>
+    <PartyCharacterList
+      class="mt-3"
+      :party-ulid="selectedPartyUlid"
+    />
   </v-container>
 </template>
