@@ -19,11 +19,12 @@ final class Version20240501230210 extends AbstractMigration
         $sql = "CREATE TABLE encounter(
             encounter_id CHAR(26) PRIMARY KEY,
             party_id CHAR(26) NOT NULL,
-            status VARCHAR(8) NOT NULL
-            data JSON NOT NULL,
-            INDEX (party_id)
+            status VARCHAR(8) NOT NULL,
+            data JSON NOT NULL
         )";
         $this->addSql($sql);
+        $indexSql = "ALTER TABLE `encounter` ADD INDEX `party_id_index` (`party_id`)";
+        $this->addSql($indexSql);
     }
 
     public function down(Schema $schema): void
