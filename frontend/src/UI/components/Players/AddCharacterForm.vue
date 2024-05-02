@@ -3,7 +3,7 @@ import { AddCharacterToPartyCommand } from '@/Application/Party/Command/Characte
 import { AddCharacterToPartyCommandHandlerProvider } from '@/Infrastructure/Party/Provider/AddCharacterToPartyCommandHandlerProvider'
 import { useSnackbarStore } from '@/UI/store/snackbar'
 import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const name = ref('')
 const actualXp = ref(0)
@@ -12,6 +12,7 @@ const rules = ref({ nameNotEmpty: (value: string) => !!value || 'Name must not b
 
 const useCaseProvider = new AddCharacterToPartyCommandHandlerProvider()
 const route = useRoute()
+const router = useRouter()
 
 const snackbarStore = useSnackbarStore()
 
