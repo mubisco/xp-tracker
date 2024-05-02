@@ -1,32 +1,26 @@
 <script lang="ts" setup>
-import { AddCharacterCommand } from '@/Application/Character/Command/AddCharacterCommand'
-import { EventBus } from '@/Domain/Shared/Event/EventBus'
-import { AddCharacterCommandHandlerProvider } from '@/Infrastructure/Character/Provider/AddCharacterCommandHandlerProvider'
+import { AddCharacterToPartyCommand } from '@/Application/Party/Command/Character/AddCharacterToPartyCommand'
+import { AddCharacterToPartyCommandHandlerProvider } from '@/Infrastructure/Party/Provider/AddCharacterToPartyCommandHandlerProvider'
 import { useSnackbarStore } from '@/UI/store/snackbar'
-import { inject, ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 const name = ref('')
 const actualXp = ref(0)
-const maxHp = ref(0)
-const isValid = computed((): boolean => name.value !== '' && maxHp.value > 0)
-const eventBus = inject('eventBus')
+const isValid = computed((): boolean => name.value !== '')
+const rules = ref({ nameNotEmpty: (value: string) => !!value || 'Name must not be empty' })
 
-const rules = ref({
-  nameNotEmpty: (value: string) => !!value || 'Name must not be empty',
-  hpNotZero: (value: number) => value > 0 || 'Hitpoints must be above 0'
-})
-
-const useCaseProvider = new AddCharacterCommandHandlerProvider()
-const useCase = useCaseProvider.provide(eventBus as EventBus)
-const router = useRouter()
+const useCaseProvider = new AddCharacterToPartyCommandHandlerProvider()
+const route = useRoute()
 
 const snackbarStore = useSnackbarStore()
 
 const addNewCharacter = async () => {
-  const command = new AddCharacterCommand(name.value, actualXp.value, maxHp.value)
+  const partyUlid = route.params.partyUlid ?? ''
+  const useCase = useCaseProvider.provide()
+  const command = new AddCharacterToPartyCommand(partyUlid, name.value, actualXp.value)
   await useCase.handle(command)
-  snackbarStore.addMessage('Character added successfully!!', 'success')
+  snackbarStore.addMessage('Character added successfully to party!!', 'success')
   router.replace({ name: 'Home' })
 }
 </script>
@@ -39,7 +33,7 @@ const addNewCharacter = async () => {
     <template #text>
       <v-form>
         <v-row>
-          <v-col cols="12">
+          <v-col cols="6">
             <v-text-field
               v-model="name"
               label="Character name"
@@ -47,21 +41,11 @@ const addNewCharacter = async () => {
               :rules="[rules.nameNotEmpty]"
             />
           </v-col>
-        </v-row>
-        <v-row>
           <v-col cols="6">
             <v-text-field
               v-model="actualXp"
               label="Experience Points"
               type="number"
-            />
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              v-model="maxHp"
-              label="Hit Points"
-              type="number"
-              :rules="[rules.hpNotZero]"
             />
           </v-col>
         </v-row>

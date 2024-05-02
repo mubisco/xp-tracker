@@ -44,7 +44,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "home" */ '@/UI/views/CreateParty.vue')
       },
       {
-        path: 'new-character',
+        path: 'new-character/:partyUlid',
         name: 'AddCharacter',
         component: () => import(/* webpackChunkName: "home" */ '@/UI/views/AddCharacter.vue')
       },

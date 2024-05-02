@@ -13,7 +13,9 @@ const fetchPlayers = async () => {
 
 </script>
 <template>
-  <v-card>
+  <v-card
+    class="mt-3 pb-4"
+  >
     <template #title>
       Characters From Party
     </template>
@@ -62,12 +64,14 @@ const fetchPlayers = async () => {
         </tbody>
       </v-table>
     </template>
-    <!-- <v-fab -->
-    <!--   class="me-4" -->
-    <!--   icon="mdi-plus" -->
-    <!--   location="top end" -->
-    <!--   absolute -->
-    <!--   offset -->
-    <!-- /> -->
   </v-card>
+  <v-fab
+    class="me-4"
+    icon="mdi-account-plus"
+    color="primary"
+    location="top end"
+    absolute
+    offset
+    :to="{ name: 'AddCharacter', params: { partyUlid: partyUlid } }"
+  />
 </template>

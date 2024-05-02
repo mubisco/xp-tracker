@@ -36,9 +36,13 @@ sh-back: ##  Access to backend shell
 sh-root: ##  Access to backend shell as root
 	@$(DOCKER_COMPOSE) exec -u 0 $(BACK_IMAGE) /bin/zsh
 
+.PHONY: sh-front
+sh-front: ##  Access to frontend shell
+	@$(DOCKER_COMPOSE) exec $(FRONT_IMAGE) /bin/zsh
+
 .PHONY: logs
 logs: ##  Access to backend shell
-	@$(DOCKER_COMPOSE) logs -f $(BACK_IMAGE)
+	@$(DOCKER_COMPOSE) logs -f $(FRONT_IMAGE)
 
 .PHONY: but
 but: ## Run Backend Unit Tests

@@ -1,12 +1,12 @@
-import { Ulid } from "../Shared/Identity/Ulid"
+import { Ulid } from '@/Domain/Shared/Identity/Ulid'
 
 export class Party {
-  static fromValues(ulid: string, name: string): Party {
+  static fromValues (ulid: string, name: string): Party {
     return new Party(ulid, name)
   }
 
-  static fromName(name: string): Party {
-    const ulid = Ulid.fromEmpty();
+  static fromName (name: string): Party {
+    const ulid = Ulid.fromEmpty()
     return new Party(ulid.value(), name)
   }
 
@@ -19,11 +19,12 @@ export class Party {
       throw new RangeError('Party name cannot be empty')
     }
   }
-  id(): string {
+
+  id (): string {
     return this._ulid.value()
   }
-  name(): string {
+
+  name (): string {
     return this.partyName
   }
 }
-

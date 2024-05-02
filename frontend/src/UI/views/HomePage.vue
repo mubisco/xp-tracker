@@ -14,7 +14,7 @@ const onPartySelected = (partyUlid: string) => {
       @party:selected="onPartySelected"
     />
     <PartyCharacterList
-      class="mt-3"
+      v-if="selectedPartyUlid !== ''"
       :party-ulid="selectedPartyUlid"
     />
   </v-container>
