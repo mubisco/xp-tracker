@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
 const players = ref([])
 const props = defineProps({
@@ -16,6 +16,8 @@ const fetchPlayers = async () => {
   })
   players.value = await response.json()
 }
+
+watch(() => props.partyUlid, async () => fetchPlayers())
 
 </script>
 <template>
