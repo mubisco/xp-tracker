@@ -12,8 +12,8 @@ const route = useRoute()
     <template #append>
       <v-btn
         v-if="route.name === 'Home'"
-        icon="mdi-account-plus"
-        :to="{ name: 'AddCharacter' }"
+        icon="mdi-account-multiple-plus"
+        :to="{ name: 'CreateParty' }"
       />
       <v-btn
         v-if="route.name === 'Encounter'"

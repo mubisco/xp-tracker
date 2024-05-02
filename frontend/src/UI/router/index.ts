@@ -39,6 +39,11 @@ const routes = [
     component: () => import('@/UI/layouts/default/Default.vue'),
     children: [
       {
+        path: 'create-party',
+        name: 'CreateParty',
+        component: () => import(/* webpackChunkName: "home" */ '@/UI/views/CreateParty.vue')
+      },
+      {
         path: 'new-character',
         name: 'AddCharacter',
         component: () => import(/* webpackChunkName: "home" */ '@/UI/views/AddCharacter.vue')

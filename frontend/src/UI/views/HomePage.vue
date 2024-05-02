@@ -1,11 +1,10 @@
 <template>
   <v-container>
-    <MainList />
-    <EncounterTresholds class="mt-5" />
+    <PartiesList />
   </v-container>
 </template>
 
 <script lang="ts" setup>
-import MainList from '@/UI/components/Players/MainList.vue'
-import EncounterTresholds from '@/UI/components/Players/EncounterTresholds.vue'
+import CharacterMainList from '@/UI/components/Players/CharacterMainList.vue'
+import PartiesList from '@/UI/components/Party/PartiesList.vue'
 </script>
