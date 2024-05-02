@@ -2,13 +2,19 @@
 import { ref, onMounted } from 'vue'
 
 const players = ref([])
-defineProps({
+const props = defineProps({
   partyUlid: { type: String, required: true }
 })
 
 onMounted(async () => fetchPlayers())
 
 const fetchPlayers = async () => {
+  const url = 'http://localhost:5000/api/party/' + props.partyUlid + '/characters'
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  players.value = await response.json()
 }
 
 </script>
@@ -44,10 +50,7 @@ const fetchPlayers = async () => {
           >
             <td>{{ player.name }}</td>
             <td class="text-right">
-              {{ player.currentHp }} / {{ player.maxHp }}
-            </td>
-            <td class="text-right">
-              {{ player.xp }} / {{ player.nextLevel }}
+              {{ player.xp }} / {{ player.next }}
             </td>
             <td class="text-right">
               {{ player.level }} ({{ player.level + 1 }})
@@ -57,7 +60,6 @@ const fetchPlayers = async () => {
                 icon="mdi-delete"
                 color="red"
                 variant="plain"
-                @click="onDeleteCharacterClicked(player.ulid, player.name)"
               />
             </td>
           </tr>

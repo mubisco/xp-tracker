@@ -15,6 +15,11 @@ api_party_all:
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\GetAllPartiesController
   methods: ['GET']
 
+api_party_get_characters:
+  path: /api/party/{partyId}/characters
+  controller: XpTracker\Character\Infrastructure\Entrypoint\Api\GetCharactersByPartyController
+  methods: ['GET']
+
 api_party_get:
   path: /api/party/{partyId}
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\GetPartyController

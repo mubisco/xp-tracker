@@ -75,4 +75,3 @@ const onCheckPartyButtonClicked = (partyUlid: string) => {
     </template>
   </v-card>
 </template>
-
