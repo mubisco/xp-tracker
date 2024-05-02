@@ -10,6 +10,11 @@ api_character_create:
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PostAddCharacterController
   methods: ['POST']
 
+api_party_all:
+  path: /api/party
+  controller: XpTracker\Character\Infrastructure\Entrypoint\Api\GetAllPartiesController
+  methods: ['GET']
+
 api_party_get:
   path: /api/party/{partyId}
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\GetPartyController
