@@ -2,8 +2,7 @@
 import { useSnackbarStore } from '@/UI/store/snackbar'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { WithFetchPartyWriteModel } from '@/Infrastructure/Party/Persistence/Fetch/WithFetchPartyWriteModel'
-import { CreatePartyCommandHandler } from '@/Application/Party/Command/CreatePartyCommandHandler'
+import { CreatePartyCommandHandlerProvider } from '@/Infrastructure/Party/Provider/CreatePartyCommandHandlerProvider'
 import { CreatePartyCommand } from '@/Application/Party/Command/CreatePartyCommand'
 
 const router = useRouter()
@@ -13,10 +12,10 @@ const rules = ref({
 })
 const name = ref('')
 const isValid = computed((): boolean => name.value !== '')
+const provider = new CreatePartyCommandHandlerProvider()
 
 const createParty = async () => {
-  const repository = new WithFetchPartyWriteModel('http://localhost:5000/api')
-  const handler = new CreatePartyCommandHandler(repository)
+  const handler = provider.provide(import.meta.env.VITE_API_URL)
   const command = new CreatePartyCommand(name.value)
   await handler.handle(command)
   snackbarStore.addMessage('Party created successfully', 'success')
