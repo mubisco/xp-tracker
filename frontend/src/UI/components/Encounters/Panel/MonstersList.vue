@@ -1,8 +1,23 @@
 <script lang="ts" setup>
 import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
+import { storeToRefs } from 'pinia'
+import { useEncountersStore } from '@/UI/store/encounters'
+import { usePartyStore } from '@/UI/store/parties'
 
-defineProps<{ monsters: MonsterDto[] }>()
-defineEmits<{(e: 'monster:deleted', payload: MonsterDto): void}>()
+const encountersStore = useEncountersStore()
+const partyStore = usePartyStore()
+const { activePartyUlid } = storeToRefs(partyStore)
+
+const props = defineProps<{ monsters: MonsterDto[], status: string, ulid: string }>()
+
+const onDeleteMonsterButtonClicked = async (name: string, challengeRating: string) => {
+  await encountersStore.removeMonster(
+    activePartyUlid.value,
+    props.ulid,
+    name,
+    challengeRating
+  )
+}
 </script>
 
 <template>
@@ -13,20 +28,21 @@ defineEmits<{(e: 'monster:deleted', payload: MonsterDto): void}>()
     >
       <td>{{ monster.name }}</td>
       <td class="text-right">
-        {{ monster.cr }}
+        {{ monster.challengeRating }}
       </td>
       <td class="text-right">
-        {{ monster.xp }}
+        {{ monster.experiencePoints }}
       </td>
       <td
         class="text-right"
       >
         <v-btn
+          v-if="status !== 'RESOLVED'"
           variant="plain"
           size="xs"
           color="error"
           icon="mdi-delete"
-          @click="$emit('monster:deleted', monster)"
+          @click="onDeleteMonsterButtonClicked(monster.name, monster.challengeRating)"
         />
       </td>
     </tr>

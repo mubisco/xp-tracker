@@ -76,5 +76,4 @@ const onEncounterDeleteConfirmed = async (): Promise<void> => {
     title="No Party selected"
     type="warning"
   />
-
 </template>

@@ -2,7 +2,7 @@
 import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
 import MonstersList from './MonstersList.vue'
 import EncounterSummary from './EncounterSummary.vue'
-import FinishEncounterButton from './FinishEncounterButton.vue'
+import EncounterActions from './EncounterActions.vue'
 
 defineProps<{
   ulid: string,
@@ -33,6 +33,8 @@ defineProps<{
       </thead>
       <MonstersList
         :monsters="monsters"
+        :status="status"
+        :ulid="ulid"
       />
       <EncounterSummary
         :total-monsters="monsters.length"
@@ -40,27 +42,9 @@ defineProps<{
         :total-cr="totalCr"
       />
     </v-table>
-    <div class="mt-4 d-flex justify-space-between">
-      <v-btn
-        variant="outlined"
-        color="error"
-        prepend-icon="mdi-delete"
-      >
-        Remove
-      </v-btn>
-      <v-btn
-        variant="outlined"
-        color="primary"
-        prepend-icon="mdi-pencil"
-        :disabled="status === 'DONE'"
-        :to="{ name: 'EditEncounter', params: { encounterId: ulid } }"
-      >
-        Edit
-      </v-btn>
-      <FinishEncounterButton
-        :encounter-ulid="ulid"
-        :encounter-status="status"
-      />
-    </div>
+    <EncounterActions
+      :ulid="ulid"
+      :status="status"
+    />
   </v-expansion-panel-text>
 </template>

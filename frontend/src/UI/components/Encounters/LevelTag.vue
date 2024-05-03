@@ -7,7 +7,7 @@ const props = defineProps({
 })
 
 const colorTag = computed(() => {
-  if (props.status === 'DONE') {
+  if (props.status === 'RESOLVED') {
     return 'grey'
   }
   if (props.level === 'EASY') {
@@ -26,6 +26,12 @@ const colorTag = computed(() => {
 })
 </script>
 <template>
+  <v-icon
+    v-if="status === 'RESOLVED'"
+    color="success"
+    icon="mdi-check-circle"
+    size="large"
+  />
   <v-chip
     class="mr-2 ml-2"
     variant="flat"
