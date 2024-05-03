@@ -3,8 +3,6 @@ import { useSnackbarStore } from '@/UI/store/snackbar'
 import { usePartyStore } from '@/UI/store/parties'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { CreatePartyCommandHandlerProvider } from '@/Infrastructure/Party/Provider/CreatePartyCommandHandlerProvider'
-import { CreatePartyCommand } from '@/Application/Party/Command/CreatePartyCommand'
 
 const router = useRouter()
 const snackbarStore = useSnackbarStore()
@@ -15,13 +13,9 @@ const rules = ref({
 })
 const name = ref('')
 const isValid = computed((): boolean => name.value !== '')
-const provider = new CreatePartyCommandHandlerProvider()
 
 const createParty = async () => {
-  const handler = provider.provide(import.meta.env.VITE_API_URL)
-  const command = new CreatePartyCommand(name.value)
-  await handler.handle(command)
-  partyStore.delayedLoadParties(750)
+  partyStore.createParty(name.value)
   snackbarStore.addMessage('Party created successfully', 'success')
   router.replace({ name: 'Home' })
 }

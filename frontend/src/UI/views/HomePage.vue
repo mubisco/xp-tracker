@@ -4,8 +4,11 @@ import PartyCharacterList from '@/UI/components/Party/PartyCharacterList.vue'
 import PartiesList from '@/UI/components/Party/PartiesList.vue'
 
 const selectedPartyUlid = ref('')
-const onPartySelected = (partyUlid: string) => {
-  selectedPartyUlid.value = partyUlid
+const selectedPartyName = ref('')
+
+const onPartySelected = (payload: { partyUlid: string, partyName: string }) => {
+  selectedPartyUlid.value = payload.partyUlid
+  selectedPartyName.value = payload.partyName
 }
 </script>
 <template>
@@ -16,6 +19,7 @@ const onPartySelected = (partyUlid: string) => {
     <PartyCharacterList
       v-if="selectedPartyUlid !== ''"
       :party-ulid="selectedPartyUlid"
+      :party-name="selectedPartyName"
     />
   </v-container>
 </template>

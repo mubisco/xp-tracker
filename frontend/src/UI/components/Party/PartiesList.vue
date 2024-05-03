@@ -9,10 +9,11 @@ onMounted(async () => {
   await partyStore.loadParties()
 })
 
-const emit = defineEmits<{(e: 'party:selected', payload: String): void}>()
+const emit = defineEmits<{(e: 'party:selected', payload: { partyUlid: string, partyName: string }): void}>()
 
-const onCheckPartyButtonClicked = (partyUlid: string) => {
-  emit('party:selected', partyUlid)
+const onCheckPartyButtonClicked = (partyUlid: string, partyName: string) => {
+  const payload = { partyUlid, partyName }
+  emit('party:selected', payload)
 }
 
 </script>
@@ -56,7 +57,7 @@ const onCheckPartyButtonClicked = (partyUlid: string) => {
               <v-btn
                 icon="mdi-eye"
                 variant="plain"
-                @click="onCheckPartyButtonClicked(party.partyUlid)"
+                @click="onCheckPartyButtonClicked(party.partyUlid, party.partyName)"
               />
               <!-- <v-btn -->
               <!--   icon="mdi-delete" -->

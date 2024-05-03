@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { PartyDto } from '@/Domain/Party/PartyDto'
 import { AllPartiesQuery } from '@/Application/Party/Query/AllPartiesQuery'
 import { AllPartiesQueryHandlerProvider } from '@/Infrastructure/Party/Provider/AllPartiesQueryHandlerProvider'
+import { CreatePartyCommandHandlerProvider } from '@/Infrastructure/Party/Provider/CreatePartyCommandHandlerProvider'
+import { CreatePartyCommand } from '@/Application/Party/Command/CreatePartyCommand'
 
 export const usePartyStore = defineStore('party', {
   state: () => ({
@@ -21,8 +23,12 @@ export const usePartyStore = defineStore('party', {
       this.parties = parties
       this.noParties = parties.length === 0
     },
-    async delayedLoadParties (delay: number): Promise<void> {
-      setTimeout(() => { this.loadParties() }, delay)
+    async createParty(partyName: string): Promise<void> {
+      const provider = new CreatePartyCommandHandlerProvider()
+      const handler = provider.provide()
+      const command = new CreatePartyCommand(partyName)
+      await handler.handle(command)
+      setTimeout(() => { this.loadParties() }, 750)
     }
   }
 })

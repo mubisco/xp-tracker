@@ -3,7 +3,8 @@ import { ref, watch, onMounted } from 'vue'
 
 const players = ref([])
 const props = defineProps({
-  partyUlid: { type: String, required: true }
+  partyUlid: { type: String, required: true },
+  partyName: { type: String, required: true }
 })
 
 onMounted(async () => fetchPlayers())
@@ -25,7 +26,7 @@ watch(() => props.partyUlid, async () => fetchPlayers())
     class="mt-3 pb-4"
   >
     <template #title>
-      Characters From Party
+      Characters on {{ partyName }} party
     </template>
     <template #text>
       <v-table density="compact">
