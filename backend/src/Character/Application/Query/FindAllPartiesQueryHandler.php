@@ -6,7 +6,7 @@ namespace XpTracker\Character\Application\Query;
 
 use Doctrine\DBAL\Connection;
 
-final class FindAllPartiesQueryHandler
+class FindAllPartiesQueryHandler
 {
     public function __construct(private readonly Connection $connection)
     {

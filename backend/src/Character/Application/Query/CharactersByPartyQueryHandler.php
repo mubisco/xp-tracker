@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace XpTracker\Character\Application\Query;
 
 use Doctrine\DBAL\Connection;
+use XpTracker\Encounter\Domain\Party\WrongEncounterPartyUlidException;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
+use XpTracker\Shared\Domain\Identity\WrongUlidValueException;
 
-final class CharactersByPartyQueryHandler
+class CharactersByPartyQueryHandler
 {
     public function __construct(private readonly Connection $connection)
     {
@@ -18,18 +20,27 @@ final class CharactersByPartyQueryHandler
      */
     public function __invoke(CharactersByPartyQuery $query): array
     {
-        $ulid = SharedUlid::fromString($query->partyUlid);
-        $sql = "SELECT c.* 
-            FROM `characters` c 
-            LEFT JOIN party_character pc ON pc.character_id = c.character_id 
+        $ulid = $this->parseUlid($query->partyUlid);
+        $sql = "SELECT c.*
+            FROM `characters` c
+            LEFT JOIN party_character pc ON pc.character_id = c.character_id
             WHERE pc.party_id = :partyUlid";
         $criteria = ['partyUlid' => $ulid->ulid()];
         $results = $this->connection->fetchAllAssociative($sql, $criteria);
         return $this->parseResults($results);
     }
+
+    private function parseUlid(string $ulid): SharedUlid
+    {
+        try {
+            return SharedUlid::fromString($ulid);
+        } catch (WrongUlidValueException $e) {
+            throw new WrongEncounterPartyUlidException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
     /**
      * @return array[]
-     * @param array<int,mixed> $results
+     * @param  array<int,mixed> $results
      */
     private function parseResults(array $results): array
     {
