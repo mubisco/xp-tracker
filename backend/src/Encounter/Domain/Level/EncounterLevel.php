@@ -42,6 +42,11 @@ final class EncounterLevel
         return $this->calculateTag();
     }
 
+    public function monstersChallengeRatingPoints(): int
+    {
+        return $this->monstersXp->totalXp();
+    }
+
     private function calculateTag(): LevelTag
     {
         $index = $this->calculateIndex();

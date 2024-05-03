@@ -49,11 +49,14 @@ final class BasicEncounter extends AggregateRoot implements Encounter
         $monsters = $this->collectMonstersData();
         $party = $this->party?->partyUlid ?? '';
         $level = $this->level->level()->value;
+        $monstersXp = $this->monsterXpValues();
         return [
             'name' => $this->name->value(),
             'party' => $party,
             'status' => $this->status(),
             'level' => $level,
+            'totalXp' => array_sum($monstersXp),
+            'totalCrPoints' => $this->level->monstersChallengeRatingPoints(),
             'monsters' => $monsters
         ];
     }

@@ -54,6 +54,8 @@ class BasicEncounterTest extends TestCase
             'name' => 'Test',
             'status' => 'OPEN',
             'party' => '',
+            'totalXp' => 0,
+            'totalCrPoints' => 0,
             'monsters' => []
         ];
         $this->assertEquals($expectedValues, $sut->collect());
