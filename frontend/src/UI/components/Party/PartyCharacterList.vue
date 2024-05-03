@@ -2,29 +2,26 @@
 import { watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useCharacterStore } from '@/UI/store/characters'
+import { usePartyStore } from '@/UI/store/parties'
 
-const props = defineProps({
-  partyUlid: { type: String, required: true },
-  partyName: { type: String, required: true }
-})
+const partyStore = usePartyStore()
 const characterStore = useCharacterStore()
 const { characters } = storeToRefs(characterStore)
+const { activePartyUlid, activeParty } = storeToRefs(partyStore)
 
 onMounted(async () => fetchPlayers())
+watch(activePartyUlid, () => { fetchPlayers() })
 
 const fetchPlayers = async () => {
-  characterStore.loadCharacters(props.partyUlid)
+  characterStore.loadCharacters(activePartyUlid.value)
 }
-
-watch(() => props.partyUlid, async () => fetchPlayers())
-
 </script>
 <template>
   <v-card
     class="mt-3 pb-4"
   >
     <template #title>
-      Characters on {{ partyName }} party
+      Characters on {{ activeParty.partyName }} party
     </template>
     <template #text>
       <v-table density="compact">
@@ -75,6 +72,6 @@ watch(() => props.partyUlid, async () => fetchPlayers())
     location="top end"
     absolute
     offset
-    :to="{ name: 'AddCharacter', params: { partyUlid: partyUlid } }"
+    :to="{ name: 'AddCharacter', params: { partyUlid: activePartyUlid } }"
   />
 </template>

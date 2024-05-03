@@ -1,25 +1,18 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import PartyCharacterList from '@/UI/components/Party/PartyCharacterList.vue'
 import PartiesList from '@/UI/components/Party/PartiesList.vue'
+import { usePartyStore } from '@/UI/store/parties'
+import { storeToRefs } from 'pinia'
 
-const selectedPartyUlid = ref('')
-const selectedPartyName = ref('')
+const partyStore = usePartyStore()
+const { activePartyUlid } = storeToRefs(partyStore)
 
-const onPartySelected = (payload: { partyUlid: string, partyName: string }) => {
-  selectedPartyUlid.value = payload.partyUlid
-  selectedPartyName.value = payload.partyName
-}
 </script>
 <template>
   <v-container>
-    <PartiesList
-      @party:selected="onPartySelected"
-    />
+    <PartiesList />
     <PartyCharacterList
-      v-if="selectedPartyUlid !== ''"
-      :party-ulid="selectedPartyUlid"
-      :party-name="selectedPartyName"
+      v-if="activePartyUlid !== ''"
     />
   </v-container>
 </template>

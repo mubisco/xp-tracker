@@ -13,6 +13,7 @@ onMounted(async () => {
 const emit = defineEmits<{(e: 'party:selected', payload: { partyUlid: string, partyName: string }): void}>()
 
 const onCheckPartyButtonClicked = (partyUlid: string, partyName: string) => {
+  partyStore.selectParty(partyUlid)
   const payload = { partyUlid, partyName }
   emit('party:selected', payload)
 }

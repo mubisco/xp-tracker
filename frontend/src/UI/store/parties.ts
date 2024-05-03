@@ -8,11 +8,15 @@ import { CreatePartyCommand } from '@/Application/Party/Command/CreatePartyComma
 export const usePartyStore = defineStore('party', {
   state: () => ({
     parties: [] as PartyDto[],
+    currentPartyUlid: '',
+    currentParty: undefined as PartyDto | undefined,
     noParties: false
   }),
   getters: {
     allParties: state => state.parties,
-    areParties: state => state.noParties
+    areParties: state => state.noParties,
+    activePartyUlid: state => state.currentPartyUlid,
+    activeParty: state => state.currentParty
   },
   actions: {
     async loadParties (): Promise<void> {
@@ -29,6 +33,12 @@ export const usePartyStore = defineStore('party', {
       const command = new CreatePartyCommand(partyName)
       await handler.handle(command)
       setTimeout(() => { this.loadParties() }, 750)
+    },
+    selectParty (partyUlid: string): void {
+      this.currentPartyUlid = partyUlid
+      this.currentParty = this.parties.find((party: PartyDto) => {
+        return party.partyUlid === partyUlid
+      })
     }
   }
 })
