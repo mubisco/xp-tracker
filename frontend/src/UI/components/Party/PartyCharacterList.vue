@@ -17,9 +17,7 @@ const fetchPlayers = async () => {
 }
 </script>
 <template>
-  <v-card
-    class="mt-3 pb-4"
-  >
+  <v-card class="mt-3 pb-4">
     <template #title>
       Characters on {{ activeParty.partyName }} party
     </template>
