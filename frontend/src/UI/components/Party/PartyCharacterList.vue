@@ -1,21 +1,19 @@
 <script lang="ts" setup>
-import { ref, watch, onMounted } from 'vue'
+import { watch, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useCharacterStore } from '@/UI/store/characters'
 
-const players = ref([])
 const props = defineProps({
   partyUlid: { type: String, required: true },
   partyName: { type: String, required: true }
 })
+const characterStore = useCharacterStore()
+const { characters } = storeToRefs(characterStore)
 
 onMounted(async () => fetchPlayers())
 
 const fetchPlayers = async () => {
-  const url = 'http://localhost:5000/api/party/' + props.partyUlid + '/characters'
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  })
-  players.value = await response.json()
+  characterStore.loadCharacters(props.partyUlid)
 }
 
 watch(() => props.partyUlid, async () => fetchPlayers())
@@ -48,15 +46,15 @@ watch(() => props.partyUlid, async () => fetchPlayers())
         </thead>
         <tbody>
           <tr
-            v-for="(player, index) in players"
+            v-for="(character, index) in characters"
             :key="index"
           >
-            <td>{{ player.name }}</td>
+            <td>{{ character.name }}</td>
             <td class="text-right">
-              {{ player.xp }} / {{ player.next }}
+              {{ character.xp }} / {{ character.next }}
             </td>
             <td class="text-right">
-              {{ player.level }} ({{ player.level + 1 }})
+              {{ character.level }} ({{ character.level + 1 }})
             </td>
             <td class="text-right">
               <v-btn

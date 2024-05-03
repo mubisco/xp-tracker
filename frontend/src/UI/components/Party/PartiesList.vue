@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePartyStore } from '@/UI/store/parties'
+
 const partyStore = usePartyStore()
 const { allParties, areParties } = storeToRefs(partyStore)
 

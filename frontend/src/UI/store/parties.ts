@@ -23,7 +23,7 @@ export const usePartyStore = defineStore('party', {
       this.parties = parties
       this.noParties = parties.length === 0
     },
-    async createParty(partyName: string): Promise<void> {
+    async createParty (partyName: string): Promise<void> {
       const provider = new CreatePartyCommandHandlerProvider()
       const handler = provider.provide()
       const command = new CreatePartyCommand(partyName)
