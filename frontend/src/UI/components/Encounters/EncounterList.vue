@@ -9,9 +9,12 @@ import FinishEncounterButton from './FinishEncounterButton.vue'
 import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePartyStore } from '@/UI/store/parties'
+import { useEncountersStore } from '@/UI/store/encounters'
 
 const partyStore = usePartyStore()
+const encountersStore = useEncountersStore()
 const { activeParty } = storeToRefs(partyStore)
+const { currentEncounters } = storeToRefs(encountersStore)
 
 const provider = new AllEncountersQueryHandlerProvider()
 
@@ -45,9 +48,16 @@ const onEncounterDeleteConfirmed = async (): Promise<void> => {
     <h1 class="text-h5 mb-3">
       Selected party: {{ activeParty.partyName }}
     </h1>
+    <v-alert
+      v-if="currentEncounters.length === 0"
+      class="mb-6"
+      text="No encounters defined for this party. If you want to create one, click on the button on the top right corner"
+      title="No encounters for this party"
+      type="info"
+    />
     <v-expansion-panels>
       <v-expansion-panel
-        v-for="encounter in encounters"
+        v-for="encounter in currentEncounters"
         :key="encounter.ulid"
       >
         <v-expansion-panel-title>
