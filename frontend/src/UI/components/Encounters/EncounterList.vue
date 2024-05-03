@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
-import { AllEncountersQueryHandlerProvider } from '@/Infrastructure/Encounter/Provider/AllEncountersQueryHandlerProvider'
 import EncounterDetails from './EncounterDetails.vue'
 import RemoveEncounterDialog from './RemoveEncounterDialog.vue'
 import LevelTag from '@/UI/components/Encounters/LevelTag.vue'
@@ -16,16 +14,11 @@ const encountersStore = useEncountersStore()
 const { activeParty } = storeToRefs(partyStore)
 const { currentEncounters } = storeToRefs(encountersStore)
 
-const provider = new AllEncountersQueryHandlerProvider()
-
-const encounters = ref<EncounterDto[]>([])
 const encounterToDelete = ref('')
 const showDeleteDialog = ref(false)
 
 const loadEncounters = async () => {
-  const handler = provider.provide()
-  const result = await handler.handle()
-  encounters.value = result
+  await encountersStore.loadEncounters(activeParty.value.partyUlid)
 }
 
 onMounted(loadEncounters)

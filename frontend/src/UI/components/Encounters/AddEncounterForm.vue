@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { AddEncounterCommand } from '@/Application/Encounter/Command/AddEncounterCommand'
-import { AddEncounterCommandHandlerProvider } from '@/Infrastructure/Encounter/Provider/AddEncounterCommandHandlerProvider'
 import { useSnackbarStore } from '@/UI/store/snackbar'
+import { useEncountersStore } from '@/UI/store/encounters'
+import { usePartyStore } from '@/UI/store/parties'
+import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
 
 const encounterName = ref('')
 const rules = ref({
@@ -12,12 +14,12 @@ const rules = ref({
 const isValid = computed((): boolean => encounterName.value !== '')
 const router = useRouter()
 const snackbarStore = useSnackbarStore()
-const provider = new AddEncounterCommandHandlerProvider()
+const encountersStore = useEncountersStore()
+const partyStore = usePartyStore()
+const { activePartyUlid } = storeToRefs(partyStore)
 
-const onCreateCharacterClicked = async () => {
-  const command = new AddEncounterCommand(encounterName.value)
-  const useCase = provider.provide()
-  await useCase.handle(command)
+const onCreateEncounterButtonClicked = async () => {
+  encountersStore.addEncounterToParty(activePartyUlid.value, encounterName.value)
   snackbarStore.addMessage('Encounter created successfully!!', 'success')
   router.replace({ name: 'Encounter' })
 }
@@ -59,7 +61,7 @@ const onCreateCharacterClicked = async () => {
         color="primary"
         :disabled="!isValid"
         prepend-icon="mdi-plus"
-        @click="onCreateCharacterClicked"
+        @click="onCreateEncounterButtonClicked"
       >
         Create
       </v-btn>

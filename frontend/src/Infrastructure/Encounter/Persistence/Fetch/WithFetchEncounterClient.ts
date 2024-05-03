@@ -27,7 +27,7 @@ export class WithFetchEncounterClient implements EncounterForPartyWriteModel {
   }
 
   private async addToParty (partyUlid: Ulid, encounterUlid: string): Promise<void> {
-    const url = `${this.baseUrl}/encounter/${encounterUlid}/assign-party/${partyUlid}`
+    const url = `${this.baseUrl}/encounter/${encounterUlid}/assign-party/${partyUlid.value()}`
     const response = await fetch(url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
