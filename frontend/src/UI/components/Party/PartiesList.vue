@@ -1,18 +1,13 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { PartyDto } from '@/Domain/Party/PartyDto'
-import { AllPartiesQueryHandler } from '@/Application/Party/Query/AllPartiesQueryHandler'
-import { AllPartiesQueryHandlerProvider } from '@/Infrastructure/Party/Provider/AllPartiesQueryHandlerProvider'
+import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { usePartyStore } from '@/UI/store/parties'
+const partyStore = usePartyStore()
+const { allParties, areParties } = storeToRefs(partyStore)
 
-const provider = new AllPartiesQueryHandlerProvider()
-const parties = ref<PartyDto[]>([])
-onMounted(async () => fetchParties())
-
-const fetchParties = async () => {
-  const query = new AllPartiesQueryHandler()
-  const handler = provider.provide()
-  parties.value = await handler.handle(query)
-}
+onMounted(async () => {
+  await partyStore.loadParties()
+})
 
 const emit = defineEmits<{(e: 'party:selected', payload: String): void}>()
 
@@ -28,7 +23,7 @@ const onCheckPartyButtonClicked = (partyUlid: string) => {
     </template>
     <template #text>
       <v-alert
-        v-if="parties.length === 0"
+        v-if="areParties"
         class="mb-6"
         text="Currently there are no parties available. If you want, you may create one, clicking on the button on the top right corner"
         title="No Parties"
@@ -50,7 +45,7 @@ const onCheckPartyButtonClicked = (partyUlid: string) => {
         </thead>
         <tbody>
           <tr
-            v-for="(party, index) in parties"
+            v-for="(party, index) in allParties"
             :key="index"
           >
             <td>{{ party.partyName }}</td>
