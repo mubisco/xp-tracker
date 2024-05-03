@@ -1,22 +1,45 @@
 <script lang="ts" setup>
 import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
-import EncounterDetails from './EncounterDetails.vue'
+import MonstersList from './MonstersList.vue'
+import EncounterSummary from './EncounterSummary.vue'
 import FinishEncounterButton from './FinishEncounterButton.vue'
 
-defineProps({
-  ulid: { type: String, required: true },
-  name: { type: String, required: true },
-  status: { type: String, required: true },
-  monsters: { type: Array as PropType<MonsterDto[]>, required: true }
-})
+defineProps<{
+  ulid: string,
+  name: string,
+  status: string,
+  totalXp: number,
+  totalCr: number,
+  monsters: MonsterDto[]
+}>()
 
 </script>
 <template>
   <v-expansion-panel-text>
-    <EncounterDetails
-      :show-delete-button="false"
-      :monsters="monsters"
-    />
+    <v-table density="compact">
+      <thead>
+        <tr>
+          <th class="text-left">
+            Name
+          </th>
+          <th class="text-right">
+            CR
+          </th>
+          <th class="text-right">
+            XP
+          </th>
+          <th />
+        </tr>
+      </thead>
+      <MonstersList
+        :monsters="monsters"
+      />
+      <EncounterSummary
+        :total-monsters="monsters.length"
+        :total-xp="totalXp"
+        :total-cr="totalCr"
+      />
+    </v-table>
     <div class="mt-4 d-flex justify-space-between">
       <v-btn
         variant="outlined"

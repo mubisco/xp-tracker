@@ -17,7 +17,9 @@ const encounterToDelete = ref('')
 const showDeleteDialog = ref(false)
 
 const loadEncounters = async () => {
-  await encountersStore.loadEncounters(activeParty.value.partyUlid)
+  if (activeParty) {
+    await encountersStore.loadEncounters(activeParty.value.partyUlid)
+  }
 }
 
 onMounted(loadEncounters)
@@ -56,6 +58,8 @@ const onEncounterDeleteConfirmed = async (): Promise<void> => {
           :ulid="encounter.ulid"
           :name="encounter.name"
           :status="encounter.status"
+          :total-xp="encounter.totalXp"
+          :total-cr="encounter.totalCrPoints"
           :monsters="encounter.monsters"
         />
       </v-expansion-panel>

@@ -2,7 +2,10 @@
 import { MonsterDto } from '@/Domain/Encounter/MonsterDto'
 import { computed } from 'vue'
 
-const props = defineProps<{ monsters: MonsterDto[], showDeleteButton: boolean | null | undefined }>()
+const props = defineProps<{
+  monsters: MonsterDto[],
+  showDeleteButton: boolean | null | undefined
+}>()
 defineEmits<{(e: 'monster:deleted', payload: MonsterDto): void}>()
 
 const totalMonsters = computed((): number => {
