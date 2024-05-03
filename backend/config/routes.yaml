@@ -40,6 +40,11 @@ api_encounter_create:
   controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\PostCreateEncounterController
   methods: ['POST']
 
+api_encounter_by_party:
+  path: /api/encounter/{partyUlid}
+  controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\GetEncountersOfPartyController
+  methods: ['GET']
+
 api_encounter_create_add_monster:
   path: /api/encounter/monster/add
   controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\PutAddMonsterToEncounterController
