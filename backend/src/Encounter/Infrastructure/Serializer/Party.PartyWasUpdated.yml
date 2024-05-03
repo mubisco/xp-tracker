@@ -1,0 +1,13 @@
+---
+XpTracker\Encounter\Domain\Party\PartyWasUpdated:
+  exclusion_policy: ALL
+  properties:
+    encounterUlid:
+      expose: true
+      type: string
+    partyUlid:
+      expose: true
+      type: string
+    charactersLevel:
+      expose: true
+      type: array<int>

@@ -11,9 +11,6 @@ final class EncounterWasSolved implements DomainEvent
 {
     private DateTimeImmutable $occurredOn;
 
-    /**
-     * @param array<int,int> $charactersLevel
-     */
     public function __construct(
         public readonly string $encounterUlid,
         public readonly string $partyUlid,
