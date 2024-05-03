@@ -81,6 +81,11 @@
     "unit": [
       "bin/phpunit --testsuite Unit"
     ],
+    "db-reset": [
+      "php bin/console doctrine:migrations:migrate first -n",
+      "php bin/console doctrine:migrations:migrate -n",
+      "php bin/console cache:clear --env=test"
+    ],
     "testdb-reset": [
       "php bin/console doctrine:migrations:migrate first --env=test -n",
       "php bin/console doctrine:migrations:migrate --env=test -n",
