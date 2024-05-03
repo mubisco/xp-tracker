@@ -16,9 +16,9 @@ class FindAllPartiesQueryHandler
      */
     public function __invoke(FindAllPartiesQuery $query): array
     {
-        $sql = "SELECT p.party_id AS partyUlid, p.name AS partyName, COUNT(pc.character_id) AS partyCharacters
+        $sql = "SELECT p.party_id AS partyUlid, p.name AS partyName, COUNT(pc.character_id) as partyCharacters
             FROM party p LEFT JOIN party_character pc ON pc.party_id = p.party_id
-            GROUP BY pc.party_id;";
+            GROUP BY p.party_id ORDER BY p.name";
         return $this->connection->fetchAllAssociative($sql);
     }
 }
