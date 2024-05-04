@@ -35,6 +35,7 @@ class BasicCharacterTest extends TestCase
         $this->assertEquals($this->randomUlid->ulid(), $sut->id());
         $expectedValues = '{"name":"Darling","xp":300,"level":2,"next":900,"partyId":""}';
         $this->assertEquals($expectedValues, $sut->toJson());
+        $this->assertEquals(2, $sut->level());
         $events = $sut->pullEvents();
         $this->assertCount(1, $events);
         $event = $events[0];

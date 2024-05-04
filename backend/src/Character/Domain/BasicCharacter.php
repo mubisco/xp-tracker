@@ -22,6 +22,11 @@ final class BasicCharacter extends AggregateRoot implements Character
         return $character;
     }
 
+    public function level(): int
+    {
+        return $this->experience->level();
+    }
+
     protected function collect(): array
     {
         return [
