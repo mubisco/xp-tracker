@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace XpTracker\Encounter\Application\Query;
 
 use Doctrine\DBAL\Connection;
+use XpTracker\Encounter\Domain\Party\WrongEncounterPartyUlidException;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
+use XpTracker\Shared\Domain\Identity\WrongUlidValueException;
 
 class EncountersByPartyUlidQueryHandler
 {
@@ -18,8 +20,17 @@ class EncountersByPartyUlidQueryHandler
      */
     public function __invoke(EncountersByPartyUlidQuery $query): array
     {
-        $ulid = SharedUlid::fromString($query->partyUlid);
+        $ulid = $this->parseUlid($query->partyUlid);
         return $this->fetchEncounters($ulid);
+    }
+
+    private function parseUlid(string $ulid): SharedUlid
+    {
+        try {
+            return SharedUlid::fromString($ulid);
+        } catch (WrongUlidValueException $e) {
+            throw new WrongEncounterPartyUlidException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
