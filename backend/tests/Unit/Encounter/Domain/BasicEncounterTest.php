@@ -260,12 +260,4 @@ class BasicEncounterTest extends TestCase
         $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->build();
         $sut->resolve();
     }
-
-    // private function checkSingleEvent(BasicEncounter $sut, string $expectedEventClass): void
-    // {
-    //     $events = $sut->pullEvents();
-    //     $this->assertCount(1, $events);
-    //     $this->assertInstanceOf($expectedEventClass, $events[0]);
-    //     $this->assertThat($events[0]->occurredOn(), $this->assertion);
-    // }
 }
