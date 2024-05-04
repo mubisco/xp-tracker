@@ -30,7 +30,7 @@ final class UpdateAssignedPartyCommandHandler implements CommandHandlerInterface
         $partyUlid = $this->parsePartyUlid($command->partyUlid);
         $encounter = $this->repository->byEncounterId($encounterUlid);
         $party = $this->readModel->byPartyId($partyUlid);
-        $encounter->assignToParty($party);
+        $encounter->updateAssignedParty($party);
         $this->writeModel->update($encounter);
         $this->eventBus->publish($encounter->pullEvents());
     }

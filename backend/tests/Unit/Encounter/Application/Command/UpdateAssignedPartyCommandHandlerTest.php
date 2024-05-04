@@ -10,6 +10,7 @@ use XpTracker\Encounter\Domain\EncounterWriteModelException;
 use XpTracker\Encounter\Domain\Party\EncounterPartyNotFoundException;
 use XpTracker\Encounter\Domain\Party\PartyAlreadyAssignedException;
 use XpTracker\Encounter\Domain\Party\PartyWasAssigned;
+use XpTracker\Encounter\Domain\Party\PartyWasUpdated;
 use XpTracker\Encounter\Domain\Party\WrongEncounterPartyUlidException;
 use XpTracker\Encounter\Domain\WrongEncounterUlidException;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
@@ -22,6 +23,9 @@ use XpTracker\Tests\Unit\Encounter\Domain\UpdateEncounterWriteModelFailingStub;
 use XpTracker\Tests\Unit\Encounter\Domain\UpdateEncounterWriteModelSpy;
 use XpTracker\Tests\Unit\Shared\Domain\Event\EventBusSpy;
 use XpTracker\Encounter\Application\Command\UpdateAssignedPartyCommandHandler;
+use XpTracker\Encounter\Domain\Party\EncounterParty;
+use XpTracker\Encounter\Domain\Party\PartyNotAssignedToEncounterException;
+use XpTracker\Tests\Unit\Character\Domain\Party\PartyOM;
 
 class UpdateAssignedPartyCommandHandlerTest extends TestCase
 {
@@ -82,9 +86,9 @@ class UpdateAssignedPartyCommandHandlerTest extends TestCase
     }
 
     /** @test */
-    public function itShouldThrowExceptionIfPartyCannotBeAssigned(): void
+    public function itShouldThrowExceptionIfPartyAssignedIsDifferent(): void
     {
-        $this->expectException(PartyAlreadyAssignedException::class);
+        $this->expectException(PartyNotAssignedToEncounterException::class);
         $ulid = '01HWTXCCE8NQMVYNMFKJ3WEBY5';
         $encounter = BasicEncounterOM::aBuilder()->withRandomParty()->build();
         $sut = new UpdateAssignedPartyCommandHandler(
@@ -102,7 +106,8 @@ class UpdateAssignedPartyCommandHandlerTest extends TestCase
     {
         $this->expectException(EncounterWriteModelException::class);
         $ulid = '01HWTXCCE8NQMVYNMFKJ3WEBY5';
-        $encounter = BasicEncounterOM::aBuilder()->build();
+        $party = new EncounterParty($ulid, [1,1]);
+        $encounter = BasicEncounterOM::aBuilder()->withParty($party)->build();
         $sut = new UpdateAssignedPartyCommandHandler(
             new EncounterRepositoryStub($encounter),
             new EncounterPartyReadModelStub(SharedUlid::fromString($ulid)),
@@ -117,7 +122,8 @@ class UpdateAssignedPartyCommandHandlerTest extends TestCase
     public function itShouldAssignPartyProperly(): void
     {
         $ulid = '01HWTXCCE8NQMVYNMFKJ3WEBY5';
-        $encounter = BasicEncounterOM::aBuilder()->build();
+        $party = new EncounterParty($ulid, [1,1]);
+        $encounter = BasicEncounterOM::aBuilder()->withParty($party)->build();
         $spy = new UpdateEncounterWriteModelSpy();
         $sut = new UpdateAssignedPartyCommandHandler(
             new EncounterRepositoryStub($encounter),
@@ -134,7 +140,8 @@ class UpdateAssignedPartyCommandHandlerTest extends TestCase
     public function itShouldSendEvents(): void
     {
         $ulid = '01HWTXCCE8NQMVYNMFKJ3WEBY5';
-        $encounter = BasicEncounterOM::aBuilder()->build();
+        $party = new EncounterParty($ulid, [1,1]);
+        $encounter = BasicEncounterOM::aBuilder()->withParty($party)->build();
         $spy = new EventBusSpy();
         $sut = new UpdateAssignedPartyCommandHandler(
             new EncounterRepositoryStub($encounter),
@@ -145,7 +152,7 @@ class UpdateAssignedPartyCommandHandlerTest extends TestCase
         $command = new UpdateAssignedPartyCommand('01HWTX9KJGDASR5P8T7R7BCJ8E', $ulid);
         ($sut)($command);
         $this->assertCount(2, $spy->publishedEvents);
-        $this->assertInstanceOf(PartyWasAssigned::class, $spy->publishedEvents[0]);
+        $this->assertInstanceOf(PartyWasUpdated::class, $spy->publishedEvents[0]);
         $this->assertInstanceOf(EncounterWasUpdated::class, $spy->publishedEvents[1]);
     }
 }
