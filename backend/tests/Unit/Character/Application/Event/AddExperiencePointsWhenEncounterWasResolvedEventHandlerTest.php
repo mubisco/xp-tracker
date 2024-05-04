@@ -14,10 +14,18 @@ use XpTracker\Tests\Unit\Character\Domain\CharacterRepositoryStub;
 use XpTracker\Tests\Unit\Character\Domain\FailingUpdateCharacterPartyWriteModelStub;
 use XpTracker\Tests\Unit\Character\Domain\NotFoundCharacterRepositoryStub;
 use XpTracker\Tests\Unit\Character\Domain\UpdateCharacterPartyWriteModelSpy;
+use XpTracker\Tests\Unit\Custom\IsImmediateDate;
 use XpTracker\Tests\Unit\Shared\Domain\Event\EventBusSpy;
 
 class AddExperiencePointsWhenEncounterWasResolvedEventHandlerTest extends TestCase
 {
+    private IsImmediateDate $assertion;
+
+    protected function setUp(): void
+    {
+        $this->assertion = new IsImmediateDate();
+    }
+
     /** @test */
     public function itShouldThrowExceptionWhenPartyUlidWrong(): void
     {
@@ -90,6 +98,8 @@ class AddExperiencePointsWhenEncounterWasResolvedEventHandlerTest extends TestCa
         $this->assertInstanceOf(PartyLevelWasUpdated::class, $spy->publishedEvents[0]);
         $partyUpdatedEvent = $spy->publishedEvents[0];
         $this->assertEquals('01HX1FTENRF6F49DD4X6ZGE2KZ', $partyUpdatedEvent->encounterUlid);
+        $this->assertEquals('01HX1FTENRF6F49DD4X6ZGE2KZ', $partyUpdatedEvent->id());
+        $this->assertThat($partyUpdatedEvent->occurredOn(), $this->assertion);
         $this->assertEquals('01HX1J0FWGZ91P77YDES05J57Z', $partyUpdatedEvent->partyUlid);
         $this->assertEquals([3, 3, 3], $partyUpdatedEvent->charactersLevel);
     }
