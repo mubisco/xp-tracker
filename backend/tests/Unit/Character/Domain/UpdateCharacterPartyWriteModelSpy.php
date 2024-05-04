@@ -10,9 +10,11 @@ use XpTracker\Character\Domain\UpdateCharacterPartyWriteModel;
 final class UpdateCharacterPartyWriteModelSpy implements UpdateCharacterPartyWriteModel
 {
     public ?Character $updatedCharacter = null;
+    public int $timesCalled = 0;
 
     public function updateCharacterParty(Character $character): void
     {
+        $this->timesCalled++;
         $this->updatedCharacter = $character;
     }
 }

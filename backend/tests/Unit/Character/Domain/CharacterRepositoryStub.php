@@ -25,4 +25,14 @@ final class CharacterRepositoryStub implements CharacterRepository
         $builder = CharacterOM::aBuilder();
         return $builder->build();
     }
+
+    public function ofPartyId(SharedUlid $ulid): array
+    {
+        $characters = [];
+        for ($i = 0; $i < 3; $i++) {
+            $builder = CharacterOM::aBuilder();
+            $characters[] = $builder->build();
+        }
+        return $characters;
+    }
 }
