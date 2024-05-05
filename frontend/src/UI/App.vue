@@ -25,13 +25,6 @@ import GlobalSnackbar from '@/UI/components/GlobalSnackbar.vue'
         <v-icon>mdi-sword-cross</v-icon>
         <span>Encounters</span>
       </v-btn>
-      <v-btn
-        :to="{ name: 'ImportExport' }"
-        value="encounters"
-      >
-        <v-icon>mdi-swap-vertical-bold</v-icon>
-        <span>Import/Export</span>
-      </v-btn>
     </v-bottom-navigation>
   </v-app>
 </template>

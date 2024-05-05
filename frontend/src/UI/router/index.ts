@@ -3,17 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
-    path: '/data-manage',
-    component: () => import('@/UI/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'ImportExport',
-        component: () => import(/* webpackChunkName: "export" */ '@/UI/views/ExportImport.vue')
-      }
-    ]
-  },
-  {
     path: '/encounter',
     component: () => import('@/UI/layouts/default/Default.vue'),
     children: [
