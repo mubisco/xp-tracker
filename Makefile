@@ -20,8 +20,18 @@ up: ##  Start containers
 down: ##  Stop containers
 	@$(DOCKER_COMPOSE) down
 
-.PHONY: restart
+.PHONY: run
+run: ## Run application with events
+	@make down
+	@make up
+	@make events-up
+
+.PHONY: reload
 restart: down up ##  Restart containers
+
+.PHONY: restart-front
+reload-front: ##  Restart front container to relaoa env variables
+	@$(DOCKER_COMPOSE) restart $(FRONT_IMAGE)
 
 .PHONY: build
 build: ##  Force container build
@@ -57,3 +67,8 @@ events-up: ## Cleans previous messages and raises messenger consumer
 	@$(DOCKER_BACK_EXEC) php ./bin/console dbal:run-sql 'TRUNCATE TABLE messenger_messages'
 	@$(DOCKER_BACK_EXEC) php ./bin/console messenger:setup-transports
 	@$(DOCKER_BACK_EXEC) php ./bin/console messenger:consume event.async -vv
+
+.PHONY: install
+install: ## Setup application to work locally
+	@make up
+	@$(DOCKER_BACK_EXEC) php ./bin/console doctrine:migrations:migrate -n
