@@ -6,7 +6,7 @@ import { usePartyStore } from '@/UI/store/parties'
 
 const partyStore = usePartyStore()
 const characterStore = useCharacterStore()
-const { characters } = storeToRefs(characterStore)
+const { currentCharacters, loadingCharacters } = storeToRefs(characterStore)
 const { activePartyUlid, activeParty } = storeToRefs(partyStore)
 
 onMounted(async () => fetchPlayers())
@@ -17,14 +17,20 @@ const fetchPlayers = async () => {
 }
 
 const onDeleteCharacterButtonClicked = async (characterUlid: string) => {
-  console.log('onDeleteCharacterButtonClicked', characterUlid, activePartyUlid.value)
   await characterStore.deleteCharacter(activePartyUlid.value, characterUlid)
 }
 </script>
 <template>
   <v-card class="mt-3 pb-4">
     <template #title>
-      Characters on {{ activeParty.partyName }} party
+      <div class="d-flex justify-space-between">
+        Characters on {{ activeParty.partyName }} party
+        <v-progress-circular
+          v-if="loadingCharacters"
+          size="24"
+          indeterminate
+        />
+      </div>
     </template>
     <template #text>
       <v-table density="compact">
@@ -46,7 +52,7 @@ const onDeleteCharacterButtonClicked = async (characterUlid: string) => {
         </thead>
         <tbody>
           <tr
-            v-for="(character, index) in characters"
+            v-for="(character, index) in currentCharacters"
             :key="index"
           >
             <td>{{ character.name }}</td>

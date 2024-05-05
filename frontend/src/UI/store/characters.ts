@@ -10,20 +10,25 @@ const baseUrl = import.meta.env.VITE_API_URL
 
 export const useCharacterStore = defineStore('character', {
   state: () => ({
-    characters: [] as SimpleCharacter[]
+    characters: [] as SimpleCharacter[],
+    loading: false
   }),
   getters: {
-    currentCharacters: state => state.characters
+    currentCharacters: state => state.characters,
+    loadingCharacters: state => state.loading
   },
   actions: {
     async loadCharacters (partyUlid: string): Promise<void> {
+      this.loading = true
       const provider = new CharactersByPartyIdQueryHandlerProvider()
       const query = new CharactersByPartyIdQuery(partyUlid)
       const handler = provider.provide()
       const result = await handler.handle(query)
       this.characters = result
+      this.loading = false
     },
     async createCharacter (partyUlid: string, characterName: string, xp: number): Promise<void> {
+      this.loading = true
       const provider = new AddCharacterToPartyCommandHandlerProvider()
       const command = new AddCharacterToPartyCommand(partyUlid, characterName, xp)
       const handler = provider.provide()
@@ -31,6 +36,7 @@ export const useCharacterStore = defineStore('character', {
       setTimeout(() => { this.loadCharacters(partyUlid) }, LOAD_DELAY)
     },
     async deleteCharacter (partyUlid: string, characterUlid: string): Promise<void> {
+      this.loading = true
       const url = `${baseUrl}/party/${partyUlid}/remove/${characterUlid}`
       await fetch(url, {
         method: 'DELETE',
