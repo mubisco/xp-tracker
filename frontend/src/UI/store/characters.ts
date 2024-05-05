@@ -6,6 +6,7 @@ import { AddCharacterToPartyCommandHandlerProvider } from '@/Infrastructure/Part
 import { AddCharacterToPartyCommand } from '@/Application/Party/Command/Character/AddCharacterToPartyCommand'
 
 const LOAD_DELAY = 1000
+const baseUrl = import.meta.env.VITE_API_URL
 
 export const useCharacterStore = defineStore('character', {
   state: () => ({
@@ -30,7 +31,7 @@ export const useCharacterStore = defineStore('character', {
       setTimeout(() => { this.loadCharacters(partyUlid) }, LOAD_DELAY)
     },
     async deleteCharacter (partyUlid: string, characterUlid: string): Promise<void> {
-      const url = `http://localhost:5000/api/party/${partyUlid}/remove/${characterUlid}`
+      const url = `${baseUrl}/party/${partyUlid}/remove/${characterUlid}`
       await fetch(url, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
