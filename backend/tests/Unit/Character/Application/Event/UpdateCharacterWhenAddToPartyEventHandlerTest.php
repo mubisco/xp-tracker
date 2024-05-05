@@ -81,7 +81,7 @@ class UpdateCharacterWhenAddToPartyEventHandlerTest extends TestCase
     public function itShouldThrowExceptionWhenCharacterAlreadyInParty(): void
     {
         $this->expectException(CharacterAlreadyInPartyException::class);
-        $character = CharacterOM::aBuilder()->withParty()->build();
+        $character = CharacterOM::aBuilder()->withRandomParty()->build();
         $sut = new UpdateCharacterWhenAddToPartyEventHandler(
             new PartyRepositoryStub(),
             new CharacterRepositoryStub($character),

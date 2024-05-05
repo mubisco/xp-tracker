@@ -8,6 +8,7 @@ use XpTracker\Character\Domain\BasicCharacter;
 use XpTracker\Character\Domain\Character;
 use XpTracker\Character\Domain\CharacterJoined;
 use XpTracker\Character\Domain\CharacterWasCreated;
+use XpTracker\Character\Domain\Party\Party;
 use XpTracker\Shared\Domain\Event\EventCollection;
 use XpTracker\Shared\Domain\Identity\SharedUlid;
 
@@ -37,9 +38,15 @@ final class CharacterOM
         return $this;
     }
 
-    public function withParty(): self
+    public function withRandomParty(): self
     {
         $this->partyId = SharedUlid::fromEmpty();
+        return $this;
+    }
+
+    public function withParty(Party $party): self
+    {
+        $this->partyId = SharedUlid::fromString($party->id());
         return $this;
     }
 
