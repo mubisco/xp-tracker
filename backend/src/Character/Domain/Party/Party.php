@@ -10,4 +10,5 @@ interface Party extends Eventable
     public function id(): string;
     public function toJson(): string;
     public function add(Character $character): void;
+    public function remove(Character $character): void;
 }

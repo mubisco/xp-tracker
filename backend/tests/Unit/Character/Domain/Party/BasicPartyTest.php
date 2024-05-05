@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use XpTracker\Character\Domain\CharacterAlreadyInPartyException;
+use XpTracker\Character\Domain\CharacterNotInPartyException;
 use XpTracker\Character\Domain\Party\BasicParty;
 use XpTracker\Character\Domain\Party\CharacterWasAdded;
 use XpTracker\Character\Domain\Party\PartyWasCreated;
@@ -75,5 +76,28 @@ class BasicPartyTest extends TestCase
         $character = CharacterOM::aBuilder()->build();
         $party->add($character);
         $anotherParty->add($character);
+    }
+    /** @test */
+    public function itShouldThrowExceptionWhenTryingToRemoveACharacterNotInParty(): void
+    {
+        $this->expectException(CharacterNotInPartyException::class);
+        $party = PartyOM::aBuilder()->build();
+        $character = CharacterOM::aBuilder()->build();
+        $party->remove($character);
+    }
+
+    /** @test */
+    public function itShouldRemoveCharacterFromParty(): void
+    {
+        $events = [
+            new PartyWasCreated('01HSNY23CRKKWFJ9H78AFK9C49', 'Comando G'),
+            new CharacterWasAdded('01HSNY23CRKKWFJ9H78AFK9C49', '01HSNY2NYGJPAC499JEMY7BXGV')
+        ];
+        $eventCollection = EventCollection::fromValues('01HSNY23CRKKWFJ9H78AFK9C49', $events);
+        $sut = BasicParty::fromEvents($eventCollection);
+        $character = CharacterOM::aBuilder()->withUlid('01HSNY2NYGJPAC499JEMY7BXGV')->build();
+        $sut->remove($character);
+        $expectedJson = '{"name":"Comando G","characters":[]}';
+        $this->assertEquals($expectedJson, $sut->toJson());
     }
 }

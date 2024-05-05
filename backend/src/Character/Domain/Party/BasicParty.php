@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace XpTracker\Character\Domain\Party;
 
 use XpTracker\Character\Domain\Character;
+use XpTracker\Character\Domain\CharacterNotInPartyException;
 use XpTracker\Shared\Domain\AggregateRoot;
 
 final class BasicParty extends AggregateRoot implements Party
@@ -37,6 +38,17 @@ final class BasicParty extends AggregateRoot implements Party
         $this->characters[] = $event->addedCharacterId;
     }
 
+    protected function applyPartyCharacterWasRemoved(PartyCharacterWasRemoved $event): void
+    {
+        $updatedCharacters = array_filter($this->characters, function (string $characterId) use ($event) {
+            return $characterId != $event->characterId;
+        });
+        if (count($updatedCharacters) === count($this->characters)) {
+            throw new CharacterNotInPartyException();
+        }
+        $this->characters = $updatedCharacters;
+    }
+
     public function add(Character $character): void
     {
         $character->join($this);
@@ -46,5 +58,11 @@ final class BasicParty extends AggregateRoot implements Party
     public function characterCount(): int
     {
         return count($this->characters);
+    }
+
+    public function remove(Character $character): void
+    {
+        $event = new PartyCharacterWasRemoved(partyId: $this->id(), characterId: $character->id());
+        $this->apply($event);
     }
 }
