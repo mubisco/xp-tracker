@@ -38,8 +38,8 @@ class EncountersByPartyUlidQueryHandler
      */
     private function fetchEncounters(SharedUlid $ulid): array
     {
-        $sql = "SELECT * FROM encounter WHERE party_id = :partyUlid";
-        $criteria = ['partyUlid' => $ulid->ulid()];
+        $sql = "SELECT * FROM encounter WHERE party_id = :partyUlid AND status != :deletedStatus";
+        $criteria = ['partyUlid' => $ulid->ulid(), 'deletedStatus' => 'DELETED'];
         $results = $this->connection->fetchAllAssociative($sql, $criteria);
         return $this->parseResults($results);
     }
