@@ -10,6 +10,11 @@ api_character_create:
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\PostAddCharacterController
   methods: ['POST']
 
+api_party_remove_character:
+  path: /api/party/{partyUlid}/remove/{characterUlid}
+  controller: XpTracker\Character\Infrastructure\Entrypoint\Api\DeleteCharacterFromPartyController
+  methods: ['DELETE']
+
 api_party_all:
   path: /api/party
   controller: XpTracker\Character\Infrastructure\Entrypoint\Api\GetAllPartiesController
@@ -39,6 +44,11 @@ api_encounter_create:
   path: /api/encounter
   controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\PostCreateEncounterController
   methods: ['POST']
+
+api_encounter_delete:
+  path: /api/encounter/delete/{encounterUlid}
+  controller: XpTracker\Encounter\Infrastructure\Entrypoint\Api\DeleteEncounterController
+  methods: ['DELETE']
 
 api_encounter_by_party:
   path: /api/encounter/{partyUlid}
