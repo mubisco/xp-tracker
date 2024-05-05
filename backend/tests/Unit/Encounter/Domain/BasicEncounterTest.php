@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use XpTracker\Encounter\Domain\BasicEncounter;
 use XpTracker\Encounter\Domain\EncounterNotResolvableException;
 use XpTracker\Encounter\Domain\EncounterWasCreated;
+use XpTracker\Encounter\Domain\EncounterWasDeleted;
 use XpTracker\Encounter\Domain\EncounterWasSolved;
 use XpTracker\Encounter\Domain\EncounterWasUpdated;
 use XpTracker\Encounter\Domain\Monster\EncounterMonster;
@@ -259,5 +260,18 @@ class BasicEncounterTest extends TestCase
         $kobold = EncounterMonster::fromStringValues(name: 'Kobold', challengeRating: '1/2');
         $sut = BasicEncounterOM::aBuilder()->withMonster($orc)->withMonster($kobold)->build();
         $sut->resolve();
+    }
+
+    /** @test */
+    public function itShouldBeDeleteProperly(): void
+    {
+        $sut = BasicEncounterOM::aBuilder()->build();
+        $sut->delete();
+        $this->assertEquals('DELETED', $sut->status());
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(EncounterWasDeleted::class, $events[0]);
+        $this->assertThat($events[0]->occurredOn(), $this->assertion);
+        $this->assertEquals($sut->id(), $events[0]->id());
     }
 }
