@@ -22,6 +22,10 @@ services:
       - '../src/Entity/'
       - '../src/Kernel.php'
 
+  XpTracker\Character\Application\Event\ProjectPartyWhenCharacterWasRemovedEventHandler:
+    arguments:
+      $projection: '@XpTracker\Character\Infrastructure\Persistence\DbalUpdateWhenCharacterRemovedPartyProjection'
+
   XpTracker\Character\Application\Event\ProjectPartyWhenCharacterAddedEventHandler:
     arguments:
       $projection: '@XpTracker\Character\Infrastructure\Persistence\DbalUpdateWhenCharacterAddedPartyProjection'

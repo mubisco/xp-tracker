@@ -32,6 +32,12 @@ final class CharacterOM
         $this->partyId = null;
     }
 
+    public function withUlid(string $ulid): self
+    {
+        $this->ulid = SharedUlid::fromString($ulid);
+        return $this;
+    }
+
     public function withExperience(int $xpPoints): self
     {
         $this->baseExperience = $xpPoints;
