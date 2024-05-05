@@ -11,5 +11,6 @@ interface Character extends Eventable
     public function toJson(): string;
     public function addExperience(Experience $experience): void;
     public function join(Party $party): void;
+    public function removeFrom(Party $party): void;
     public function level(): int;
 }

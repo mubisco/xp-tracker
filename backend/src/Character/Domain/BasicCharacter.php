@@ -51,12 +51,17 @@ final class BasicCharacter extends AggregateRoot implements Character
         $this->experience = $this->experience->add($anotherExperience);
     }
 
-    protected function applyCharacterJoined(CharacterJoined $characterJoined): void
+    protected function applyCharacterJoined(CharacterJoined $event): void
     {
         if (null !== $this->partyId) {
             throw new CharacterAlreadyInPartyException();
         }
-        $this->partyId = SharedUlid::fromString($characterJoined->partyId);
+        $this->partyId = SharedUlid::fromString($event->partyId);
+    }
+
+    protected function applyCharacterWasRemoved(CharacterWasRemoved $event): void
+    {
+        $this->partyId = null;
     }
 
     public function addExperience(Experience $experience): void
@@ -72,5 +77,20 @@ final class BasicCharacter extends AggregateRoot implements Character
     public function join(Party $party): void
     {
         $this->apply(new CharacterJoined($this->id(), $party->id()));
+    }
+
+    public function removeFrom(Party $party): void
+    {
+        if (null === $this->partyId) {
+            throw new CharacterNotInPartyException(
+                "The {$this->id()} character is not in a party"
+            );
+        }
+        if ($this->partyId->ulid() !== $party->id()) {
+            throw new CharacterAlreadyInPartyException(
+                "The {$this->id()} character is in another party!!!"
+            );
+        }
+        $this->apply(new CharacterWasRemoved($this->id(), $party->id()));
     }
 }

@@ -8,7 +8,9 @@ use PHPUnit\Framework\TestCase;
 use XpTracker\Character\Domain\BasicCharacter;
 use XpTracker\Character\Domain\CharacterAlreadyInPartyException;
 use XpTracker\Character\Domain\CharacterJoined;
+use XpTracker\Character\Domain\CharacterNotInPartyException;
 use XpTracker\Character\Domain\CharacterWasCreated;
+use XpTracker\Character\Domain\CharacterWasRemoved;
 use XpTracker\Character\Domain\Experience;
 use XpTracker\Character\Domain\ExperienceWasUpdated;
 use XpTracker\Character\Domain\LevelWasIncreased;
@@ -135,5 +137,37 @@ class BasicCharacterTest extends TestCase
         $character = CharacterOM::aBuilder()->build();
         $character->join($party);
         $character->join($anotherParty);
+    }
+
+    /** @test */
+    public function itShouldThrowExceptionWhenTryingToRemoveACharacterNotInParty(): void
+    {
+        $this->expectException(CharacterNotInPartyException::class);
+        $party = PartyOM::aBuilder()->build();
+        $character = CharacterOM::aBuilder()->build();
+        $character->removeFrom($party);
+    }
+
+    /** @test */
+    public function itShouldThrowExceptionWhenTryingToRemoveFromIncorrectParty(): void
+    {
+        $this->expectException(CharacterAlreadyInPartyException::class);
+        $party = PartyOM::aBuilder()->build();
+        $sut = CharacterOM::aBuilder()->withParty($party)->build();
+        $anotherParty = PartyOM::aBuilder()->build();
+        $sut->removeFrom($anotherParty);
+    }
+
+    /** @test */
+    public function itShouldBeRemovedFromPartyProperly(): void
+    {
+        $party = PartyOM::aBuilder()->build();
+        $sut = CharacterOM::aBuilder()->withParty($party)->build();
+        $sut->removeFrom($party);
+        $events = $sut->pullEvents();
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(CharacterWasRemoved::class, $events[0]);
+        $parsedData = json_decode($sut->toJson());
+        $this->assertEquals('', $parsedData->partyId);
     }
 }
