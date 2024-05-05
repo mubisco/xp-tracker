@@ -5,22 +5,20 @@ namespace XpTracker\Tests\Unit\Character\Application\Command;
 use PHPUnit\Framework\TestCase;
 use XpTracker\Character\Application\Command\DeleteCharacterFromPartyCommand;
 use XpTracker\Character\Application\Command\DeleteCharacterFromPartyCommandHandler;
-use XpTracker\Character\Domain\AddCharacterWriteModelException;
 use XpTracker\Character\Domain\CharacterNotFoundException;
 use XpTracker\Character\Domain\CharacterNotInPartyException;
-use XpTracker\Character\Domain\CharacterWasRemoved;
+use XpTracker\Character\Domain\Party\PartyCharacterWasRemoved;
 use XpTracker\Character\Domain\Party\PartyNotFoundException;
+use XpTracker\Character\Domain\Party\PartyWriteModelException;
 use XpTracker\Shared\Domain\Identity\WrongUlidValueException;
-use XpTracker\Tests\Unit\Character\Domain\AddCharacterWriteModelStub;
+use XpTracker\Tests\Unit\Character\Domain\AddCharacterToPartyWriteModelSpy;
 use XpTracker\Tests\Unit\Character\Domain\CharacterOM;
 use XpTracker\Tests\Unit\Character\Domain\CharacterRepositoryStub;
-use XpTracker\Tests\Unit\Character\Domain\FailingAddCharacterWriteModelStub;
-use XpTracker\Tests\Unit\Character\Domain\FailingUpdateCharacterPartyWriteModelStub;
+use XpTracker\Tests\Unit\Character\Domain\FailingAddCharacterToPartyWriteModelStub;
 use XpTracker\Tests\Unit\Character\Domain\NotFoundCharacterRepositoryStub;
 use XpTracker\Tests\Unit\Character\Domain\Party\FailingPartyRepositoryStub;
 use XpTracker\Tests\Unit\Character\Domain\Party\PartyOM;
 use XpTracker\Tests\Unit\Character\Domain\Party\PartyRepositoryStub;
-use XpTracker\Tests\Unit\Character\Domain\UpdateCharacterPartyWriteModelSpy;
 use XpTracker\Tests\Unit\Shared\Domain\Event\EventBusSpy;
 
 class DeleteCharacterFromPartyCommandHandlerTest extends TestCase
@@ -41,7 +39,7 @@ class DeleteCharacterFromPartyCommandHandlerTest extends TestCase
         $sut = new DeleteCharacterFromPartyCommandHandler(
             new FailingPartyRepositoryStub(),
             new NotFoundCharacterRepositoryStub(),
-            new FailingUpdateCharacterPartyWriteModelStub(),
+            new FailingAddCharacterToPartyWriteModelStub(),
             new EventBusSpy()
         );
         $command = new DeleteCharacterFromPartyCommand('asd', '01HX43CF18KPQAZPY4CJ27J80Q');
@@ -55,7 +53,7 @@ class DeleteCharacterFromPartyCommandHandlerTest extends TestCase
         $sut = new DeleteCharacterFromPartyCommandHandler(
             new FailingPartyRepositoryStub(),
             new NotFoundCharacterRepositoryStub(),
-            new FailingUpdateCharacterPartyWriteModelStub(),
+            new FailingAddCharacterToPartyWriteModelStub(),
             new EventBusSpy()
         );
         $command = new DeleteCharacterFromPartyCommand('01HX43CF18KPQAZPY4CJ27J80Q', 'asd');
@@ -69,7 +67,7 @@ class DeleteCharacterFromPartyCommandHandlerTest extends TestCase
         $sut = new DeleteCharacterFromPartyCommandHandler(
             new FailingPartyRepositoryStub(),
             new NotFoundCharacterRepositoryStub(),
-            new FailingUpdateCharacterPartyWriteModelStub(),
+            new FailingAddCharacterToPartyWriteModelStub(),
             new EventBusSpy()
         );
         ($sut)($this->command);
@@ -83,7 +81,7 @@ class DeleteCharacterFromPartyCommandHandlerTest extends TestCase
         $sut = new DeleteCharacterFromPartyCommandHandler(
             new PartyRepositoryStub($party),
             new NotFoundCharacterRepositoryStub(),
-            new FailingUpdateCharacterPartyWriteModelStub(),
+            new FailingAddCharacterToPartyWriteModelStub(),
             new EventBusSpy()
         );
         ($sut)($this->command);
@@ -98,22 +96,22 @@ class DeleteCharacterFromPartyCommandHandlerTest extends TestCase
         $sut = new DeleteCharacterFromPartyCommandHandler(
             new PartyRepositoryStub($party),
             new CharacterRepositoryStub($character),
-            new FailingUpdateCharacterPartyWriteModelStub(),
+            new FailingAddCharacterToPartyWriteModelStub(),
             new EventBusSpy()
         );
         ($sut)($this->command);
     }
 
     /** @test */
-    public function itShouldThrowExceptionWhenCharacterCannotBeStored(): void
+    public function itShouldThrowExceptionWhenPartyCannotBeStored(): void
     {
-        $this->expectException(AddCharacterWriteModelException::class);
-        $party = PartyOM::aBuilder()->withUlid(self::PARTY_ULID)->build();
-        $character = CharacterOM::aBuilder()->withParty($party)->build();
+        $this->expectException(PartyWriteModelException::class);
+        $character = CharacterOM::aBuilder()->withUlid(self::CHARACTER_ULID)->build();
+        $party = PartyOM::aBuilder()->withCharacter($character)->withUlid(self::PARTY_ULID)->build();
         $sut = new DeleteCharacterFromPartyCommandHandler(
             new PartyRepositoryStub($party),
             new CharacterRepositoryStub($character),
-            new FailingUpdateCharacterPartyWriteModelStub(),
+            new FailingAddCharacterToPartyWriteModelStub(),
             new EventBusSpy()
         );
         ($sut)($this->command);
@@ -122,17 +120,17 @@ class DeleteCharacterFromPartyCommandHandlerTest extends TestCase
     /** @test */
     public function itShouldSendProperEvents(): void
     {
-        $party = PartyOM::aBuilder()->withUlid(self::PARTY_ULID)->build();
-        $character = CharacterOM::aBuilder()->withParty($party)->build();
+        $character = CharacterOM::aBuilder()->withUlid(self::CHARACTER_ULID)->build();
+        $party = PartyOM::aBuilder()->withCharacter($character)->withUlid(self::PARTY_ULID)->build();
         $spy = new EventBusSpy();
         $sut = new DeleteCharacterFromPartyCommandHandler(
             new PartyRepositoryStub($party),
             new CharacterRepositoryStub($character),
-            new UpdateCharacterPartyWriteModelSpy(),
+            new AddCharacterToPartyWriteModelSpy(),
             $spy
         );
         ($sut)($this->command);
         $this->assertCount(1, $spy->publishedEvents);
-        $this->assertInstanceOf(CharacterWasRemoved::class, $spy->publishedEvents[0]);
+        $this->assertInstanceOf(PartyCharacterWasRemoved::class, $spy->publishedEvents[0]);
     }
 }
