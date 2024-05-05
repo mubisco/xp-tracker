@@ -5,6 +5,8 @@ import { AllPartiesQueryHandlerProvider } from '@/Infrastructure/Party/Provider/
 import { CreatePartyCommandHandlerProvider } from '@/Infrastructure/Party/Provider/CreatePartyCommandHandlerProvider'
 import { CreatePartyCommand } from '@/Application/Party/Command/CreatePartyCommand'
 
+const LOAD_DELAY = 1000
+
 export const usePartyStore = defineStore('party', {
   state: () => ({
     parties: [] as PartyDto[],
@@ -32,7 +34,7 @@ export const usePartyStore = defineStore('party', {
       const handler = provider.provide()
       const command = new CreatePartyCommand(partyName)
       await handler.handle(command)
-      setTimeout(() => { this.loadParties() }, 750)
+      setTimeout(() => { this.loadParties() }, LOAD_DELAY)
     },
     selectParty (partyUlid: string): void {
       this.currentPartyUlid = partyUlid

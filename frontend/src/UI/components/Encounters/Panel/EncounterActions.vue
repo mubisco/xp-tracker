@@ -9,11 +9,14 @@ const encountersStore = useEncountersStore()
 const partyStore = usePartyStore()
 const { activePartyUlid } = storeToRefs(partyStore)
 
-const props =defineProps<{
+const props = defineProps<{
   ulid: string,
   status: string,
 }>()
 
+const onDeleteEncounterButtonClicked = async () => {
+  await encountersStore.deleteEncounter(activePartyUlid.value, props.ulid)
+}
 const onResolveEncounterButtonClicked = async () => {
   await encountersStore.resolveEncounter(activePartyUlid.value, props.ulid)
 }
@@ -32,6 +35,7 @@ const onResolveEncounterButtonClicked = async () => {
         variant="outlined"
         color="error"
         prepend-icon="mdi-delete"
+        @click="onDeleteEncounterButtonClicked"
       >
         Delete
       </v-btn>

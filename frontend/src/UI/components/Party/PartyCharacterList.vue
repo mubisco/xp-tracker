@@ -15,6 +15,11 @@ watch(activePartyUlid, () => { fetchPlayers() })
 const fetchPlayers = async () => {
   characterStore.loadCharacters(activePartyUlid.value)
 }
+
+const onDeleteCharacterButtonClicked = async (characterUlid: string) => {
+  console.log('onDeleteCharacterButtonClicked', characterUlid, activePartyUlid.value)
+  await characterStore.deleteCharacter(activePartyUlid.value, characterUlid)
+}
 </script>
 <template>
   <v-card class="mt-3 pb-4">
@@ -56,6 +61,7 @@ const fetchPlayers = async () => {
                 icon="mdi-delete"
                 color="red"
                 variant="plain"
+                @click="onDeleteCharacterButtonClicked(character.ulid)"
               />
             </td>
           </tr>

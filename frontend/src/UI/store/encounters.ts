@@ -3,7 +3,7 @@ import { EncounterDto } from '@/Domain/Encounter/EncounterDto'
 import { CreateEncounterForPartyCommandHandlerProvider } from '@/Infrastructure/Encounter/Provider/CreateEncounterForPartyCommandHandlerProvider'
 import { defineStore } from 'pinia'
 
-const LOAD_DELAY = 750
+const LOAD_DELAY = 1000
 
 export const useEncountersStore = defineStore('encounter', {
   state: () => ({
@@ -66,6 +66,14 @@ export const useEncountersStore = defineStore('encounter', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
+      })
+      setTimeout(() => { this.loadEncounters(partyUlid) }, LOAD_DELAY)
+    },
+    async deleteEncounter (partyUlid: string, encounterUlid: string) {
+      const url = `http://localhost:5000/api/encounter/delete/${encounterUlid}`
+      await fetch(url, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
       })
       setTimeout(() => { this.loadEncounters(partyUlid) }, LOAD_DELAY)
     }
