@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import PanelTitle from './Panel/PanelTitle.vue'
 import PanelText from './Panel/PanelText.vue'
-import RemoveEncounterDialog from './RemoveEncounterDialog.vue'
 
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePartyStore } from '@/UI/store/parties'
 import { useEncountersStore } from '@/UI/store/encounters'
@@ -13,9 +12,6 @@ const encountersStore = useEncountersStore()
 const { activeParty } = storeToRefs(partyStore)
 const { currentEncounters } = storeToRefs(encountersStore)
 
-const encounterToDelete = ref('')
-const showDeleteDialog = ref(false)
-
 const loadEncounters = async () => {
   if (activeParty) {
     await encountersStore.loadEncounters(activeParty.value.partyUlid)
@@ -23,11 +19,6 @@ const loadEncounters = async () => {
 }
 
 onMounted(loadEncounters)
-
-const onEncounterDeleteConfirmed = async (): Promise<void> => {
-  encounterToDelete.value = ''
-  await loadEncounters()
-}
 
 </script>
 <template>
@@ -64,11 +55,6 @@ const onEncounterDeleteConfirmed = async (): Promise<void> => {
         />
       </v-expansion-panel>
     </v-expansion-panels>
-    <RemoveEncounterDialog
-      v-model="showDeleteDialog"
-      :encounter-ulid="encounterToDelete"
-      @update:model-value="onEncounterDeleteConfirmed"
-    />
   </div>
   <v-alert
     v-else

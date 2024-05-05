@@ -27,10 +27,10 @@ run: ## Run application with events
 	@make events-up
 
 .PHONY: reload
-restart: down up ##  Restart containers
+reload: down up ##  Restart containers
 
 .PHONY: restart-front
-reload-front: ##  Restart front container to relaoa env variables
+restart-front: ##  Restart front container to relaoa env variables
 	@$(DOCKER_COMPOSE) restart $(FRONT_IMAGE)
 
 .PHONY: build
