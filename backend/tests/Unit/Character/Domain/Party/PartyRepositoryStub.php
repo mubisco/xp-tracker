@@ -10,8 +10,15 @@ use XpTracker\Shared\Domain\Identity\SharedUlid;
 
 final class PartyRepositoryStub implements PartyRepository
 {
+    public function __construct(private readonly ?Party $party = null)
+    {
+    }
+
     public function byUlid(SharedUlid $ulid): Party
     {
-        return PartyOM::aBuilder()->build();
+        if (null === $this->party) {
+            return PartyOM::aBuilder()->build();
+        }
+        return $this->party;
     }
 }

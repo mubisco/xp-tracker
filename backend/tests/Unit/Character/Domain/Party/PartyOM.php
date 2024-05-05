@@ -26,6 +26,12 @@ final class PartyOM
         $this->name = 'Comando G';
     }
 
+    public function withUlid(string $ulid): static
+    {
+        $this->ulid = SharedUlid::fromString($ulid);
+        return $this;
+    }
+
     public function build(): Party
     {
         $events = [new PartyWasCreated($this->ulid->ulid(), $this->name)];
