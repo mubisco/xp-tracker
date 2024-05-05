@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LevelTag from '@/UI/components/Encounters/LevelTag.vue'
+import LevelTag from '@/UI/components/Encounters/Panel/LevelTag.vue'
 
 defineProps({
   name: { type: String, required: true },
